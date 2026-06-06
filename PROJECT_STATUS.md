@@ -1,10 +1,15 @@
 # PROJECT_STATUS.md
 
 ## Estado actual
-Fase: **1 — Base técnica** · Bloques 1–6 **completados** ✅
+Fase: **1 — Base técnica** · Bloques 1–7 ✅ · **Desplegado en Railway (staging)**: https://alquilerkaraoke-production.up.railway.app
+Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en producción (2026-06-06).
+
+## Pendiente menor
+- Definir `NEXT_PUBLIC_SITE_URL` / `NEXTAUTH_URL` / `AUTH_URL` en Railway (SEO/canonical; ahora robots apunta a localhost).
+- Cambiar la contraseña del Superadmin de producción (sembrado con `Admin_dev_2026!`).
 
 ## Objetivo inmediato
-Bloque 7 — Railway staging: configuración de despliegue (build/start), PostgreSQL de Railway, variables de entorno, migraciones en deploy y healthcheck. Solo staging; producción tras validación.
+Cerrar Fase 1 y comenzar **Fase 2 — Web pública SEO mobile-first** (páginas reales: servicios, packs, ciudades, contacto; metadata por página; secciones del home).
 
 ## Bloques Fase 1
 - [x] **Bloque 1 — Scaffolding**: Next.js 16 (App Router, TS estricto, Tailwind v4), estructura de carpetas (`src/lib`, `src/components`, `src/server`, `messages/`), ESLint + Prettier (orden clases Tailwind), `.editorconfig`, `.env.example`, scripts npm. Verificado: typecheck + lint + format + build en verde (2026-06-06).
@@ -13,7 +18,7 @@ Bloque 7 — Railway staging: configuración de despliegue (build/start), Postgr
 - [x] **Bloque 4 — i18n + SEO base**: next-intl v4 con subrutas `/es /en /fr` (localePrefix always), rutas públicas reestructuradas bajo `[locale]/`, layout raíz passthrough + html/body en `[locale]/layout` (lang dinámico) y `admin/layout`. `proxy.ts` compone routing i18n + auth. SEO: canonical + hreflang (es/en/fr/x-default) en `<head>`, `sitemap.xml` con alternates y `robots.txt`. Verificado en runtime: `/`→`/es`, 3 idiomas con contenido/lang correctos, hreflang, sitemap, robots y `/admin` protegido (2026-06-06).
 - [x] **Bloque 5 — Sistema de diseño base**: tokens de marca en `globals.css` (oscuro premium + neón cian/magenta, `@theme` Tailwind v4), primitivos UI (`Button`, `Container`), shell público (header fijo con menú móvil, footer, FAB de WhatsApp) y home con hero premium. Datos de contacto leídos de `SiteConfig` con `unstable_cache` (web sigue estática/SSG, revalidate 1h). Verificado: build SSG + estructura renderizada en ES/EN/FR (2026-06-06).
 - [x] **Bloque 6 — Admin mínimo + Configuración de empresa**: grupo de rutas `(panel)` con chrome (topbar + nav) y guard de sesión en servidor; dashboard; módulo **Configuración de empresa** (CRUD de `SiteConfig`) con server action, validación Zod, auditoría `config.update`, restricción a SUPERADMIN/ADMIN e invalidación con `updateTag` (Next 16). Helpers `requireAdminSession`/`requireRole` y `logAudit`. Verificado con **Playwright E2E** (guardado→reflejo en web pública→restaurar, y protección por sesión) + typecheck/lint/build (2026-06-06).
-- [ ] Bloque 7 — Railway staging.
+- [~] **Bloque 7 — Railway staging**: configuración lista en el repo (`railway.json`, `/api/health`, `.nvmrc`, `prisma` en dependencies, `startCommand` con `migrate deploy`, guía en `docs/17`). Git inicializado (rama `main`, commit inicial) y remoto `origin` → GitHub. **Pendiente**: push + creación del servicio/Postgres en Railway + variables + seed (requiere autenticación del usuario).
 
 ## Entorno
 - Node.js v24.16.0 + npm 11.13.0 (instalado vía winget, 2026-06-06).
