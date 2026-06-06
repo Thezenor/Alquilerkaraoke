@@ -55,7 +55,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             {t("heroSubtitle")}
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button href="#" size="lg" className="w-full sm:w-auto">
+            <Button href={`/${locale}/contacto`} size="lg" className="w-full sm:w-auto">
               {t("ctaQuote")}
             </Button>
             <Button

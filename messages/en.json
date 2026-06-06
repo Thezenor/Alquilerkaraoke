@@ -49,6 +49,29 @@
       { "title": "Enjoy", "text": "You sing; we handle the rest." }
     ]
   },
+  "ContactMeta": {
+    "title": "Contact | Alquiler Karaoke",
+    "description": "Got an event? Write to us and we'll prepare a tailored quote. Karaoke, sound, lighting and more across Spain."
+  },
+  "Contact": {
+    "title": "Let's talk about your event",
+    "subtitle": "Tell us what you need and we'll get back to you as soon as possible.",
+    "whatsappTitle": "Prefer WhatsApp?",
+    "whatsappText": "Message us directly and we'll help you right away.",
+    "whatsappCta": "Open WhatsApp",
+    "phoneLabel": "Phone",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "city": "City",
+      "message": "Tell us about your event",
+      "submit": "Send request",
+      "submitting": "Sending…",
+      "success": "Thank you! We've received your request and will contact you soon.",
+      "error": "Could not send. Please check the details and try again."
+    }
+  },
   "LocaleSwitcher": {
     "label": "Language",
     "es": "Spanish",

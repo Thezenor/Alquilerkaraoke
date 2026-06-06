@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,14 @@ const NAV_KEYS = ["services", "packs", "songs", "contact"] as const;
 
 export function SiteHeader() {
   const t = useTranslations("Nav");
+  const locale = useLocale();
+  const contactHref = `/${locale}/contacto`;
   const [open, setOpen] = useState(false);
+
+  const navItems = NAV_KEYS.map((key) => ({
+    key,
+    href: key === "contact" ? contactHref : "#",
+  }));
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-brand-border/60 bg-brand-bg/80 backdrop-blur-md">
@@ -24,13 +31,13 @@ export function SiteHeader() {
 
         {/* Navegación desktop */}
         <nav className="hidden items-center gap-7 md:flex">
-          {NAV_KEYS.map((key) => (
+          {navItems.map((item) => (
             <a
-              key={key}
-              href="#"
+              key={item.key}
+              href={item.href}
               className="text-sm text-brand-muted transition hover:text-white"
             >
-              {t(key)}
+              {t(item.key)}
             </a>
           ))}
         </nav>
@@ -39,7 +46,7 @@ export function SiteHeader() {
           <div className="hidden md:block">
             <LocaleSwitcher />
           </div>
-          <Button href="#" size="md" className="hidden sm:inline-flex">
+          <Button href={contactHref} size="md" className="hidden sm:inline-flex">
             {t("quote")}
           </Button>
 
@@ -79,19 +86,19 @@ export function SiteHeader() {
       {open && (
         <div className="border-t border-brand-border/60 bg-brand-surface md:hidden">
           <Container className="flex flex-col gap-1 py-4">
-            {NAV_KEYS.map((key) => (
+            {navItems.map((item) => (
               <a
-                key={key}
-                href="#"
+                key={item.key}
+                href={item.href}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-2.5 text-brand-text transition hover:bg-brand-surface-2"
               >
-                {t(key)}
+                {t(item.key)}
               </a>
             ))}
             <div className="mt-3 flex items-center justify-between gap-3">
               <LocaleSwitcher />
-              <Button href="#" size="md" className="flex-1">
+              <Button href={contactHref} size="md" className="flex-1">
                 {t("quote")}
               </Button>
             </div>

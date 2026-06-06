@@ -22,6 +22,16 @@ export default async function AdminDashboardPage() {
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link
+          href="/admin/solicitudes"
+          className="rounded-xl border border-brand-border bg-brand-surface p-5 transition hover:border-brand-neon/60"
+        >
+          <h2 className="font-semibold text-white">Solicitudes de contacto</h2>
+          <p className="mt-1 text-sm text-brand-muted">
+            Leads recibidos desde la web pública: gestiónalos y responde.
+          </p>
+        </Link>
+
+        <Link
           href="/admin/configuracion"
           className="rounded-xl border border-brand-border bg-brand-surface p-5 transition hover:border-brand-neon/60"
         >

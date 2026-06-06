@@ -11,8 +11,8 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 ## Objetivo inmediato
 **Fase 2 — Web pública SEO mobile-first** en curso.
 - [x] **Bloque 1 — Infraestructura SEO + Home enriquecido**: helper `buildMetadata` (canonical + hreflang **por página**), JSON-LD `LocalBusiness` (desde `SiteConfig`), imagen OG dinámica de marca (`opengraph-image`), `metadataBase` global, y home con secciones reales (servicios, segmentos, cómo trabajamos, CTA) trilingües. Middleware excluye rutas de metadata. Verificado: build + runtime (secciones ES/EN, JSON-LD, OG 200, canonical/hreflang) + E2E sin regresión (2026-06-06).
-- [ ] Bloque 2 — Páginas `/servicios` y `/contacto`.
-- [ ] Bloque 3 — Landings por ciudad (SEO local).
+- [x] **Bloque 2 — Contacto con captación de leads**: página pública `/contacto` (ES/EN/FR) con formulario (Server Action + Zod) que **guarda en BD** (`ContactRequest`) y panel **WhatsApp/teléfono**; módulo admin **Solicitudes** (lista + detalle + responder/estado, auditoría, enlaces rápidos email/WhatsApp). Nav y CTAs conectados al formulario. Verificado: build + E2E del flujo completo (enviar→admin→responder) 3/3 (2026-06-06). Email automático al recibir lead: pendiente de configurar proveedor.
+- [ ] Bloque 3 — Páginas `/servicios` (+ packs) y landings por ciudad (SEO local).
 
 ## Bloques Fase 1
 - [x] **Bloque 1 — Scaffolding**: Next.js 16 (App Router, TS estricto, Tailwind v4), estructura de carpetas (`src/lib`, `src/components`, `src/server`, `messages/`), ESLint + Prettier (orden clases Tailwind), `.editorconfig`, `.env.example`, scripts npm. Verificado: typecheck + lint + format + build en verde (2026-06-06).

@@ -49,6 +49,29 @@
       { "title": "Disfruta", "text": "Tú a cantar; del resto nos encargamos nosotros." }
     ]
   },
+  "ContactMeta": {
+    "title": "Contacto | Alquiler Karaoke",
+    "description": "¿Tienes un evento? Escríbenos y te preparamos un presupuesto a medida. Karaoke, sonido, iluminación y más en toda España."
+  },
+  "Contact": {
+    "title": "Hablemos de tu evento",
+    "subtitle": "Cuéntanos qué necesitas y te respondemos lo antes posible.",
+    "whatsappTitle": "¿Prefieres WhatsApp?",
+    "whatsappText": "Escríbenos directamente y te atendemos al momento.",
+    "whatsappCta": "Abrir WhatsApp",
+    "phoneLabel": "Teléfono",
+    "form": {
+      "name": "Nombre",
+      "email": "Email",
+      "phone": "Teléfono",
+      "city": "Ciudad",
+      "message": "Cuéntanos sobre tu evento",
+      "submit": "Enviar solicitud",
+      "submitting": "Enviando…",
+      "success": "¡Gracias! Hemos recibido tu solicitud y te contactaremos pronto.",
+      "error": "No se pudo enviar. Revisa los datos e inténtalo de nuevo."
+    }
+  },
   "LocaleSwitcher": {
     "label": "Idioma",
     "es": "Español",

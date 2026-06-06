@@ -49,6 +49,29 @@
       { "title": "Profitez", "text": "Vous chantez ; nous nous occupons du reste." }
     ]
   },
+  "ContactMeta": {
+    "title": "Contact | Alquiler Karaoke",
+    "description": "Un événement en vue ? Écrivez-nous et nous préparons un devis sur mesure. Karaoké, son, éclairage et plus dans toute l'Espagne."
+  },
+  "Contact": {
+    "title": "Parlons de votre événement",
+    "subtitle": "Dites-nous ce dont vous avez besoin et nous vous répondrons au plus vite.",
+    "whatsappTitle": "Vous préférez WhatsApp ?",
+    "whatsappText": "Écrivez-nous directement et nous vous aidons tout de suite.",
+    "whatsappCta": "Ouvrir WhatsApp",
+    "phoneLabel": "Téléphone",
+    "form": {
+      "name": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "city": "Ville",
+      "message": "Parlez-nous de votre événement",
+      "submit": "Envoyer la demande",
+      "submitting": "Envoi…",
+      "success": "Merci ! Nous avons bien reçu votre demande et vous contacterons bientôt.",
+      "error": "Échec de l'envoi. Vérifiez les informations et réessayez."
+    }
+  },
   "LocaleSwitcher": {
     "label": "Langue",
     "es": "Espagnol",

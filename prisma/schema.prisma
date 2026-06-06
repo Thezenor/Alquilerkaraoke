@@ -23,6 +23,14 @@ enum Role {
   ALMACEN
 }
 
+// Estado de una solicitud de contacto (lead).
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  ANSWERED
+  ARCHIVED
+}
+
 // ── Usuarios y autenticación (compatible Auth.js / NextAuth) ─────
 model User {
   id            String    @id @default(cuid())
@@ -36,9 +44,10 @@ model User {
   roles         Role[]    @default([])
   isActive      Boolean   @default(true)
 
-  accounts  Account[]
-  sessions  Session[]
-  auditLogs AuditLog[]
+  accounts         Account[]
+  sessions         Session[]
+  auditLogs        AuditLog[]
+  contactResponses ContactRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -124,4 +133,30 @@ model SiteConfig {
   extra        Json?
 
   updatedAt DateTime @updatedAt
+}
+
+// ── Solicitudes de contacto (leads desde la web pública) ─────────
+model ContactRequest {
+  id      String        @id @default(cuid())
+  name    String
+  email   String
+  phone   String?
+  city    String?
+  message String
+  locale  String?
+  status  ContactStatus @default(NEW)
+
+  // Respuesta del admin
+  response      String?
+  respondedById String?
+  respondedAt   DateTime?
+  respondedBy   User?     @relation(fields: [respondedById], references: [id], onDelete: SetNull)
+
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
 }
