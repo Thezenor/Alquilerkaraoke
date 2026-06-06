@@ -42,6 +42,7 @@ export default auth((req) => {
 });
 
 export const config = {
-  // Excluye API, assets internos de Next y ficheros estáticos (con extensión).
-  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
+  // Excluye API, assets internos de Next, ficheros de metadata (OG/iconos) y
+  // ficheros estáticos (con extensión). El resto pasa por i18n/auth.
+  matcher: ["/((?!api|_next|_vercel|opengraph-image|twitter-image|icon|apple-icon|manifest|.*\\..*).*)"],
 };

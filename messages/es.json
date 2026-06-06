@@ -15,7 +15,39 @@
     "heroTitle": "No alquilamos una máquina: montamos una experiencia",
     "heroSubtitle": "Karaoke profesional, sonido, iluminación y eventos para particulares, empresas, bodas y fiestas en toda España.",
     "ctaQuote": "Pedir presupuesto",
-    "ctaWhatsapp": "Hablar por WhatsApp"
+    "ctaWhatsapp": "Hablar por WhatsApp",
+    "servicesTitle": "Nuestros servicios",
+    "servicesSubtitle": "Todo lo que necesitas para que tu evento suene y se vea profesional.",
+    "segmentsTitle": "Para cada ocasión",
+    "processTitle": "Cómo trabajamos",
+    "ctaBandTitle": "¿Listo para tu próximo evento?",
+    "ctaBandText": "Cuéntanos qué necesitas y te preparamos un presupuesto a medida sin compromiso."
+  },
+  "HomeServices": {
+    "items": [
+      { "title": "Karaoke profesional", "text": "Equipos, pantallas y miles de canciones con o sin técnico." },
+      { "title": "OkeBox", "text": "Karaoke autónomo para tenerlo todo el día en tu evento." },
+      { "title": "DJ y discomóvil", "text": "Música y ambiente para que la fiesta no pare." },
+      { "title": "Sonido e iluminación", "text": "Equipos profesionales adaptados a cada espacio." },
+      { "title": "Fotomatón y 360", "text": "Recuerdos divertidos para tus invitados." },
+      { "title": "Eventos y concursos", "text": "Formato tipo Furor y dinámicas musicales para empresas y fiestas." }
+    ]
+  },
+  "HomeSegments": {
+    "items": [
+      { "title": "Particulares", "text": "Cumpleaños, despedidas y fiestas en casa o local." },
+      { "title": "Empresas", "text": "Eventos de equipo, fiestas y activaciones de marca." },
+      { "title": "Bodas", "text": "El toque final para que tu boda sea inolvidable." },
+      { "title": "Fiestas populares", "text": "Ayuntamientos y peñas con producción profesional." }
+    ]
+  },
+  "HomeProcess": {
+    "steps": [
+      { "title": "Cuéntanos tu evento", "text": "Fecha, lugar y qué te imaginas." },
+      { "title": "Presupuesto a medida", "text": "Te proponemos la mejor opción sin compromiso." },
+      { "title": "Montaje profesional", "text": "Llevamos y montamos todo el equipo." },
+      { "title": "Disfruta", "text": "Tú a cantar; del resto nos encargamos nosotros." }
+    ]
   },
   "LocaleSwitcher": {
     "label": "Idioma",

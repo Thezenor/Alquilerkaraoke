@@ -8,14 +8,16 @@ import { fontVariables } from "../fonts";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { WhatsappFab } from "@/components/site/whatsapp-fab";
+import { JsonLd } from "@/components/seo/json-ld";
 import { getContact } from "@/server/site-config";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+import { SITE_URL, SITE_NAME, absoluteUrl } from "@/lib/seo";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+// Metadata base común. El canonical/hreflang y el título por página los define
+// cada page con `buildMetadata` (src/lib/seo.ts).
 export async function generateMetadata({
   params,
 }: {
@@ -24,20 +26,12 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
 
-  // hreflang: una entrada por idioma + x-default.
-  const languages: Record<string, string> = {};
-  for (const l of routing.locales) {
-    languages[l] = `/${l}`;
-  }
-
   return {
-    metadataBase: new URL(siteUrl),
+    metadataBase: new URL(SITE_URL),
     title: t("homeTitle"),
     description: t("homeDescription"),
-    alternates: {
-      canonical: `/${locale}`,
-      languages: { ...languages, "x-default": `/${routing.defaultLocale}` },
-    },
+    openGraph: { siteName: SITE_NAME, type: "website", locale },
+    robots: { index: true, follow: true },
   };
 }
 
@@ -58,9 +52,21 @@ export default async function LocaleLayout({
 
   const contact = await getContact();
 
+  const businessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: contact.companyName,
+    url: absoluteUrl(`/${locale}`),
+    telephone: `+34${contact.phone.replace(/\D/g, "")}`,
+    image: absoluteUrl("/opengraph-image"),
+    areaServed: "ES",
+    priceRange: "€€",
+  };
+
   return (
     <html lang={locale} className={`${fontVariables} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
+        <JsonLd data={businessSchema} />
         <NextIntlClientProvider>
           <SiteHeader />
           <main className="flex flex-1 flex-col pt-16">{children}</main>

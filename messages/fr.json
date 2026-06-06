@@ -15,7 +15,39 @@
     "heroTitle": "Nous ne louons pas une machine : nous créons une expérience",
     "heroSubtitle": "Karaoké professionnel, son, éclairage et événements pour particuliers, entreprises, mariages et fêtes dans toute l'Espagne.",
     "ctaQuote": "Demander un devis",
-    "ctaWhatsapp": "Discuter sur WhatsApp"
+    "ctaWhatsapp": "Discuter sur WhatsApp",
+    "servicesTitle": "Nos services",
+    "servicesSubtitle": "Tout ce qu'il faut pour un événement au son et à l'allure professionnels.",
+    "segmentsTitle": "Pour chaque occasion",
+    "processTitle": "Comment nous travaillons",
+    "ctaBandTitle": "Prêt pour votre prochain événement ?",
+    "ctaBandText": "Dites-nous ce dont vous avez besoin et nous préparons un devis sur mesure, sans engagement."
+  },
+  "HomeServices": {
+    "items": [
+      { "title": "Karaoké professionnel", "text": "Matériel, écrans et des milliers de chansons, avec ou sans technicien." },
+      { "title": "OkeBox", "text": "Karaoké autonome pour en profiter toute la journée." },
+      { "title": "DJ et disco mobile", "text": "Musique et ambiance pour que la fête ne s'arrête jamais." },
+      { "title": "Son et éclairage", "text": "Équipement professionnel adapté à chaque lieu." },
+      { "title": "Photobooth et 360", "text": "Des souvenirs amusants pour vos invités." },
+      { "title": "Événements et concours", "text": "Format type jeu télévisé et animations musicales pour entreprises et fêtes." }
+    ]
+  },
+  "HomeSegments": {
+    "items": [
+      { "title": "Particuliers", "text": "Anniversaires, enterrements de vie et fêtes à la maison ou en salle." },
+      { "title": "Entreprises", "text": "Événements d'équipe, fêtes et activations de marque." },
+      { "title": "Mariages", "text": "La touche finale pour un mariage inoubliable." },
+      { "title": "Fêtes populaires", "text": "Mairies et associations avec une production professionnelle." }
+    ]
+  },
+  "HomeProcess": {
+    "steps": [
+      { "title": "Parlez-nous de votre événement", "text": "Date, lieu et ce que vous imaginez." },
+      { "title": "Devis sur mesure", "text": "Nous proposons la meilleure option, sans engagement." },
+      { "title": "Installation professionnelle", "text": "Nous apportons et installons tout le matériel." },
+      { "title": "Profitez", "text": "Vous chantez ; nous nous occupons du reste." }
+    ]
   },
   "LocaleSwitcher": {
     "label": "Langue",

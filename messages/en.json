@@ -15,7 +15,39 @@
     "heroTitle": "We don't rent a machine: we build an experience",
     "heroSubtitle": "Professional karaoke, sound, lighting and events for individuals, companies, weddings and parties across Spain.",
     "ctaQuote": "Get a quote",
-    "ctaWhatsapp": "Chat on WhatsApp"
+    "ctaWhatsapp": "Chat on WhatsApp",
+    "servicesTitle": "Our services",
+    "servicesSubtitle": "Everything you need for an event that sounds and looks professional.",
+    "segmentsTitle": "For every occasion",
+    "processTitle": "How we work",
+    "ctaBandTitle": "Ready for your next event?",
+    "ctaBandText": "Tell us what you need and we'll prepare a tailored quote, no strings attached."
+  },
+  "HomeServices": {
+    "items": [
+      { "title": "Professional karaoke", "text": "Gear, screens and thousands of songs, with or without a technician." },
+      { "title": "OkeBox", "text": "Self-contained karaoke to keep it all day at your event." },
+      { "title": "DJ & mobile disco", "text": "Music and atmosphere so the party never stops." },
+      { "title": "Sound & lighting", "text": "Professional equipment adapted to every venue." },
+      { "title": "Photo booth & 360", "text": "Fun memories for your guests." },
+      { "title": "Events & contests", "text": "Game-show style and musical dynamics for companies and parties." }
+    ]
+  },
+  "HomeSegments": {
+    "items": [
+      { "title": "Individuals", "text": "Birthdays, hen/stag parties and home or venue celebrations." },
+      { "title": "Companies", "text": "Team events, parties and brand activations." },
+      { "title": "Weddings", "text": "The finishing touch to make your wedding unforgettable." },
+      { "title": "Local festivals", "text": "Town councils and clubs with professional production." }
+    ]
+  },
+  "HomeProcess": {
+    "steps": [
+      { "title": "Tell us about your event", "text": "Date, place and what you have in mind." },
+      { "title": "Tailored quote", "text": "We propose the best option, no strings attached." },
+      { "title": "Professional setup", "text": "We bring and set up all the equipment." },
+      { "title": "Enjoy", "text": "You sing; we handle the rest." }
+    ]
   },
   "LocaleSwitcher": {
     "label": "Language",

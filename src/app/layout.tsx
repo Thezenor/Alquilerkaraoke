@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import "./globals.css";
+import { SITE_URL } from "@/lib/seo";
+
+// metadataBase global para resolver URLs de OG/Twitter en todas las rutas.
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+};
 
 /**
  * Root layout passthrough.
