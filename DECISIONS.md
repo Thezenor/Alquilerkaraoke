@@ -1,0 +1,206 @@
+# DECISIONS.md — Decisiones cerradas
+
+## Marca y negocio
+- Marca principal: **Alquiler Karaoke**.
+- Dominio: **www.alquilerkaraoke.com**.
+- Teléfono: **607724965**.
+- Estilo: moderno, profesional, oscuro/neón elegante, premium.
+- Posicionamiento: servicio profesional, no barato.
+- Marcas colaboradoras configurables desde admin con logo, descripción y enlace.
+- Datos de empresa configurables desde admin.
+
+## Servicios iniciales
+Se incluirán los servicios de AlquilerKaraoke.com y Zenor, enfocados primero al karaoke:
+- Karaoke.
+- OkeBox.
+- Cabina karaoke.
+- Karaoke empresa.
+- Karaoke bodas.
+- Karaoke cumpleaños.
+- Karaoke comuniones.
+- Karaoke despedidas.
+- Karaoke ayuntamientos/fiestas populares.
+- DJ/discomóvil.
+- Sonido.
+- Iluminación.
+- Fotomatón.
+- Videomatón 360.
+- Gaming/consolas.
+- Pantallas.
+- Eventos tipo Furor/concurso musical.
+
+## Packs iniciales
+Ampliables desde admin:
+1. OkeBox día completo.
+2. Karaoke Fiesta.
+3. Karaoke Evento.
+4. Karaoke Premium.
+5. Cabina Karaoke.
+6. Karaoke Empresa.
+7. Karaoke + DJ.
+8. Evento Furor / concurso musical.
+
+## Precios
+- Precios públicos como: **desde X € + IVA**.
+- Precio base normal: **4 horas**.
+- OkeBox: precio por día + envío/recogida configurable.
+- Suplementos configurables:
+  - provincia,
+  - kilómetros,
+  - fin de semana,
+  - días concretos,
+  - alta demanda,
+  - nocturnidad,
+  - exterior,
+  - dificultad de montaje,
+  - tipo de evento,
+  - otros motivos configurables.
+- Reserva: configurable por pack, porcentaje o cantidad fija.
+- Fianza: configurable por pack/producto.
+- Clientes especiales: descuento por defecto 15%, ampliable hasta 35%, configurable por cliente.
+
+## Reservas
+- El cliente puede contratar online.
+- Toda contratación queda **reservada pendiente de validación por admin**.
+- Admin puede bloquear fechas manualmente por reservas externas.
+- Puede haber coincidencia de eventos según producto/material/técnico, pero no es lo normal.
+- El cliente solo ve disponibilidad de la fecha consultada, no todo el calendario.
+
+## Pagos
+- Tarjeta/Stripe.
+- Transferencia.
+- Bizum manual.
+- Pago de reserva.
+- Pago completo.
+- Pago restante desde área cliente.
+
+## Facturación
+- Proforma generada por la web.
+- Factura manual.
+- Admin puede marcar factura emitida.
+- Admin puede subir factura PDF.
+- Cliente puede descargar factura desde su panel.
+
+## Contratos
+- Contrato personalizado por servicio.
+- Firma web:
+  - checkbox aceptación condiciones,
+  - firma dibujada,
+  - guardar IP, fecha, hora y usuario,
+  - guardar PDF firmado,
+  - enviar copia al cliente por email.
+
+## Cliente
+Panel cliente con:
+- eventos,
+- presupuesto,
+- aceptar presupuesto,
+- pagar reserva,
+- pagar restante,
+- contrato,
+- firma,
+- proforma,
+- documentos,
+- solicitud de cambios,
+- extras,
+- chat interno no en vivo,
+- fotos/vídeos del evento.
+
+## Admin
+Admin completo:
+- dashboard,
+- clientes,
+- empresas,
+- solicitudes,
+- presupuestos,
+- reservas,
+- eventos,
+- calendario,
+- bloqueos manuales,
+- packs,
+- servicios,
+- extras,
+- tarifas,
+- provincias y suplementos,
+- colaboradores,
+- técnicos,
+- documentos,
+- contratos,
+- pagos,
+- proformas,
+- blog SEO,
+- páginas SEO,
+- traducciones,
+- marcas colaboradoras,
+- galería,
+- testimonios,
+- configuración legal,
+- configuración empresa,
+- logs.
+
+No hace falta inventario completo en esta primera versión.
+
+## Roles
+- Superadmin.
+- Administrador.
+- Comercial.
+- Técnico.
+- Colaborador externo.
+- Contabilidad.
+- SEO/contenidos.
+- Almacén/operario si hace falta.
+
+## SEO
+- Multiidioma ES/EN/FR con SEO por idioma.
+- Páginas por ciudad, provincia, servicio y tipo de evento.
+- Ciudades iniciales: Albacete, Madrid, Valencia, Alicante, Murcia, Barcelona, Toledo, Cuenca, Ciudad Real, Castellón, Zaragoza, Sevilla, Málaga.
+- Admin SEO avanzado.
+- Blog con IA desde admin.
+- Contenido generado por IA siempre como borrador/revisión.
+
+## Canciones
+- Catálogo público de canciones.
+- Subida por Excel.
+- Búsqueda por título, intérprete e idioma.
+- Descarga PDF: completo, por idioma, por artista, búsqueda actual y lista de evento.
+- Cliente puede crear lista de canciones por evento.
+- Invitados pueden añadir canciones con QR.
+- Posibilidad de limitar número de canciones por evento.
+
+## Galerías
+- Fotos y vídeos.
+- Galerías públicas y privadas.
+- Acceso por clave.
+- Caducidad.
+- Permitir/bloquear descargas.
+- Galería por evento.
+
+## IA
+- Módulo IA indispensable.
+- Proveedores: OpenAI, Claude, Gemini y otros.
+- Claves API desde admin.
+- Proveedor principal y alternativo.
+- Límites, costes, logs y plantillas de prompts.
+
+## Decisiones técnicas (Fase 1) — cerradas 2026-06-06
+- **Framework**: Next.js **16** con **App Router** (React Server Components) + React 19.
+  - Nota: la decisión inicial fue Next.js 15, pero al crear el proyecto (2026-06-06) la versión `latest` ya era la 16 (la 15 cerró ciclo). Se mantiene la 16 por ser la actual y más capaz, conservando App Router/RSC/TS/Tailwind. Aprobado por el responsable.
+- **Lenguaje**: TypeScript en modo estricto.
+- **Estilos**: Tailwind CSS.
+- **i18n**: routing por **subruta de idioma** `/es`, `/en`, `/fr` con **next-intl v4** (`localePrefix: "always"`, defaultLocale `es`).
+  - Rutas públicas bajo `src/app/[locale]/`. Layout raíz `app/layout.tsx` es **passthrough**; el `<html>/<body>` lo definen `[locale]/layout.tsx` (lang dinámico + hreflang) y `admin/layout.tsx`. El panel `/admin` es agnóstico de idioma.
+  - `src/proxy.ts` compone el routing i18n (público) con la auth (`/admin`) en un único middleware.
+  - SEO: canonical + hreflang (es/en/fr/x-default) por página, `sitemap.xml` con alternates y `robots.txt` (bloquea `/admin` y `/api`).
+- **Base de datos**: PostgreSQL + Prisma **7** (sesión NextAuth en BD vía adaptador Prisma).
+  - Prisma 7 usa Query Compiler y **requiere un driver adapter**: se usa `@prisma/adapter-pg` (paquete `pg`). El cliente se genera en `src/generated/prisma` (no se versiona; se regenera con `postinstall`).
+  - Desarrollo local: PostgreSQL 17 instalado vía winget (puerto 5432, BD `alquilerkaraoke`).
+- **Storage de ficheros**: externo compatible **S3 / Cloudflare R2** desde el inicio (Railway no se usa como almacenamiento de imágenes/documentos). Solo se deja previsto/configurado en Fase 1; la subida real se implementa en sus fases (galerías/documentos).
+- **Deploy**: Railway, primero **staging**; producción solo tras validación.
+- **Método de trabajo Fase 1**: implementación **bloque a bloque** con checklist de pruebas antes de avanzar.
+- **Testing E2E**: **Playwright** (en el stack previsto). Tests en `e2e/`, `npm run test:e2e`. Requiere navegador (`npx playwright install chromium`) y la app sirviendo en `localhost:3000`.
+- **Admin**: rutas bajo `/admin`. Grupo `(panel)` para páginas autenticadas (con chrome y guard de sesión en servidor, además del middleware); `/admin/login` fuera del grupo. Mutaciones vía **Server Actions** con validación **Zod**, auditoría (`AuditLog`) y restricción por rol. Invalidación de caché pública con **`updateTag`** (Next 16; sustituye al `revalidateTag` de un solo argumento).
+- **Sistema de diseño**: oscuro premium + neón (cian `#22d3ee`, magenta `#d946ef`) definido como tokens `@theme` en `globals.css` (Tailwind v4). Utilidades `bg-brand-*`, `text-brand-*`, `text-glow`. Web siempre en modo oscuro. Datos de contacto (teléfono/WhatsApp) provienen de `SiteConfig` (no hardcodeados) vía `getSiteConfig`/`getContact` con `unstable_cache` (tag `site-config`) para no romper el render estático.
+- **Autenticación**: Auth.js / NextAuth **v5** con provider de **credenciales** (email + contraseña, hash bcrypt). Adaptador Prisma incluido y listo para futuros providers OAuth.
+  - **Estrategia de sesión: JWT** (no sesión en BD). Motivo: el provider de credenciales de Auth.js v5 sólo admite JWT; la sesión en BD requeriría OAuth/email. El JWT va firmado con `AUTH_SECRET`. La decisión inicial mencionaba "sesión en BD"; se ajusta por restricción técnica de Auth.js v5. Si en el futuro se añade login OAuth, puede revisarse.
+  - **Protección de rutas**: `src/proxy.ts` (convención Next 16, antes `middleware.ts`) protege `/admin` y exige rol de panel (`ADMIN_PANEL_ROLES`). El panel admin es agnóstico de idioma (sin prefijo de locale).
+  - **Auditoría**: cada login registra un evento `user.login` en `AuditLog`.

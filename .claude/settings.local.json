@@ -1,0 +1,6 @@
+{
+  "permissions": {
+    "allow": ["Bash(npm run lint)", "Bash(npm run build)", "Bash(npm test)", "Bash(npx prisma*)"],
+    "deny": ["Bash(rm -rf /)", "Bash(del /s /q C:\\\\*)"]
+  }
+}

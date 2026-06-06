@@ -1,0 +1,26 @@
+{
+  "Metadata": {
+    "homeTitle": "Alquiler Karaoke | Expériences professionnelles de karaoké et d'événements",
+    "homeDescription": "Nous créons des expériences professionnelles de karaoké et d'événements pour particuliers, entreprises, mariages et fêtes dans toute l'Espagne. Demandez votre devis."
+  },
+  "Nav": {
+    "services": "Services",
+    "packs": "Forfaits",
+    "songs": "Chansons",
+    "contact": "Contact",
+    "quote": "Demander un devis"
+  },
+  "Home": {
+    "heroKicker": "Karaoké et événements premium",
+    "heroTitle": "Nous ne louons pas une machine : nous créons une expérience",
+    "heroSubtitle": "Karaoké professionnel, son, éclairage et événements pour particuliers, entreprises, mariages et fêtes dans toute l'Espagne.",
+    "ctaQuote": "Demander un devis",
+    "ctaWhatsapp": "Discuter sur WhatsApp"
+  },
+  "LocaleSwitcher": {
+    "label": "Langue",
+    "es": "Espagnol",
+    "en": "Anglais",
+    "fr": "Français"
+  }
+}

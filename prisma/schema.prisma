@@ -1,0 +1,127 @@
+// Alquiler Karaoke — esquema Prisma
+// Fase 1 (Bloque 2): modelo mínimo. Packs, tarifas, reservas, etc. llegan en sus fases.
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── Roles del sistema (DECISIONS.md) ─────────────────────────────
+enum Role {
+  SUPERADMIN
+  ADMIN
+  COMERCIAL
+  TECNICO
+  COLABORADOR
+  CONTABILIDAD
+  SEO_CONTENIDOS
+  ALMACEN
+}
+
+// ── Usuarios y autenticación (compatible Auth.js / NextAuth) ─────
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  // Hash de contraseña para login con credenciales (Bloque 3).
+  passwordHash  String?
+  // Un usuario puede tener varios roles.
+  roles         Role[]    @default([])
+  isActive      Boolean   @default(true)
+
+  accounts  Account[]
+  sessions  Session[]
+  auditLogs AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ── Registro de auditoría (regla: admin con logs) ────────────────
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String // p.ej. "user.login", "config.update"
+  entity    String? // p.ej. "SiteConfig"
+  entityId  String?
+  metadata  Json?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+// ── Configuración de empresa y branding (configurable desde admin) ─
+// Patrón singleton: una sola fila con id = "default".
+model SiteConfig {
+  id           String  @id @default("default")
+  companyName  String  @default("Alquiler Karaoke")
+  legalName    String?
+  taxId        String? // CIF/NIF
+  email        String?
+  phone        String  @default("607724965")
+  whatsapp     String?
+  address      String?
+  // Branding
+  logoUrl      String?
+  faviconUrl   String?
+  ogImageUrl   String?
+  primaryColor String? @default("#22d3ee")
+  // Campos extra flexibles (redes, horarios, etc.) sin tocar el esquema.
+  extra        Json?
+
+  updatedAt DateTime @updatedAt
+}

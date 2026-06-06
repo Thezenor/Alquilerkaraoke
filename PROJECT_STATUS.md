@@ -1,0 +1,45 @@
+# PROJECT_STATUS.md
+
+## Estado actual
+Fase: **1 — Base técnica** · Bloques 1–6 **completados** ✅
+
+## Objetivo inmediato
+Bloque 7 — Railway staging: configuración de despliegue (build/start), PostgreSQL de Railway, variables de entorno, migraciones en deploy y healthcheck. Solo staging; producción tras validación.
+
+## Bloques Fase 1
+- [x] **Bloque 1 — Scaffolding**: Next.js 16 (App Router, TS estricto, Tailwind v4), estructura de carpetas (`src/lib`, `src/components`, `src/server`, `messages/`), ESLint + Prettier (orden clases Tailwind), `.editorconfig`, `.env.example`, scripts npm. Verificado: typecheck + lint + format + build en verde (2026-06-06).
+- [x] **Bloque 2 — Base de datos y Prisma**: Prisma 7 con adapter `pg`, esquema mínimo (`User` + enum `Role`, `Account`/`Session`/`VerificationToken` para NextAuth, `AuditLog`, `SiteConfig`), migración inicial `init` aplicada y seed (SiteConfig + Superadmin). PostgreSQL 17 local. Verificado: datos en BD + typecheck + lint + build en verde (2026-06-06).
+- [x] **Bloque 3 — Auth.js/NextAuth v5**: login por credenciales (bcrypt) con sesión JWT, adaptador Prisma, `src/proxy.ts` protegiendo `/admin` por rol (`ADMIN_PANEL_ROLES`), página de login + dashboard, helpers de roles y auditoría `user.login`. Verificado end-to-end: redirección sin sesión, login OK con Superadmin, sesión con roles, `/admin` accesible y evento en `AuditLog` (2026-06-06).
+- [x] **Bloque 4 — i18n + SEO base**: next-intl v4 con subrutas `/es /en /fr` (localePrefix always), rutas públicas reestructuradas bajo `[locale]/`, layout raíz passthrough + html/body en `[locale]/layout` (lang dinámico) y `admin/layout`. `proxy.ts` compone routing i18n + auth. SEO: canonical + hreflang (es/en/fr/x-default) en `<head>`, `sitemap.xml` con alternates y `robots.txt`. Verificado en runtime: `/`→`/es`, 3 idiomas con contenido/lang correctos, hreflang, sitemap, robots y `/admin` protegido (2026-06-06).
+- [x] **Bloque 5 — Sistema de diseño base**: tokens de marca en `globals.css` (oscuro premium + neón cian/magenta, `@theme` Tailwind v4), primitivos UI (`Button`, `Container`), shell público (header fijo con menú móvil, footer, FAB de WhatsApp) y home con hero premium. Datos de contacto leídos de `SiteConfig` con `unstable_cache` (web sigue estática/SSG, revalidate 1h). Verificado: build SSG + estructura renderizada en ES/EN/FR (2026-06-06).
+- [x] **Bloque 6 — Admin mínimo + Configuración de empresa**: grupo de rutas `(panel)` con chrome (topbar + nav) y guard de sesión en servidor; dashboard; módulo **Configuración de empresa** (CRUD de `SiteConfig`) con server action, validación Zod, auditoría `config.update`, restricción a SUPERADMIN/ADMIN e invalidación con `updateTag` (Next 16). Helpers `requireAdminSession`/`requireRole` y `logAudit`. Verificado con **Playwright E2E** (guardado→reflejo en web pública→restaurar, y protección por sesión) + typecheck/lint/build (2026-06-06).
+- [ ] Bloque 7 — Railway staging.
+
+## Entorno
+- Node.js v24.16.0 + npm 11.13.0 (instalado vía winget, 2026-06-06).
+- PostgreSQL 17 local (servicio `postgresql-x64-17`, puerto 5432, instalado vía winget). BD de desarrollo: `alquilerkaraoke`. Credenciales en `.env` (no versionado).
+- Superadmin sembrado: `admin@alquilerkaraoke.com` (contraseña en `.env`, cámbiala para producción).
+
+## No hacer todavía
+- No implementar aplicación completa.
+- No crear diseño definitivo sin validar guía visual.
+- No desplegar en Railway todavía.
+- No eliminar requisitos.
+
+## Siguiente paso recomendado para Claude/Antigravity
+1. Leer `CLAUDE.md`.
+2. Leer `DECISIONS.md`.
+3. Leer `docs/20-fases-desarrollo.md`.
+4. Leer `docs/21-reglas-para-claude-antigravity.md`.
+5. Crear el proyecto Next.js base.
+6. Configurar TypeScript, Tailwind, linting y estructura.
+7. Crear admin/auth mínimo solo cuando esté la base técnica validada.
+
+## Checklist fase 0
+- [x] Decisiones principales recopiladas.
+- [x] Estructura documental creada.
+- [x] Agentes definidos.
+- [x] Skills definidas.
+- [x] Proyecto Next.js creado.
+- [ ] Base de datos definida.
+- [ ] Diseño visual validado.

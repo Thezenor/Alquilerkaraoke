@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/*
+ * Sistema de diseño Alquiler Karaoke
+ * Estilo: oscuro premium, neón elegante (cian + magenta), mobile-first.
+ */
+@theme {
+  /* Fondos y superficies */
+  --color-brand-bg: #08090f;
+  --color-brand-surface: #11131e;
+  --color-brand-surface-2: #181b2b;
+  --color-brand-border: #262a3d;
+
+  /* Texto */
+  --color-brand-text: #e9ebf5;
+  --color-brand-muted: #9aa1bd;
+
+  /* Acentos neón */
+  --color-brand-neon: #22d3ee;
+  --color-brand-neon-strong: #06b6d4;
+  --color-brand-magenta: #d946ef;
+
+  /* Tipografía */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Sombra/halo neón reutilizable */
+  --shadow-neon: 0 0 0 1px rgba(34, 211, 238, 0.25), 0 8px 30px -8px rgba(34, 211, 238, 0.35);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-brand-bg);
+  color: var(--color-brand-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Halo neón decorativo (utilidad propia) */
+@utility text-glow {
+  text-shadow: 0 0 18px rgba(34, 211, 238, 0.45);
+}

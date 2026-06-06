@@ -1,0 +1,26 @@
+{
+  "Metadata": {
+    "homeTitle": "Alquiler Karaoke | Experiencias profesionales de karaoke y eventos",
+    "homeDescription": "Montamos experiencias profesionales de karaoke y eventos para particulares, empresas, bodas y fiestas en toda España. Solicita tu presupuesto."
+  },
+  "Nav": {
+    "services": "Servicios",
+    "packs": "Packs",
+    "songs": "Canciones",
+    "contact": "Contacto",
+    "quote": "Pedir presupuesto"
+  },
+  "Home": {
+    "heroKicker": "Karaoke y eventos premium",
+    "heroTitle": "No alquilamos una máquina: montamos una experiencia",
+    "heroSubtitle": "Karaoke profesional, sonido, iluminación y eventos para particulares, empresas, bodas y fiestas en toda España.",
+    "ctaQuote": "Pedir presupuesto",
+    "ctaWhatsapp": "Hablar por WhatsApp"
+  },
+  "LocaleSwitcher": {
+    "label": "Idioma",
+    "es": "Español",
+    "en": "Inglés",
+    "fr": "Francés"
+  }
+}

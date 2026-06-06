@@ -1,0 +1,26 @@
+{
+  "Metadata": {
+    "homeTitle": "Alquiler Karaoke | Professional karaoke & event experiences",
+    "homeDescription": "We create professional karaoke and event experiences for individuals, companies, weddings and parties across Spain. Request your quote."
+  },
+  "Nav": {
+    "services": "Services",
+    "packs": "Packages",
+    "songs": "Songs",
+    "contact": "Contact",
+    "quote": "Get a quote"
+  },
+  "Home": {
+    "heroKicker": "Premium karaoke & events",
+    "heroTitle": "We don't rent a machine: we build an experience",
+    "heroSubtitle": "Professional karaoke, sound, lighting and events for individuals, companies, weddings and parties across Spain.",
+    "ctaQuote": "Get a quote",
+    "ctaWhatsapp": "Chat on WhatsApp"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "es": "Spanish",
+    "en": "English",
+    "fr": "French"
+  }
+}
