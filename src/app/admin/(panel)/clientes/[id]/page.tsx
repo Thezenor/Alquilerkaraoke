@@ -4,8 +4,11 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatCents } from "@/lib/money";
 import { CustomerForm, type CustomerFormValues } from "../customer-form";
+import { anonymizeCustomerAction } from "../actions";
+import { ConfirmButton } from "@/components/admin/confirm-button";
 import { pageRequireRole } from "@/server/auth/guards";
 import { Role } from "@/generated/prisma/enums";
+import { hasRole } from "@/lib/auth-roles";
 
 export const metadata: Metadata = {
   title: "Editar cliente · Panel Alquiler Karaoke",
@@ -13,7 +16,8 @@ export const metadata: Metadata = {
 };
 
 export default async function EditCustomerPage({ params }: { params: Promise<{ id: string }> }) {
-  await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
+  const session = await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
+  const canErase = hasRole(session.user.roles, Role.SUPERADMIN, Role.ADMIN);
   const { id } = await params;
   const customer = await prisma.customer.findUnique({
     where: { id },
@@ -50,6 +54,25 @@ export default async function EditCustomerPage({ params }: { params: Promise<{ i
               </li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {canErase && (
+        <div className="mt-10 rounded-xl border border-red-500/30 bg-red-500/5 p-5">
+          <h2 className="text-sm font-semibold text-red-300">Zona RGPD · Derecho de supresión</h2>
+          <p className="mt-1 text-sm text-brand-muted">
+            Anonimiza los datos personales del cliente y de sus reservas. Se conservan los importes por
+            obligación contable. <strong className="text-brand-text">Esta acción no se puede deshacer.</strong>
+          </p>
+          <form action={anonymizeCustomerAction} className="mt-3">
+            <input type="hidden" name="id" value={customer.id} />
+            <ConfirmButton
+              confirmMessage="¿Anonimizar este cliente y la PII de sus reservas? Esta acción no se puede deshacer."
+              className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-sm font-medium text-red-300 transition hover:bg-red-500/10 disabled:opacity-50"
+            >
+              Anonimizar datos personales
+            </ConfirmButton>
+          </form>
         </div>
       )}
     </div>

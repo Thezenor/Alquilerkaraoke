@@ -192,6 +192,18 @@
     "bookedTitle": "¡Solicitud enviada!",
     "bookedText": "Hemos recibido tu solicitud. Te enviaremos el presupuesto a medida por email lo antes posible."
   },
+  "Unsubscribe": {
+    "metaTitle": "Baja de comunicaciones | Alquiler Karaoke",
+    "metaDescription": "Date de baja de nuestras comunicaciones comerciales por email.",
+    "title": "Baja de marketing",
+    "intro": "Introduce el email con el que nos escribiste y dejaremos de enviarte comunicaciones comerciales.",
+    "emailLabel": "Email",
+    "submit": "Darme de baja",
+    "submitting": "Procesando…",
+    "success": "Listo. Si ese email estaba suscrito, dejará de recibir comunicaciones comerciales.",
+    "error": "No se pudo procesar. Revisa el email e inténtalo de nuevo.",
+    "note": "La baja afecta solo a las comunicaciones comerciales. Seguiremos enviándote los mensajes necesarios para gestionar tus solicitudes o reservas."
+  },
   "LocaleSwitcher": {
     "label": "Idioma",
     "es": "Español",

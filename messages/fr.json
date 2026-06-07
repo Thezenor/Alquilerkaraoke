@@ -192,6 +192,18 @@
     "bookedTitle": "Demande envoyée !",
     "bookedText": "Nous avons reÃ§u votre demande. Nous vous enverrons un devis sur mesure par email dÃ¨s que possible."
   },
+  "Unsubscribe": {
+    "metaTitle": "Désabonnement | Alquiler Karaoke",
+    "metaDescription": "Désabonnez-vous de nos communications commerciales par email.",
+    "title": "Désabonnement marketing",
+    "intro": "Saisissez l'email avec lequel vous nous avez contactés et nous cesserons de vous envoyer des communications commerciales.",
+    "emailLabel": "Email",
+    "submit": "Me désabonner",
+    "submitting": "Traitement…",
+    "success": "C'est fait. Si cet email était abonné, il ne recevra plus de communications commerciales.",
+    "error": "Impossible de traiter la demande. Vérifiez l'email et réessayez.",
+    "note": "Le désabonnement ne concerne que les communications commerciales. Nous continuerons à vous envoyer les messages nécessaires à la gestion de vos demandes ou réservations."
+  },
   "LocaleSwitcher": {
     "label": "Langue",
     "es": "Espagnol",

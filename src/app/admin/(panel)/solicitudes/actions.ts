@@ -5,6 +5,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/server/auth/guards";
 import { logAudit } from "@/server/audit";
+import { anonymizeContact } from "@/server/gdpr";
 import { Role } from "@/generated/prisma/enums";
 
 const schema = z.object({
@@ -57,4 +58,21 @@ export async function respondContactRequest(
   revalidatePath(`/admin/solicitudes/${id}`);
 
   return { status: "success", message: "Solicitud actualizada." };
+}
+
+/** RGPD — derecho de supresión: anonimiza la PII de la solicitud y la archiva. */
+export async function anonymizeContactAction(formData: FormData): Promise<void> {
+  let userId: string | undefined;
+  try {
+    userId = (await requireRole(Role.SUPERADMIN, Role.ADMIN)).user.id;
+  } catch {
+    return;
+  }
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+
+  await anonymizeContact(id);
+  await logAudit({ userId, action: "contact.anonymize", entity: "ContactRequest", entityId: id });
+  revalidatePath("/admin/solicitudes");
+  revalidatePath(`/admin/solicitudes/${id}`);
 }

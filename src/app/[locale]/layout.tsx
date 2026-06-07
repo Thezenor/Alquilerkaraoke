@@ -76,6 +76,8 @@ export default async function LocaleLayout({
             phoneHref={contact.phoneHref}
             privacyHref={`/${locale}/privacidad`}
             privacyLabel={(await getTranslations({ locale, namespace: "Privacy" }))("title")}
+            unsubscribeHref={`/${locale}/baja-marketing`}
+            unsubscribeLabel={(await getTranslations({ locale, namespace: "Unsubscribe" }))("title")}
           />
           <WhatsappFab url={contact.whatsappUrl} />
         </NextIntlClientProvider>

@@ -1,10 +1,12 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/server/auth/guards";
 import { logAudit } from "@/server/audit";
+import { anonymizeCustomer } from "@/server/gdpr";
 import { Role } from "@/generated/prisma/enums";
 
 const schema = z.object({
@@ -62,4 +64,22 @@ export async function saveCustomer(
   }
 
   redirect("/admin/clientes");
+}
+
+/** RGPD — derecho de supresión: anonimiza el cliente y la PII de sus reservas. */
+export async function anonymizeCustomerAction(formData: FormData): Promise<void> {
+  let userId: string | undefined;
+  try {
+    userId = (await requireRole(Role.SUPERADMIN, Role.ADMIN)).user.id;
+  } catch {
+    return;
+  }
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+
+  await anonymizeCustomer(id);
+  await logAudit({ userId, action: "customer.anonymize", entity: "Customer", entityId: id });
+  revalidatePath("/admin/clientes");
+  revalidatePath(`/admin/clientes/${id}`);
+  revalidatePath("/admin/reservas");
 }

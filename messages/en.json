@@ -192,6 +192,18 @@
     "bookedTitle": "Request sent!",
     "bookedText": "We have received your request. We will email you a tailored quote as soon as possible."
   },
+  "Unsubscribe": {
+    "metaTitle": "Unsubscribe | Alquiler Karaoke",
+    "metaDescription": "Unsubscribe from our marketing emails.",
+    "title": "Unsubscribe from marketing",
+    "intro": "Enter the email you contacted us with and we will stop sending you marketing communications.",
+    "emailLabel": "Email",
+    "submit": "Unsubscribe",
+    "submitting": "Processing…",
+    "success": "Done. If that email was subscribed, it will no longer receive marketing communications.",
+    "error": "We couldn't process it. Check the email and try again.",
+    "note": "This only affects marketing communications. We will still send the messages needed to handle your requests or bookings."
+  },
   "LocaleSwitcher": {
     "label": "Language",
     "es": "Spanish",

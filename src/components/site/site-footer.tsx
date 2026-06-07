@@ -7,12 +7,16 @@ export function SiteFooter({
   phoneHref,
   privacyHref,
   privacyLabel,
+  unsubscribeHref,
+  unsubscribeLabel,
 }: {
   companyName: string;
   phone: string;
   phoneHref: string;
   privacyHref: string;
   privacyLabel: string;
+  unsubscribeHref: string;
+  unsubscribeLabel: string;
 }) {
   const year = new Date().getFullYear();
 
@@ -29,6 +33,9 @@ export function SiteFooter({
           </a>
           <Link href={privacyHref} className="transition hover:text-white">
             {privacyLabel}
+          </Link>
+          <Link href={unsubscribeHref} className="transition hover:text-white">
+            {unsubscribeLabel}
           </Link>
           <span>© {year} {companyName}</span>
         </div>

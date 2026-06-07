@@ -5,8 +5,11 @@ import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/cn";
 import { STATUS_LABELS, STATUS_CLASSES } from "../status";
 import { RespondForm } from "./respond-form";
+import { anonymizeContactAction } from "../actions";
+import { ConfirmButton } from "@/components/admin/confirm-button";
 import { pageRequireRole } from "@/server/auth/guards";
 import { Role } from "@/generated/prisma/enums";
+import { hasRole } from "@/lib/auth-roles";
 
 export const metadata: Metadata = {
   title: "Solicitud · Panel Alquiler Karaoke",
@@ -25,7 +28,8 @@ export default async function SolicitudDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
+  const session = await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
+  const canErase = hasRole(session.user.roles, Role.SUPERADMIN, Role.ADMIN);
   const { id } = await params;
   const item = await prisma.contactRequest.findUnique({ where: { id } });
   if (!item) notFound();
@@ -128,6 +132,25 @@ export default async function SolicitudDetailPage({
             currentStatus={item.status}
             currentResponse={item.response ?? ""}
           />
+
+          {canErase && (
+            <div className="mt-6 border-t border-red-500/20 pt-5">
+              <h3 className="text-sm font-semibold text-red-300">Zona RGPD</h3>
+              <p className="mt-1 text-sm text-brand-muted">
+                Anonimiza los datos personales de esta solicitud y la archiva.
+                <strong className="text-brand-text"> No se puede deshacer.</strong>
+              </p>
+              <form action={anonymizeContactAction} className="mt-3">
+                <input type="hidden" name="id" value={item.id} />
+                <ConfirmButton
+                  confirmMessage="¿Anonimizar los datos personales de esta solicitud? Esta acción no se puede deshacer."
+                  className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-sm font-medium text-red-300 transition hover:bg-red-500/10 disabled:opacity-50"
+                >
+                  Anonimizar datos personales
+                </ConfirmButton>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </div>

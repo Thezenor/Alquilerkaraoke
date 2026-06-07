@@ -48,7 +48,7 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 
 ## Pendientes funcionales
 - [x] **Email**: módulo provider-agnóstico (`src/server/email`, Resend **o** Brevo vía fetch, sin SDK; no-op seguro si no hay clave). Al enviar `/presupuesto` se manda el presupuesto al cliente + aviso al admin; al recibir un lead de `/contacto` se avisa al admin. Plantillas HTML puras con escape anti-inyección. +3 tests unitarios (18/18). Best-effort: nunca bloquea la acción. **Falta solo** fijar la API key en Railway para activarlo (ver "Pendiente menor").
-- Flujo RGPD de borrado/baja de marketing.
+- [x] **RGPD**: módulo `src/server/gdpr.ts` (anonimización conservando importes + baja de marketing). **Público**: página `/baja-marketing` (ES/EN/FR, noindex, anti-spam) que pone `marketingConsent=false` sin revelar si el email existe + enlace en el footer. **Admin** (SUPERADMIN/ADMIN): botón "Anonimizar datos personales" con confirmación en el detalle de cliente (anonimiza cliente + PII de sus reservas) y de solicitud (anonimiza + archiva), con auditoría. E2E `rgpd.spec` (12/12).
 
 ## Extras admin
 - [x] **Acceso al panel desde el menú público** ("Acceso" en cabecera + móvil → `/admin/login`).
