@@ -6,6 +6,10 @@ import { buildMetadata } from "@/lib/seo";
 import { formatCents } from "@/lib/money";
 import { getActivePacks, localizedPack } from "@/server/packs";
 
+// Catálogo desde BD: render en runtime (la BD no es accesible en build).
+// getActivePacks va cacheado (tag PACKS_TAG) para rendimiento.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {

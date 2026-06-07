@@ -5,6 +5,9 @@ import { getActivePacks } from "@/server/packs";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
+// Incluye packs desde BD: render en runtime.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const packs = await getActivePacks();
 
