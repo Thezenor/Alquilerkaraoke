@@ -11,6 +11,7 @@ export type BudgetInput = {
   provinceSupplement: number; // céntimos
   extras: number[]; // precio de cada extra seleccionado (céntimos)
   surchargePercents: number[]; // suplementos en % (fin de semana, nocturnidad…)
+  surchargeFixed?: number[]; // suplementos en cantidad fija (céntimos)
   vatPercent: number;
   discountPercent: number; // descuento cliente (%)
   depositType: "PERCENT" | "FIXED";
@@ -46,10 +47,12 @@ export function calculateBudget(input: BudgetInput): BudgetBreakdown {
   const extras = input.extras.reduce((sum, e) => sum + nonNeg(e), 0);
 
   const preSurcharge = base + extraHours + province + extras;
-  const surcharges = input.surchargePercents.reduce(
+  const surchargesPercent = input.surchargePercents.reduce(
     (sum, pct) => sum + r((preSurcharge * nonNeg(pct)) / 100),
     0,
   );
+  const surchargesFixed = (input.surchargeFixed ?? []).reduce((sum, c) => sum + nonNeg(c), 0);
+  const surcharges = surchargesPercent + surchargesFixed;
 
   const subtotal = preSurcharge + surcharges;
 
@@ -83,8 +86,46 @@ export function calculateBudget(input: BudgetInput): BudgetBreakdown {
 
 /** ¿La fecha (YYYY-MM-DD) cae en fin de semana (sábado/domingo)? */
 export function isWeekend(dateStr: string): boolean {
+  const wd = weekday(dateStr);
+  return wd === 0 || wd === 6;
+}
+
+function weekday(dateStr: string): number | null {
+  if (!dateStr) return null;
   const d = new Date(`${dateStr}T12:00:00`);
-  if (Number.isNaN(d.getTime())) return false;
-  const day = d.getDay();
-  return day === 0 || day === 6;
+  if (Number.isNaN(d.getTime())) return null;
+  return d.getDay(); // 0=domingo … 6=sábado
+}
+
+export type SurchargeConfig = {
+  mode?: "single" | "range" | "weekday";
+  date?: string;
+  from?: string;
+  to?: string;
+  weekdays?: number[];
+  label?: string;
+};
+
+/** ¿Aplica este suplemento al evento (según tipo, fecha y nocturnidad)? Función pura. */
+export function matchSurcharge(
+  s: { type: string; config?: unknown },
+  ctx: { date: string; night: boolean },
+): boolean {
+  const cfg = (s.config ?? {}) as SurchargeConfig;
+  if (s.type === "NIGHT") return ctx.night;
+  if (s.type === "WEEKEND") {
+    const wd = weekday(ctx.date);
+    if (wd === null) return false;
+    const days = cfg.weekdays && cfg.weekdays.length ? cfg.weekdays : [0, 6];
+    return days.includes(wd);
+  }
+  // Tipos basados en fecha (SPECIAL_DATE, HIGH_DEMAND, etc.) según config.mode.
+  if (!ctx.date) return false;
+  if (cfg.mode === "single") return cfg.date === ctx.date;
+  if (cfg.mode === "range") return !!cfg.from && !!cfg.to && ctx.date >= cfg.from && ctx.date <= cfg.to;
+  if (cfg.mode === "weekday") {
+    const wd = weekday(ctx.date);
+    return wd !== null && !!cfg.weekdays?.includes(wd);
+  }
+  return false; // sin config aplicable → no se aplica automáticamente
 }

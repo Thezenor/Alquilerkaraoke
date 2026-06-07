@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { calculateBudget, isWeekend } from "@/lib/budget";
+import { calculateBudget, matchSurcharge } from "@/lib/budget";
 import { logAudit } from "@/server/audit";
 import { CONSENT_VERSION } from "@/lib/consent";
 import { rateLimit, isHoneypotFilled } from "@/server/rate-limit";
@@ -65,25 +65,21 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       extraIds.length
         ? prisma.extra.findMany({ where: { id: { in: extraIds }, isActive: true } })
         : Promise.resolve([]),
-      prisma.surcharge.findMany({
-        where: { isActive: true, valueType: "PERCENT", type: { in: ["WEEKEND", "NIGHT"] } },
-      }),
+      prisma.surcharge.findMany({ where: { isActive: true } }),
       prisma.pricingConfig.findUnique({ where: { id: "default" } }),
     ]);
 
-    // Solo un suplemento por tipo (evita duplicados si hay varias filas activas).
+    // Aplica los suplementos que correspondan a la fecha/nocturnidad del evento.
+    // Solo uno por tipo (evita duplicados si hay varias filas activas del mismo tipo).
     const surchargePercents: number[] = [];
+    const surchargeFixed: number[] = [];
     const appliedTypes = new Set<string>();
     for (const s of surcharges) {
       if (appliedTypes.has(s.type)) continue;
-      if (s.type === "WEEKEND" && date && isWeekend(date)) {
-        surchargePercents.push(s.value);
-        appliedTypes.add(s.type);
-      }
-      if (s.type === "NIGHT" && night) {
-        surchargePercents.push(s.value);
-        appliedTypes.add(s.type);
-      }
+      if (!matchSurcharge(s, { date, night })) continue;
+      if (s.valueType === "PERCENT") surchargePercents.push(s.value);
+      else surchargeFixed.push(s.value);
+      appliedTypes.add(s.type);
     }
 
     // Cliente: se crea si no existe (no profesional). Descuento solo si es profesional.
@@ -104,6 +100,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       provinceSupplement: prov?.zone && prov.zone.isActive ? prov.zone.supplement : 0,
       extras: extras.map((e) => e.price),
       surchargePercents,
+      surchargeFixed,
       vatPercent: config?.vatPercent ?? 21,
       discountPercent,
       depositType: pack.depositType,

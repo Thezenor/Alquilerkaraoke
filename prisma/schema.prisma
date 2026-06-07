@@ -333,6 +333,18 @@ model Booking {
 
   @@index([status])
   @@index([createdAt])
+  @@index([eventDate])
+}
+
+// ── Bloqueos de fecha (disponibilidad) ──────────────────────────
+model DateBlock {
+  id        String    @id @default(cuid())
+  date      DateTime // día bloqueado
+  endDate   DateTime? // para rango (opcional)
+  reason    String?
+  createdAt DateTime  @default(now())
+
+  @@index([date])
 }
 
 // ── Clientes (con descuento para profesionales) ─────────────────

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { calculateBudget, isWeekend, type BudgetInput } from "./budget";
+import { calculateBudget, isWeekend, matchSurcharge, type BudgetInput } from "./budget";
 
 const base: BudgetInput = {
   basePrice: 10000,
@@ -79,4 +79,47 @@ test("isWeekend detecta sábado y domingo", () => {
   assert.equal(isWeekend("2026-06-06"), true); // sábado
   assert.equal(isWeekend("2026-06-07"), true); // domingo
   assert.equal(isWeekend("2026-06-08"), false); // lunes
+});
+
+test("suplementos fijos se suman a los porcentuales", () => {
+  const b = calculateBudget({ ...base, surchargePercents: [10], surchargeFixed: [2000, 500] });
+  // 10% de 10000 = 1000 + 2500 fijo = 3500
+  assert.equal(b.surcharges, 3500);
+  assert.equal(b.subtotal, 13500);
+});
+
+test("matchSurcharge: WEEKEND aplica en sábado/domingo, no en laborable", () => {
+  const s = { type: "WEEKEND" };
+  assert.equal(matchSurcharge(s, { date: "2026-06-06", night: false }), true); // sábado
+  assert.equal(matchSurcharge(s, { date: "2026-06-08", night: false }), false); // lunes
+});
+
+test("matchSurcharge: WEEKEND respeta config.weekdays personalizada", () => {
+  const s = { type: "WEEKEND", config: { weekdays: [5, 6, 0] } }; // viernes incluido
+  assert.equal(matchSurcharge(s, { date: "2026-06-05", night: false }), true); // viernes
+  assert.equal(matchSurcharge(s, { date: "2026-06-04", night: false }), false); // jueves
+});
+
+test("matchSurcharge: NIGHT depende del flag night", () => {
+  const s = { type: "NIGHT" };
+  assert.equal(matchSurcharge(s, { date: "2026-06-08", night: true }), true);
+  assert.equal(matchSurcharge(s, { date: "2026-06-08", night: false }), false);
+});
+
+test("matchSurcharge: SPECIAL_DATE mode single coincide solo en la fecha", () => {
+  const s = { type: "SPECIAL_DATE", config: { mode: "single", date: "2026-12-31" } };
+  assert.equal(matchSurcharge(s, { date: "2026-12-31", night: false }), true);
+  assert.equal(matchSurcharge(s, { date: "2026-12-30", night: false }), false);
+});
+
+test("matchSurcharge: mode range incluye los extremos", () => {
+  const s = { type: "HIGH_DEMAND", config: { mode: "range", from: "2026-08-01", to: "2026-08-31" } };
+  assert.equal(matchSurcharge(s, { date: "2026-08-01", night: false }), true);
+  assert.equal(matchSurcharge(s, { date: "2026-08-31", night: false }), true);
+  assert.equal(matchSurcharge(s, { date: "2026-09-01", night: false }), false);
+});
+
+test("matchSurcharge: sin config aplicable no se aplica automáticamente", () => {
+  assert.equal(matchSurcharge({ type: "OTHER" }, { date: "2026-06-08", night: false }), false);
+  assert.equal(matchSurcharge({ type: "EXTERIOR" }, { date: "2026-06-08", night: true }), false);
 });
