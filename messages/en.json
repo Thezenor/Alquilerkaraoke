@@ -7,6 +7,7 @@
     "services": "Services",
     "packs": "Packages",
     "songs": "Songs",
+    "blog": "Blog",
     "contact": "Contact",
     "quote": "Get a quote",
     "access": "Admin",
@@ -77,6 +78,16 @@
       "marketing": "I'd like to receive offers, news and events by email (optional).",
       "termsRequired": "You must accept the privacy policy to continue."
     }
+  },
+  "BlogMeta": {
+    "title": "Blog | Alquiler Karaoke",
+    "description": "Tips, ideas and news about karaoke and events to make your party unforgettable."
+  },
+  "BlogPage": {
+    "title": "Blog",
+    "intro": "Tips, ideas and news for your karaoke and party events.",
+    "empty": "No posts published yet. Check back soon!",
+    "readMore": "Read more"
   },
   "PrivacyMeta": {
     "title": "Privacy policy | Alquiler Karaoke",

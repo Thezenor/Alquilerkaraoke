@@ -7,6 +7,7 @@
     "services": "Services",
     "packs": "Forfaits",
     "songs": "Chansons",
+    "blog": "Blog",
     "contact": "Contact",
     "quote": "Demander un devis",
     "access": "Accès",
@@ -77,6 +78,16 @@
       "marketing": "Je souhaite recevoir des offres, actualités et événements par email (facultatif).",
       "termsRequired": "Vous devez accepter la politique de confidentialité pour continuer."
     }
+  },
+  "BlogMeta": {
+    "title": "Blog | Alquiler Karaoke",
+    "description": "Conseils, idées et actualités sur le karaoké et les événements pour une fête inoubliable."
+  },
+  "BlogPage": {
+    "title": "Blog",
+    "intro": "Conseils, idées et actualités pour vos événements karaoké et fêtes.",
+    "empty": "Aucun article publié pour le moment. Revenez bientôt !",
+    "readMore": "Lire la suite"
   },
   "PrivacyMeta": {
     "title": "Politique de confidentialité | Alquiler Karaoke",

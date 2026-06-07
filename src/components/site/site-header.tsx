@@ -13,6 +13,7 @@ import { cn } from "@/lib/cn";
 const NAV_ITEMS = [
   { key: "services", href: "/servicios" },
   { key: "packs", href: "/packs" },
+  { key: "blog", href: "/blog" },
   { key: "contact", href: "/contacto" },
 ] as const;
 

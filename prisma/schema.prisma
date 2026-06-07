@@ -45,6 +45,12 @@ enum BookingStatus {
   CANCELLED
 }
 
+// Estado de publicación de una entrada del blog.
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
 // Estado de un contrato.
 enum ContractStatus {
   DRAFT // generado, aún no enviado
@@ -101,6 +107,7 @@ model User {
   handledBookings  Booking[]
   payments         Payment[]
   contracts        Contract[]
+  posts            Post[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -462,6 +469,27 @@ model Collaborator {
   updatedAt   DateTime @updatedAt
 
   @@index([isActive, sortOrder])
+}
+
+// ── Blog / contenidos SEO ────────────────────────────────────────
+model Post {
+  id              String     @id @default(cuid())
+  slug            String     @unique
+  locale          String     @default("es")
+  title           String
+  excerpt         String?
+  content         String // Markdown (subconjunto seguro)
+  coverImageUrl   String?
+  status          PostStatus @default(DRAFT)
+  metaTitle       String?
+  metaDescription String?
+  publishedAt     DateTime?
+  authorId        String?
+  author          User?      @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([status, locale, publishedAt])
 }
 
 // ── Clientes (con descuento para profesionales) ─────────────────

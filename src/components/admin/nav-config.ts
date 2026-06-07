@@ -31,6 +31,10 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    label: "Contenido",
+    items: [{ href: "/admin/blog", label: "Blog", icon: "file-text" }],
+  },
+  {
     label: "Precios",
     items: [
       { href: "/admin/tarifas", label: "Tarifas", icon: "tag" },

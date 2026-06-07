@@ -1,0 +1,83 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
+import { Container } from "@/components/ui/container";
+import { JsonLd } from "@/components/seo/json-ld";
+import { buildMetadata, absoluteUrl } from "@/lib/seo";
+import { getPublishedPostBySlug } from "@/server/blog";
+import { Markdown, markdownToPlain } from "@/lib/markdown";
+
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const post = await getPublishedPostBySlug(slug);
+  if (!post) return {};
+  return buildMetadata({
+    locale,
+    pathname: `/blog/${slug}`,
+    title: post.metaTitle || `${post.title} | Alquiler Karaoke`,
+    description: post.metaDescription || post.excerpt || markdownToPlain(post.content),
+  });
+}
+
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  const post = await getPublishedPostBySlug(slug);
+  if (!post) notFound();
+  setRequestLocale(locale);
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.metaDescription || post.excerpt || markdownToPlain(post.content),
+    ...(post.coverImageUrl ? { image: post.coverImageUrl } : {}),
+    ...(post.publishedAt ? { datePublished: post.publishedAt.toISOString() } : {}),
+    dateModified: post.updatedAt.toISOString(),
+    mainEntityOfPage: absoluteUrl(`/${locale}/blog/${slug}`),
+    publisher: { "@type": "Organization", name: "Alquiler Karaoke" },
+  };
+
+  return (
+    <>
+      <JsonLd data={schema} />
+      <article className="py-16 sm:py-20">
+        <Container className="max-w-3xl">
+          <Link href={`/${locale}/blog`} className="text-sm text-brand-muted transition hover:text-white">
+            ← Blog
+          </Link>
+
+          {post.publishedAt && (
+            <time className="mt-6 block text-sm text-brand-muted" dateTime={post.publishedAt.toISOString()}>
+              {post.publishedAt.toLocaleDateString(locale)}
+            </time>
+          )}
+          <h1 className="mt-1 text-3xl font-bold text-white sm:text-4xl">{post.title}</h1>
+
+          {post.coverImageUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={post.coverImageUrl}
+              alt={post.title}
+              className="mt-8 aspect-[16/9] w-full rounded-2xl border border-brand-border object-cover"
+            />
+          )}
+
+          <div className="mt-8">
+            <Markdown source={post.content} />
+          </div>
+        </Container>
+      </article>
+    </>
+  );
+}
