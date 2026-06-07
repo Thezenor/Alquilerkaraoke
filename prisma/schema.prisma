@@ -202,6 +202,7 @@ model Pack {
   name             String
   shortDescription String?
   description      String?
+  category         String? // p. ej. "Karaoke", "Gaming / Consolas", "Fiesta Holi"
   basePrice        Int // céntimos, sin IVA (precio base, 4 h salvo isPerDay)
   includedHours    Int     @default(4)
   extraHourPrice   Int     @default(0) // céntimos por hora extra
@@ -232,17 +233,34 @@ model Extra {
   slug         String  @unique
   name         String
   description  String?
+  category     String?
   price        Int // céntimos, sin IVA
   translations Json?
   isActive     Boolean @default(true)
   sortOrder    Int     @default(0)
 }
 
-model ProvinceSupplement {
-  id       String  @id @default(cuid())
-  province String  @unique
-  amount   Int     @default(0) // suplemento fijo en céntimos, sin IVA
-  isActive Boolean @default(true)
+// Zona tarifaria: suplemento por desplazamiento/cobertura (céntimos, sin IVA).
+model TariffZone {
+  id            String     @id @default(cuid())
+  name          String     @unique
+  supplement    Int        @default(0) // céntimos
+  pendingConfig Boolean    @default(false) // zona sin suplemento definido aún
+  isActive      Boolean    @default(true)
+  sortOrder     Int        @default(0)
+  provinces     Province[]
+}
+
+// Provincia normalizada, asignada a una zona tarifaria.
+model Province {
+  id       String      @id @default(cuid())
+  name     String      @unique
+  slug     String      @unique
+  zoneId   String?
+  zone     TariffZone? @relation(fields: [zoneId], references: [id], onDelete: SetNull)
+  isActive Boolean     @default(true)
+
+  @@index([zoneId])
 }
 
 model Surcharge {

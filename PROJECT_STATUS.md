@@ -29,6 +29,12 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 
 **Fase 3 COMPLETA** ✅ (packs, tarifas, extras, suplementos, IVA, motor de presupuestos y reservas).
 
+## Datos reales del negocio (Excel) — 2026-06-07
+- [x] **Modelo de zonas/provincias**: `TariffZone` (suplemento por zona) + `Province` (asignada a zona); `category` en `Pack` y `Extra`. Sustituye al `ProvinceSupplement` placeholder. Motor de presupuestos usa **provincia → zona → suplemento**.
+- [x] **Catálogo real cargado** (`prisma/seed-catalog.ts`, `npm run db:seed:catalog`): 4 zonas (Zona 4 marcada `pendingConfig`), 50 provincias, 14 productos reales (Karaoke 1/1+/2/3, Personalizado, Consolas 1/2/VR/4, Espuma, Holi 1/2/3, Furor) con precios/horas/categoría, 9 extras (Holi/Consolas). Placeholders de Fase 3 desactivados. Productos sin precio/descr. (Karaoke personalizado, Consolas 4) creados **inactivos** para revisar.
+- [x] Admin `/tarifas` gestiona **zonas** (suplemento por zona, badge "pendiente"); packs/extras editan **categoría**.
+- Pendiente (del informe): import/export Excel de tarifas; descuento por cliente (15%/35%); landings SEO por producto; corregir textos/typos de descripciones.
+
 ## Extras admin
 - [x] **Acceso al panel desde el menú público** ("Acceso" en cabecera + móvil → `/admin/login`).
 - [x] **Gestión de usuarios** (`/admin/usuarios`, solo SUPERADMIN): crear/editar usuarios, asignar **roles** (multi), **cambiar contraseña** (bcrypt), activar/desactivar, con salvaguardas (no quitarte SUPERADMIN ni desactivarte). Auditoría. Verificado E2E (crear usuario + login del nuevo usuario). → permite cambiar la contraseña del Superadmin de producción desde el panel.

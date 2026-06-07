@@ -27,17 +27,30 @@ export const getActiveExtras = unstable_cache(
   { tags: [PRICING_TAG], revalidate: 3600 },
 );
 
-export const getProvinceSupplements = unstable_cache(
+export const getProvinces = unstable_cache(
   async () => {
     try {
-      return await prisma.provinceSupplement.findMany({
+      return await prisma.province.findMany({
         where: { isActive: true },
-        orderBy: { province: "asc" },
+        include: { zone: true },
+        orderBy: { name: "asc" },
       });
     } catch {
       return [];
     }
   },
-  [`${PRICING_TAG}-supplements`],
+  [`${PRICING_TAG}-provinces`],
+  { tags: [PRICING_TAG], revalidate: 3600 },
+);
+
+export const getTariffZones = unstable_cache(
+  async () => {
+    try {
+      return await prisma.tariffZone.findMany({ orderBy: { sortOrder: "asc" } });
+    } catch {
+      return [];
+    }
+  },
+  [`${PRICING_TAG}-zones`],
   { tags: [PRICING_TAG], revalidate: 3600 },
 );

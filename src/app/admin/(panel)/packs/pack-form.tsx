@@ -14,6 +14,7 @@ export type PackFormValues = {
   slug: string;
   shortDescription: string;
   description: string;
+  category: string;
   basePrice: string;
   includedHours: string;
   extraHourPrice: string;
@@ -86,6 +87,7 @@ export function PackForm({ values }: { values: PackFormValues }) {
           hint="minúsculas, números y guiones (ej. karaoke-fiesta)"
         />
         <Field label="Descripción corta" name="shortDescription" defaultValue={values.shortDescription} />
+        <Field label="Categoría" name="category" defaultValue={values.category} hint="ej. Karaoke, Gaming / Consolas, Fiesta Holi" />
         <Field label="Orden" name="sortOrder" type="number" defaultValue={values.sortOrder} />
       </div>
       <div className="mt-5 flex flex-col gap-1.5">

@@ -8,7 +8,7 @@ async function login(page: Page) {
   await page.waitForURL("**/admin");
 }
 
-test("admin: crear extra y añadir supliento de provincia", async ({ page }) => {
+test("admin: crear extra y editar suplemento de una zona", async ({ page }) => {
   await login(page);
 
   // Crear extra
@@ -22,11 +22,10 @@ test("admin: crear extra y añadir supliento de provincia", async ({ page }) => 
   await page.waitForURL("**/admin/extras");
   await expect(page.getByText(name)).toBeVisible();
 
-  // Suplemento de provincia
-  const prov = `ProvinciaE2E${stamp}`;
+  // Editar suplemento de Zona 2
   await page.goto("/admin/tarifas");
-  await page.fill("#province", prov);
-  await page.fill("#amount", "30");
-  await page.getByRole("button", { name: "Añadir / actualizar" }).click();
-  await expect(page.getByText(prov)).toBeVisible();
+  const zona = page.locator("li", { hasText: "Zona 2" });
+  await zona.locator('input[name="supplement"]').fill("130");
+  await zona.getByRole("button", { name: "Guardar" }).click();
+  await expect(zona.locator('input[name="supplement"]')).toHaveValue("130.00");
 });

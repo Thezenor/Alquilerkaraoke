@@ -83,25 +83,14 @@ async function main() {
   }
   console.log(`✔ ${extras.length} extras asegurados.`);
 
-  // ── Suplementos de ejemplo (editables) ──
-  for (const s of [
-    { province: "Madrid", amount: 0 },
-    { province: "Barcelona", amount: 4000 },
-  ]) {
-    await prisma.provinceSupplement.upsert({
-      where: { province: s.province },
-      update: {},
-      create: s,
-    });
-  }
-
+  // ── Suplementos % por defecto (fin de semana / nocturnidad), editables ──
   for (const s of [
     { id: "seed-weekend", name: "Fin de semana", type: "WEEKEND" as const, valueType: "PERCENT" as const, value: 15 },
     { id: "seed-night", name: "Nocturnidad", type: "NIGHT" as const, valueType: "PERCENT" as const, value: 20 },
   ]) {
     await prisma.surcharge.upsert({ where: { id: s.id }, update: {}, create: s });
   }
-  console.log("✔ Suplementos de ejemplo asegurados.");
+  console.log("✔ Suplementos % por defecto asegurados.");
 }
 
 main()

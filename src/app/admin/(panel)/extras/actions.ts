@@ -21,6 +21,7 @@ const schema = z.object({
     .max(120)
     .regex(/^[a-z0-9-]+$/, "El slug solo admite minúsculas, números y guiones."),
   description: z.string().trim().max(2000).optional(),
+  category: z.string().trim().max(120).optional(),
   price: z.string().optional(),
   isActive: z.string().optional(),
   sortOrder: z.string().optional(),
@@ -60,6 +61,7 @@ export async function saveExtra(_prev: ExtraFormState, formData: FormData): Prom
     name: d.name,
     slug: d.slug,
     description: d.description || null,
+    category: d.category || null,
     price: eurosToCents(d.price),
     isActive: d.isActive === "on",
     sortOrder: int(d.sortOrder),

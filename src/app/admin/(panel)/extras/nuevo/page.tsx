@@ -11,6 +11,7 @@ const empty: ExtraFormValues = {
   name: "",
   slug: "",
   description: "",
+  category: "",
   price: "",
   isActive: true,
   sortOrder: "0",

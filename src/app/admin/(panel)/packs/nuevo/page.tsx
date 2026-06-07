@@ -12,6 +12,7 @@ const empty: PackFormValues = {
   slug: "",
   shortDescription: "",
   description: "",
+  category: "",
   basePrice: "",
   includedHours: "4",
   extraHourPrice: "",

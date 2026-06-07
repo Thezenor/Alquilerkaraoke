@@ -26,6 +26,7 @@ export default async function EditExtraPage({ params }: { params: Promise<{ id: 
     name: extra.name,
     slug: extra.slug,
     description: extra.description ?? "",
+    category: extra.category ?? "",
     price: centsToInput(extra.price),
     isActive: extra.isActive,
     sortOrder: String(extra.sortOrder),

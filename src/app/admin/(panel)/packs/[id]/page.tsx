@@ -27,6 +27,7 @@ export default async function EditPackPage({ params }: { params: Promise<{ id: s
     slug: pack.slug,
     shortDescription: pack.shortDescription ?? "",
     description: pack.description ?? "",
+    category: pack.category ?? "",
     basePrice: centsToInput(pack.basePrice),
     includedHours: String(pack.includedHours),
     extraHourPrice: centsToInput(pack.extraHourPrice),

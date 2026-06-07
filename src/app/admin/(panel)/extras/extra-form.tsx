@@ -12,6 +12,7 @@ export type ExtraFormValues = {
   name: string;
   slug: string;
   description: string;
+  category: string;
   price: string;
   isActive: boolean;
   sortOrder: string;
@@ -61,6 +62,7 @@ export function ExtraForm({ values }: { values: ExtraFormValues }) {
         <Field label="Nombre" name="name" defaultValue={values.name} required />
         <Field label="Slug" name="slug" defaultValue={values.slug} required hint="ej. pantalla-extra" />
         <Field label="Precio (€, sin IVA)" name="price" type="number" step="0.01" defaultValue={values.price} required />
+        <Field label="Categoría" name="category" defaultValue={values.category} hint="ej. Holi, Gaming / Consolas" />
         <Field label="Orden" name="sortOrder" type="number" defaultValue={values.sortOrder} />
         <Field label="Nombre (EN)" name="name_en" defaultValue={values.name_en} />
         <Field label="Nombre (FR)" name="name_fr" defaultValue={values.name_fr} />

@@ -30,9 +30,9 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
     const night = formData.get("night") === "on";
     const extraIds = formData.getAll("extras").map(String).filter(Boolean);
 
-    const [supplement, extras, surcharges, config] = await Promise.all([
+    const [prov, extras, surcharges, config] = await Promise.all([
       province
-        ? prisma.provinceSupplement.findFirst({ where: { province, isActive: true } })
+        ? prisma.province.findFirst({ where: { name: province, isActive: true }, include: { zone: true } })
         : Promise.resolve(null),
       extraIds.length
         ? prisma.extra.findMany({ where: { id: { in: extraIds }, isActive: true } })
@@ -55,7 +55,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       includedHours: pack.includedHours,
       extraHourPrice: pack.extraHourPrice,
       hours,
-      provinceSupplement: supplement?.amount ?? 0,
+      provinceSupplement: prov?.zone && prov.zone.isActive ? prov.zone.supplement : 0,
       extras: extras.map((e) => e.price),
       surchargePercents,
       vatPercent: config?.vatPercent ?? 21,

@@ -35,36 +35,22 @@ export async function updateVat(formData: FormData): Promise<void> {
   revalidatePath("/admin/tarifas");
 }
 
-export async function upsertSupplement(formData: FormData): Promise<void> {
+export async function updateZone(formData: FormData): Promise<void> {
   let userId: string | undefined;
   try {
     userId = (await ensureRole()).user.id;
   } catch {
     return;
   }
-  const province = String(formData.get("province") ?? "").trim();
-  if (!province) return;
-  const amount = eurosToCents(String(formData.get("amount") ?? ""));
-
-  await prisma.provinceSupplement.upsert({
-    where: { province },
-    update: { amount, isActive: true },
-    create: { province, amount },
-  });
-  await logAudit({ userId, action: "supplement.upsert", entity: "ProvinceSupplement", metadata: { province, amount } });
-  updateTag(PRICING_TAG);
-  revalidatePath("/admin/tarifas");
-}
-
-export async function deleteSupplement(formData: FormData): Promise<void> {
-  try {
-    await ensureRole();
-  } catch {
-    return;
-  }
   const id = String(formData.get("id") ?? "");
   if (!id) return;
-  await prisma.provinceSupplement.delete({ where: { id } }).catch(() => {});
+  const supplement = eurosToCents(String(formData.get("supplement") ?? ""));
+
+  await prisma.tariffZone.update({
+    where: { id },
+    data: { supplement, pendingConfig: false },
+  });
+  await logAudit({ userId, action: "zone.update", entity: "TariffZone", entityId: id, metadata: { supplement } });
   updateTag(PRICING_TAG);
   revalidatePath("/admin/tarifas");
 }

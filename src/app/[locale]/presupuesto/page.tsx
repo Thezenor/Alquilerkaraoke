@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { buildMetadata } from "@/lib/seo";
 import { getActivePacks, localizedPack } from "@/server/packs";
-import { getActiveExtras, getProvinceSupplements } from "@/server/pricing";
+import { getActiveExtras, getProvinces } from "@/server/pricing";
 import { QuoteForm, type QuoteOptions } from "./quote-form";
 
 // Lee packs/extras/suplementos de BD en runtime.
@@ -26,10 +26,10 @@ export default async function PresupuestoPage({ params }: { params: Promise<{ lo
   setRequestLocale(locale);
 
   const t = await getTranslations("Quote");
-  const [packs, extras, supplements] = await Promise.all([
+  const [packs, extras, provinces] = await Promise.all([
     getActivePacks(),
     getActiveExtras(),
-    getProvinceSupplements(),
+    getProvinces(),
   ]);
 
   const options: QuoteOptions = {
@@ -42,7 +42,7 @@ export default async function PresupuestoPage({ params }: { params: Promise<{ lo
       const tr = (e.translations ?? {}) as Record<string, ExtraTr>;
       return { id: e.id, name: tr[locale]?.name ?? e.name, price: e.price };
     }),
-    provinces: supplements.map((s) => s.province),
+    provinces: provinces.map((p) => p.name),
   };
 
   return (
