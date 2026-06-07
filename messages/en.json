@@ -177,7 +177,18 @@
     "securityDeposit": "Security deposit",
     "estimateNote": "Estimate only, subject to confirmation based on availability and event details.",
     "ctaContact": "Request this quote",
-    "error": "Could not calculate. Please check the details."
+    "error": "Could not calculate. Please check the details.",
+    "yourData": "Your details",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "messageLabel": "Message (optional)",
+    "terms": "I have read and accept the <link>privacy policy</link>.",
+    "marketing": "I'd like to receive offers, news and events by email (optional).",
+    "submitBooking": "Send booking request",
+    "sending": "Sending…",
+    "bookedTitle": "Request sent!",
+    "bookedText": "We've received your booking request. We'll contact you to confirm availability. It is pending validation."
   },
   "LocaleSwitcher": {
     "label": "Language",

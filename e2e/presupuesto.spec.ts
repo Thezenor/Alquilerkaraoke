@@ -9,5 +9,6 @@ test("presupuesto: calcular un presupuesto orientativo", async ({ page }) => {
   await page.getByRole("button", { name: "Calcular presupuesto" }).click();
 
   await expect(page.getByRole("heading", { name: "Presupuesto orientativo" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Solicitar este presupuesto" })).toBeVisible();
+  // Tras calcular aparece el bloque de datos para solicitar la reserva.
+  await expect(page.getByRole("button", { name: "Enviar solicitud de reserva" })).toBeVisible();
 });

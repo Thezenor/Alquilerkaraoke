@@ -177,7 +177,18 @@
     "securityDeposit": "Fianza",
     "estimateNote": "Presupuesto orientativo, sujeto a confirmación según disponibilidad y detalles del evento.",
     "ctaContact": "Solicitar este presupuesto",
-    "error": "No se pudo calcular. Revisa los datos."
+    "error": "No se pudo calcular. Revisa los datos.",
+    "yourData": "Tus datos",
+    "name": "Nombre",
+    "email": "Email",
+    "phone": "Teléfono",
+    "messageLabel": "Mensaje (opcional)",
+    "terms": "He leído y acepto la <link>política de privacidad</link>.",
+    "marketing": "Quiero recibir ofertas, novedades y eventos por email (opcional).",
+    "submitBooking": "Enviar solicitud de reserva",
+    "sending": "Enviando…",
+    "bookedTitle": "¡Solicitud enviada!",
+    "bookedText": "Hemos recibido tu solicitud de reserva. Te contactaremos para confirmar disponibilidad. Queda pendiente de validación."
   },
   "LocaleSwitcher": {
     "label": "Idioma",

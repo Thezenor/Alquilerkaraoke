@@ -1,8 +1,9 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { calculateQuote, type QuoteState } from "./actions";
+import { quoteAction, type QuoteState } from "./actions";
 import { formatCents } from "@/lib/money";
 
 const initial: QuoteState = { status: "idle" };
@@ -27,12 +28,15 @@ function Row({ label, value, strong }: { label: string; value: number; strong?: 
 export function QuoteForm({ options }: { options: QuoteOptions }) {
   const t = useTranslations("Quote");
   const locale = useLocale();
-  const [state, action, pending] = useActionState(calculateQuote, initial);
+  const [state, action, pending] = useActionState(quoteAction, initial);
   const r = state.result;
+  const showCustomer = !!r && state.status !== "booked";
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
       <form action={action} className="rounded-2xl border border-brand-border bg-brand-surface p-6">
+        <input type="hidden" name="locale" value={locale} />
+
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5 sm:col-span-2">
             <label htmlFor="packId" className="text-sm font-medium text-brand-text">{t("pack")}</label>
@@ -82,6 +86,8 @@ export function QuoteForm({ options }: { options: QuoteOptions }) {
 
         <button
           type="submit"
+          name="intent"
+          value="calculate"
           disabled={pending}
           className="mt-6 w-full rounded-full bg-brand-neon px-6 py-3 font-semibold text-brand-bg transition hover:bg-brand-neon-strong disabled:opacity-60 sm:w-auto"
         >
@@ -91,11 +97,68 @@ export function QuoteForm({ options }: { options: QuoteOptions }) {
         {state.status === "error" && (
           <p role="alert" className="mt-4 text-sm text-red-400">{state.message ?? t("error")}</p>
         )}
+
+        {/* Datos del cliente + envío de reserva (tras calcular) */}
+        {showCustomer && (
+          <div className="mt-8 border-t border-brand-border pt-6">
+            <h3 className="font-semibold text-white">{t("yourData")}</h3>
+            <div className="mt-3 grid gap-4 sm:grid-cols-2">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="name" className="text-sm text-brand-text">{t("name")} *</label>
+                <input id="name" name="name" required className={inputClass} />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="email" className="text-sm text-brand-text">{t("email")} *</label>
+                <input id="email" name="email" type="email" required className={inputClass} />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="phone" className="text-sm text-brand-text">{t("phone")}</label>
+                <input id="phone" name="phone" type="tel" className={inputClass} />
+              </div>
+              <div className="flex flex-col gap-1.5 sm:col-span-2">
+                <label htmlFor="message" className="text-sm text-brand-text">{t("messageLabel")}</label>
+                <textarea id="message" name="message" rows={3} className={inputClass} />
+              </div>
+            </div>
+
+            <label className="mt-4 flex items-start gap-2.5 text-sm text-brand-muted">
+              <input type="checkbox" name="acceptedTerms" className="mt-0.5 h-4 w-4 accent-brand-neon" />
+              <span>
+                {t.rich("terms", {
+                  link: (chunks) => (
+                    <Link href={`/${locale}/privacidad`} className="text-brand-neon underline">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </span>
+            </label>
+            <label className="mt-2 flex items-start gap-2.5 text-sm text-brand-muted">
+              <input type="checkbox" name="marketing" className="mt-0.5 h-4 w-4 accent-brand-neon" />
+              <span>{t("marketing")}</span>
+            </label>
+
+            <button
+              type="submit"
+              name="intent"
+              value="book"
+              disabled={pending}
+              className="mt-5 w-full rounded-full border border-brand-neon px-6 py-3 font-semibold text-brand-neon transition hover:bg-brand-neon hover:text-brand-bg disabled:opacity-60 sm:w-auto"
+            >
+              {pending ? t("sending") : t("submitBooking")}
+            </button>
+          </div>
+        )}
       </form>
 
-      {/* Resultado */}
+      {/* Resultado / confirmación */}
       <aside className="rounded-2xl border border-brand-border bg-brand-surface p-6">
-        {!r ? (
+        {state.status === "booked" ? (
+          <div>
+            <h2 className="text-lg font-semibold text-emerald-300">{t("bookedTitle")}</h2>
+            <p className="mt-2 text-sm text-brand-muted">{t("bookedText")}</p>
+          </div>
+        ) : !r ? (
           <p className="text-sm text-brand-muted">{t("intro")}</p>
         ) : (
           <div>
@@ -117,12 +180,6 @@ export function QuoteForm({ options }: { options: QuoteOptions }) {
               {r.securityDeposit > 0 && <Row label={t("securityDeposit")} value={r.securityDeposit} />}
             </div>
             <p className="mt-4 text-xs text-brand-muted">{t("estimateNote")}</p>
-            <a
-              href={`/${locale}/contacto`}
-              className="mt-5 inline-flex rounded-full bg-brand-neon px-5 py-2.5 font-semibold text-brand-bg transition hover:bg-brand-neon-strong"
-            >
-              {t("ctaContact")}
-            </a>
           </div>
         )}
       </aside>

@@ -177,7 +177,18 @@
     "securityDeposit": "Caution",
     "estimateNote": "Estimation indicative, sous réserve de confirmation selon la disponibilité et les détails de l'événement.",
     "ctaContact": "Demander ce devis",
-    "error": "Impossible de calculer. Vérifiez les informations."
+    "error": "Impossible de calculer. Vérifiez les informations.",
+    "yourData": "Vos coordonnées",
+    "name": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "messageLabel": "Message (facultatif)",
+    "terms": "J'ai lu et j'accepte la <link>politique de confidentialité</link>.",
+    "marketing": "Je souhaite recevoir des offres, actualités et événements par email (facultatif).",
+    "submitBooking": "Envoyer la demande de réservation",
+    "sending": "Envoi…",
+    "bookedTitle": "Demande envoyée !",
+    "bookedText": "Nous avons reçu votre demande de réservation. Nous vous contacterons pour confirmer la disponibilité. Elle est en attente de validation."
   },
   "LocaleSwitcher": {
     "label": "Langue",

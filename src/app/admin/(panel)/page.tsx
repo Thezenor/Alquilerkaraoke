@@ -22,6 +22,16 @@ export default async function AdminDashboardPage() {
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Link
+          href="/admin/reservas"
+          className="rounded-xl border border-brand-border bg-brand-surface p-5 transition hover:border-brand-neon/60"
+        >
+          <h2 className="font-semibold text-white">Reservas</h2>
+          <p className="mt-1 text-sm text-brand-muted">
+            Solicitudes de contratación pendientes de validar.
+          </p>
+        </Link>
+
+        <Link
           href="/admin/solicitudes"
           className="rounded-xl border border-brand-border bg-brand-surface p-5 transition hover:border-brand-neon/60"
         >

@@ -1,23 +1,30 @@
 "use server";
 
+import { headers } from "next/headers";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { calculateBudget, isWeekend, type BudgetBreakdown } from "@/lib/budget";
+import { logAudit } from "@/server/audit";
+import { CONSENT_VERSION } from "@/lib/consent";
 
 export type QuoteState = {
-  status: "idle" | "ok" | "error";
+  status: "idle" | "ok" | "error" | "booked";
   message?: string;
   result?: BudgetBreakdown & { packName: string };
 };
 
-export async function calculateQuote(_prev: QuoteState, formData: FormData): Promise<QuoteState> {
+const orNull = (v: string) => (v && v.length ? v : null);
+
+export async function quoteAction(_prev: QuoteState, formData: FormData): Promise<QuoteState> {
   try {
+    const intent = String(formData.get("intent") ?? "calculate");
+
     const packId = String(formData.get("packId") ?? "");
     const pack = await prisma.pack.findFirst({ where: { id: packId, isActive: true } });
     if (!pack) return { status: "error", message: "Pack no válido." };
 
     const hoursRaw = parseInt(String(formData.get("hours") ?? ""), 10);
     const hours = Number.isFinite(hoursRaw) && hoursRaw > 0 ? hoursRaw : pack.includedHours || 4;
-
     const province = String(formData.get("province") ?? "").trim();
     const date = String(formData.get("date") ?? "").trim();
     const night = formData.get("night") === "on";
@@ -42,7 +49,7 @@ export async function calculateQuote(_prev: QuoteState, formData: FormData): Pro
       if (s.type === "NIGHT" && night) surchargePercents.push(s.value);
     }
 
-    const result = calculateBudget({
+    const breakdown = calculateBudget({
       basePrice: pack.basePrice,
       isPerDay: pack.isPerDay,
       includedHours: pack.includedHours,
@@ -58,8 +65,72 @@ export async function calculateQuote(_prev: QuoteState, formData: FormData): Pro
       securityDeposit: pack.securityDeposit,
     });
 
-    return { status: "ok", result: { ...result, packName: pack.name } };
+    const result = { ...breakdown, packName: pack.name };
+
+    if (intent !== "book") {
+      return { status: "ok", result };
+    }
+
+    // ── Envío de solicitud de reserva (PENDING) ──
+    const customer = z
+      .object({
+        name: z.string().trim().min(1).max(120),
+        email: z.email(),
+        phone: z.string().trim().max(40).optional(),
+        message: z.string().trim().max(4000).optional(),
+        acceptedTerms: z.literal("on"),
+        marketing: z.string().optional(),
+        locale: z.string().trim().max(5).optional(),
+      })
+      .safeParse(Object.fromEntries(formData));
+
+    if (!customer.success) {
+      return { status: "error", message: "Revisa tu nombre, email y la aceptación de la política." };
+    }
+    const c = customer.data;
+
+    const h = await headers();
+    const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
+    const userAgent = h.get("user-agent") ?? null;
+
+    const created = await prisma.booking.create({
+      data: {
+        packId: pack.id,
+        packName: pack.name,
+        hours,
+        province: orNull(province),
+        eventDate: date ? new Date(`${date}T12:00:00`) : null,
+        night,
+        extras: extras.map((e) => ({ name: e.name, price: e.price })),
+        subtotal: breakdown.subtotal,
+        vat: breakdown.vat,
+        total: breakdown.total,
+        deposit: breakdown.deposit,
+        securityDeposit: breakdown.securityDeposit,
+        name: c.name,
+        email: c.email,
+        phone: orNull(c.phone ?? ""),
+        message: orNull(c.message ?? ""),
+        acceptedTerms: true,
+        marketingConsent: c.marketing === "on",
+        consentVersion: CONSENT_VERSION,
+        consentAt: new Date(),
+        locale: orNull(c.locale ?? ""),
+        ip,
+        userAgent,
+        // status PENDING por defecto
+      },
+    });
+
+    await logAudit({
+      action: "booking.create",
+      entity: "Booking",
+      entityId: created.id,
+      metadata: { email: c.email, total: breakdown.total },
+    });
+
+    return { status: "booked", message: "ok", result };
   } catch {
-    return { status: "error", message: "No se pudo calcular." };
+    return { status: "error", message: "No se pudo procesar la solicitud." };
   }
 }

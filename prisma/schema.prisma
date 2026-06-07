@@ -37,6 +37,14 @@ enum PriceModifierType {
   PERCENT
 }
 
+// Estado de una reserva/solicitud de contratación.
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  CANCELLED
+}
+
 // Tipos de suplemento configurables (DECISIONS.md / docs 08).
 enum SurchargeType {
   WEEKEND
@@ -66,6 +74,7 @@ model User {
   sessions         Session[]
   auditLogs        AuditLog[]
   contactResponses ContactRequest[]
+  handledBookings  Booking[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -213,6 +222,8 @@ model Pack {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  bookings Booking[]
+
   @@index([isActive, sortOrder])
 }
 
@@ -250,4 +261,55 @@ model PricingConfig {
   vatPercent Int      @default(21)
   currency   String   @default("EUR")
   updatedAt  DateTime @updatedAt
+}
+
+// ── Reservas / solicitudes de contratación (Fase 3 Bloque 5) ─────
+// Toda contratación nace PENDING (pendiente de validación por admin).
+model Booking {
+  id String @id @default(cuid())
+
+  // Selección (con snapshot de nombre por si el pack cambia/borra)
+  packId    String?
+  pack      Pack?    @relation(fields: [packId], references: [id], onDelete: SetNull)
+  packName  String
+  hours     Int      @default(4)
+  province  String?
+  eventDate DateTime?
+  night     Boolean  @default(false)
+  extras    Json? // snapshot: [{ name, price }]
+
+  // Importe (snapshot en céntimos, sin/with IVA según campo)
+  subtotal        Int @default(0)
+  vat             Int @default(0)
+  total           Int @default(0)
+  deposit         Int @default(0)
+  securityDeposit Int @default(0)
+
+  // Cliente
+  name    String
+  email   String
+  phone   String?
+  message String?
+
+  // Consentimiento RGPD
+  acceptedTerms    Boolean   @default(false)
+  marketingConsent Boolean   @default(false)
+  consentVersion   String?
+  consentAt        DateTime?
+
+  // Gestión
+  status      BookingStatus @default(PENDING)
+  adminNote   String?
+  handledById String?
+  handledBy   User?         @relation(fields: [handledById], references: [id], onDelete: SetNull)
+  handledAt   DateTime?
+
+  locale    String?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
 }
