@@ -148,6 +148,37 @@
     "securityDepositLabel": "Caution",
     "detailsTitle": "Détails du forfait"
   },
+  "PresupuestoMeta": {
+    "title": "Devis karaoké instantané | Alquiler Karaoke",
+    "description": "Obtenez une estimation instantanée pour votre événement : forfait, date, province et extras. Sans engagement."
+  },
+  "Quote": {
+    "title": "Calculez votre devis",
+    "intro": "Choisissez le forfait et les détails de votre événement pour voir une estimation. Nous confirmerons le prix final avec vous.",
+    "pack": "Forfait",
+    "hours": "Heures",
+    "province": "Province",
+    "noProvince": "Autre / je ne sais pas",
+    "date": "Date",
+    "night": "Événement nocturne",
+    "extras": "Extras",
+    "calculate": "Calculer le devis",
+    "calculating": "Calcul…",
+    "resultTitle": "Devis estimatif",
+    "base": "Base",
+    "extraHours": "Heures supplémentaires",
+    "provinceLabel": "Supplément province",
+    "extrasLabel": "Extras",
+    "surcharges": "Suppléments",
+    "subtotal": "Sous-total (hors TVA)",
+    "vat": "TVA",
+    "total": "Total",
+    "deposit": "Acompte pour confirmer",
+    "securityDeposit": "Caution",
+    "estimateNote": "Estimation indicative, sous réserve de confirmation selon la disponibilité et les détails de l'événement.",
+    "ctaContact": "Demander ce devis",
+    "error": "Impossible de calculer. Vérifiez les informations."
+  },
   "LocaleSwitcher": {
     "label": "Langue",
     "es": "Espagnol",

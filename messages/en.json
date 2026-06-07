@@ -148,6 +148,37 @@
     "securityDepositLabel": "Security deposit",
     "detailsTitle": "Package details"
   },
+  "PresupuestoMeta": {
+    "title": "Instant karaoke quote | Alquiler Karaoke",
+    "description": "Get an instant estimate for your event: package, date, province and extras. No obligation."
+  },
+  "Quote": {
+    "title": "Calculate your quote",
+    "intro": "Pick the package and your event details to see an estimate. We'll confirm the final price with you.",
+    "pack": "Package",
+    "hours": "Hours",
+    "province": "Province",
+    "noProvince": "Other / not sure",
+    "date": "Date",
+    "night": "Night event",
+    "extras": "Extras",
+    "calculate": "Calculate quote",
+    "calculating": "Calculating…",
+    "resultTitle": "Estimated quote",
+    "base": "Base",
+    "extraHours": "Extra hours",
+    "provinceLabel": "Province supplement",
+    "extrasLabel": "Extras",
+    "surcharges": "Surcharges",
+    "subtotal": "Subtotal (excl. VAT)",
+    "vat": "VAT",
+    "total": "Total",
+    "deposit": "Deposit to confirm",
+    "securityDeposit": "Security deposit",
+    "estimateNote": "Estimate only, subject to confirmation based on availability and event details.",
+    "ctaContact": "Request this quote",
+    "error": "Could not calculate. Please check the details."
+  },
   "LocaleSwitcher": {
     "label": "Language",
     "es": "Spanish",

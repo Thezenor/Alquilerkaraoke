@@ -14,6 +14,7 @@ export function SiteHeader() {
   const t = useTranslations("Nav");
   const locale = useLocale();
   const contactHref = `/${locale}/contacto`;
+  const quoteHref = `/${locale}/presupuesto`;
   const [open, setOpen] = useState(false);
 
   const hrefByKey: Record<string, string> = {
@@ -51,7 +52,7 @@ export function SiteHeader() {
           <div className="hidden md:block">
             <LocaleSwitcher />
           </div>
-          <Button href={contactHref} size="md" className="hidden sm:inline-flex">
+          <Button href={quoteHref} size="md" className="hidden sm:inline-flex">
             {t("quote")}
           </Button>
 
@@ -103,7 +104,7 @@ export function SiteHeader() {
             ))}
             <div className="mt-3 flex items-center justify-between gap-3">
               <LocaleSwitcher />
-              <Button href={contactHref} size="md" className="flex-1">
+              <Button href={quoteHref} size="md" className="flex-1">
                 {t("quote")}
               </Button>
             </div>

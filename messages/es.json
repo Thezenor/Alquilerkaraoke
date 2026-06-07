@@ -148,6 +148,37 @@
     "securityDepositLabel": "Fianza",
     "detailsTitle": "Detalles del pack"
   },
+  "PresupuestoMeta": {
+    "title": "Presupuesto de karaoke al instante | Alquiler Karaoke",
+    "description": "Calcula un presupuesto orientativo para tu evento: pack, fecha, provincia y extras. Sin compromiso."
+  },
+  "Quote": {
+    "title": "Calcula tu presupuesto",
+    "intro": "Elige el pack y los detalles de tu evento para ver un presupuesto orientativo. El precio final lo confirmamos contigo.",
+    "pack": "Pack",
+    "hours": "Horas",
+    "province": "Provincia",
+    "noProvince": "Otra / no lo sé",
+    "date": "Fecha",
+    "night": "Evento nocturno",
+    "extras": "Extras",
+    "calculate": "Calcular presupuesto",
+    "calculating": "Calculando…",
+    "resultTitle": "Presupuesto orientativo",
+    "base": "Base",
+    "extraHours": "Horas extra",
+    "provinceLabel": "Suplemento provincia",
+    "extrasLabel": "Extras",
+    "surcharges": "Suplementos",
+    "subtotal": "Subtotal (sin IVA)",
+    "vat": "IVA",
+    "total": "Total",
+    "deposit": "Reserva para confirmar",
+    "securityDeposit": "Fianza",
+    "estimateNote": "Presupuesto orientativo, sujeto a confirmación según disponibilidad y detalles del evento.",
+    "ctaContact": "Solicitar este presupuesto",
+    "error": "No se pudo calcular. Revisa los datos."
+  },
   "LocaleSwitcher": {
     "label": "Idioma",
     "es": "Español",

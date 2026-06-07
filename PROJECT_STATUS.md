@@ -24,7 +24,7 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 - [x] **Bloque 2b — Admin de extras, suplementos e IVA**: `/admin/extras` (CRUD con precio €, traducciones, activo), `/admin/tarifas` (editar **IVA** + alta/edición/borrado de **suplementos por provincia**). Helpers cacheados `src/server/pricing.ts` (`PRICING_TAG`) para el motor de presupuestos. Auditoría + `updateTag`. Verificado: typecheck + lint + build + E2E 5/5 (2026-06-07).
 - [ ] Bloque 3 — Páginas públicas de packs (desde BD).
 - [x] **Bloque 3 — Páginas públicas de packs**: `/packs` (listado SSG desde BD, precio "Desde X € + IVA", traducciones con fallback) y `/packs/[slug]` (detalle dinámico cacheado, JSON-LD `Product`/`Offer`, detalles de reserva/fianza/horas, CTA). Nav "Packs" + sitemap con slugs. Verificado: build + runtime (ES/EN, 404 slug inválido, JSON-LD, sitemap) + E2E 5/5 (2026-06-07).
-- [ ] Bloque 4 — Motor de presupuestos (función pura) + formulario.
+- [x] **Bloque 4 — Motor de presupuestos**: función pura `src/lib/budget.ts` (base + horas extra + provincia + extras + suplementos % − descuento + IVA → total, reserva, fianza) con **7 tests unitarios** (`npm run test:unit`, runner nativo de Node + tsx). Página pública `/presupuesto` (ES/EN/FR) con formulario (pack, horas, fecha→fin de semana, provincia, nocturno, extras) que calcula vía Server Action `calculateQuote` (lee precios reales de BD) y muestra desglose + CTA. Header/home CTAs → `/presupuesto`; en sitemap. Verificado: unit 7/7 + typecheck + lint + build + E2E 6/6 (2026-06-07).
 - [ ] Bloque 5 — Presupuesto → reserva pendiente de validación.
 
 ## Marketing y RGPD (groundwork)
