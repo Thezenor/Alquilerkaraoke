@@ -32,6 +32,16 @@ export default async function AdminDashboardPage() {
         </Link>
 
         <Link
+          href="/admin/packs"
+          className="rounded-xl border border-brand-border bg-brand-surface p-5 transition hover:border-brand-neon/60"
+        >
+          <h2 className="font-semibold text-white">Packs</h2>
+          <p className="mt-1 text-sm text-brand-muted">
+            Crea y edita packs, precios, reserva y fianza.
+          </p>
+        </Link>
+
+        <Link
           href="/admin/configuracion"
           className="rounded-xl border border-brand-border bg-brand-surface p-5 transition hover:border-brand-neon/60"
         >

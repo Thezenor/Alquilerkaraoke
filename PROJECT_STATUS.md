@@ -20,7 +20,8 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 
 ## Fase 3 — Packs, tarifas y motor de presupuestos (en curso)
 - [x] **Bloque 1 — Modelo de datos + seed**: modelos `Pack`, `Extra`, `ProvinceSupplement`, `Surcharge`, `PricingConfig` (precios en céntimos sin IVA, IVA configurable, traducciones JSON, reserva/fianza por pack). Migración `packs_pricing` aplicada y seed idempotente (8 packs, 4 extras, suplementos de ejemplo, IVA 21%) — `update:{}` para no pisar ediciones de admin. Verificado: datos en BD + typecheck + lint + build (2026-06-07).
-- [ ] Bloque 2 — Admin CRUD de packs (y extras/suplementos).
+- [x] **Bloque 2 — Admin CRUD de packs**: módulo `/admin/packs` (listado con precio/estado, crear, editar) con `savePack` (Server Action + Zod), manejo de dinero €↔céntimos (`src/lib/money.ts`), reserva (%/fijo), fianza, traducciones EN/FR (JSON), activo/orden, auditoría y `updateTag(PACKS_TAG)`. Verificado: typecheck + lint + build + E2E (crear+editar) 4/4 (2026-06-07).
+- [ ] Bloque 2b — Admin de extras, suplementos por provincia e IVA.
 - [ ] Bloque 3 — Páginas públicas de packs (desde BD).
 - [ ] Bloque 4 — Motor de presupuestos (función pura) + formulario.
 - [ ] Bloque 5 — Presupuesto → reserva pendiente de validación.
