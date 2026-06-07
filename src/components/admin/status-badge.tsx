@@ -45,6 +45,13 @@ export const PAYMENT_STATUS: Record<string, { tone: Tone; label: string }> = {
   PAID: { tone: "success", label: "Pagado" },
 };
 
+export const CONTRACT_STATUS: Record<string, { tone: Tone; label: string }> = {
+  DRAFT: { tone: "neutral", label: "Borrador" },
+  SENT: { tone: "info", label: "Enviado" },
+  SIGNED: { tone: "success", label: "Firmado" },
+  CANCELLED: { tone: "danger", label: "Anulado" },
+};
+
 export const PAYMENT_METHOD_LABELS: Record<string, string> = {
   TRANSFER: "Transferencia",
   BIZUM: "Bizum",

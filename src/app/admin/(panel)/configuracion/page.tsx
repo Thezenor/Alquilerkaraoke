@@ -22,6 +22,7 @@ export default async function ConfigPage() {
     iban: c?.iban ?? "",
     bizum: c?.bizum ?? "",
     paymentInfo: c?.paymentInfo ?? "",
+    contractTerms: c?.contractTerms ?? "",
   };
 
   return (

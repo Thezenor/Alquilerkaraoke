@@ -17,6 +17,7 @@ export type ConfigValues = {
   iban: string;
   bizum: string;
   paymentInfo: string;
+  contractTerms: string;
 };
 
 function Field({
@@ -88,6 +89,25 @@ export function ConfigForm({ values }: { values: ConfigValues }) {
             className="rounded-lg border border-brand-border bg-brand-bg px-3 py-2.5 text-brand-text outline-none transition focus:border-brand-neon focus:ring-2 focus:ring-brand-neon/30"
           />
         </div>
+      </div>
+
+      <h2 className="mt-8 mb-1 text-sm font-semibold tracking-wide text-brand-muted uppercase">Contrato</h2>
+      <p className="mb-4 text-sm text-brand-muted">
+        Cláusulas que se incluyen en cada contrato. Si lo dejas vacío, se usan unas condiciones por defecto.
+      </p>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="contractTerms" className="text-sm font-medium text-brand-text">
+          Cláusulas del contrato
+        </label>
+        <textarea
+          id="contractTerms"
+          name="contractTerms"
+          defaultValue={values.contractTerms}
+          rows={8}
+          maxLength={8000}
+          placeholder="Deja vacío para usar las condiciones por defecto."
+          className="rounded-lg border border-brand-border bg-brand-bg px-3 py-2.5 font-mono text-xs text-brand-text outline-none transition focus:border-brand-neon focus:ring-2 focus:ring-brand-neon/30"
+        />
       </div>
 
       {state.status !== "idle" && state.message && (

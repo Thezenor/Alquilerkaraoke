@@ -37,6 +37,11 @@ export default auth((req) => {
     return; // continúa
   }
 
+  // ── Firma pública de contratos: ruta agnóstica de idioma (sin prefijo) ──
+  if (pathname.startsWith("/contrato")) {
+    return; // continúa sin i18n
+  }
+
   // ── Resto de rutas: routing i18n público ──
   return intlMiddleware(req);
 });

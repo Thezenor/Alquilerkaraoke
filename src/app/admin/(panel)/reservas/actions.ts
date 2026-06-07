@@ -6,8 +6,14 @@ import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/server/auth/guards";
 import { logAudit } from "@/server/audit";
 import { recomputeBookingPayment } from "@/server/payments";
+import { createContractForBooking } from "@/server/contracts";
+import { sendEmail } from "@/server/email";
 import { eurosToCents } from "@/lib/money";
 import { Role, type PaymentMethod } from "@/generated/prisma/enums";
+
+function siteUrl(): string {
+  return (process.env.NEXT_PUBLIC_SITE_URL || "https://www.alquilerkaraoke.com").replace(/\/$/, "");
+}
 
 const schema = z.object({
   id: z.string().min(1),
@@ -114,6 +120,76 @@ export async function addPayment(_prev: PaymentState, formData: FormData): Promi
   revalidatePath("/admin/reservas");
   revalidatePath(`/admin/reservas/${d.bookingId}`);
   return { status: "success", message: d.kind === "refund" ? "Reembolso registrado." : "Pago registrado." };
+}
+
+// ── Contratos ────────────────────────────────────────────────────
+export async function generateContract(formData: FormData): Promise<void> {
+  let userId: string | undefined;
+  try {
+    userId = (await requireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL)).user.id;
+  } catch {
+    return;
+  }
+  const bookingId = String(formData.get("bookingId") ?? "");
+  if (!bookingId) return;
+
+  const contract = await createContractForBooking(bookingId, userId);
+  await logAudit({
+    userId,
+    action: "contract.create",
+    entity: "Contract",
+    entityId: contract.id,
+    metadata: { bookingId, number: contract.number },
+  });
+  revalidatePath(`/admin/reservas/${bookingId}`);
+}
+
+export async function sendContract(formData: FormData): Promise<void> {
+  let userId: string | undefined;
+  try {
+    userId = (await requireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL)).user.id;
+  } catch {
+    return;
+  }
+  const bookingId = String(formData.get("bookingId") ?? "");
+  if (!bookingId) return;
+
+  const contract = await prisma.contract.findUnique({
+    where: { bookingId },
+    include: { booking: { select: { email: true, name: true, packName: true } } },
+  });
+  if (!contract || contract.status === "SIGNED" || contract.status === "CANCELLED") return;
+
+  await prisma.contract.update({ where: { id: contract.id }, data: { status: "SENT" } });
+
+  const link = `${siteUrl()}/contrato/${contract.token}`;
+  await sendEmail({
+    to: contract.booking.email,
+    subject: `Firma tu contrato · ${contract.booking.packName}`,
+    html: `<p>Hola ${contract.booking.name},</p>
+      <p>Para confirmar tu reserva, revisa y firma tu contrato en el siguiente enlace:</p>
+      <p><a href="${link}">${link}</a></p>
+      <p>Alquiler Karaoke</p>`,
+  });
+
+  await logAudit({ userId, action: "contract.send", entity: "Contract", entityId: contract.id, metadata: { bookingId } });
+  revalidatePath(`/admin/reservas/${bookingId}`);
+}
+
+export async function cancelContract(formData: FormData): Promise<void> {
+  let userId: string | undefined;
+  try {
+    userId = (await requireRole(Role.SUPERADMIN, Role.ADMIN)).user.id;
+  } catch {
+    return;
+  }
+  const bookingId = String(formData.get("bookingId") ?? "");
+  if (!bookingId) return;
+  const contract = await prisma.contract.findUnique({ where: { bookingId }, select: { id: true } });
+  if (!contract) return;
+  await prisma.contract.update({ where: { id: contract.id }, data: { status: "CANCELLED" } });
+  await logAudit({ userId, action: "contract.cancel", entity: "Contract", entityId: contract.id, metadata: { bookingId } });
+  revalidatePath(`/admin/reservas/${bookingId}`);
 }
 
 export async function deletePayment(formData: FormData): Promise<void> {

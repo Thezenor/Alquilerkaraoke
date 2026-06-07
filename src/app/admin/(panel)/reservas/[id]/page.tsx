@@ -8,8 +8,9 @@ import { amountDue } from "@/lib/payments";
 import { BOOKING_STATUS_LABELS, BOOKING_STATUS_CLASSES } from "../status";
 import { BookingForm } from "./booking-form";
 import { PaymentForm } from "./payment-form";
-import { deletePayment } from "../actions";
-import { StatusBadge, PAYMENT_STATUS, PAYMENT_METHOD_LABELS } from "@/components/admin/status-badge";
+import { deletePayment, generateContract, sendContract, cancelContract } from "../actions";
+import { CopyLink } from "./copy-link";
+import { StatusBadge, PAYMENT_STATUS, PAYMENT_METHOD_LABELS, CONTRACT_STATUS } from "@/components/admin/status-badge";
 import { ConfirmButton } from "@/components/admin/confirm-button";
 import { Icon } from "@/components/admin/icons";
 import { pageRequireRole } from "@/server/auth/guards";
@@ -34,7 +35,7 @@ export default async function ReservaDetailPage({ params }: { params: Promise<{ 
   const { id } = await params;
   const b = await prisma.booking.findUnique({
     where: { id },
-    include: { payments: { orderBy: { paidAt: "desc" } } },
+    include: { payments: { orderBy: { paidAt: "desc" } }, contract: true },
   });
   if (!b) notFound();
 
@@ -42,6 +43,11 @@ export default async function ReservaDetailPage({ params }: { params: Promise<{ 
   const extras = (b.extras ?? []) as ExtraSnap[];
   const pay = PAYMENT_STATUS[b.paymentStatus] ?? { tone: "neutral" as const, label: b.paymentStatus };
   const due = amountDue(b.amountPaid, b.total);
+  const contract = b.contract;
+  const contractSt = contract
+    ? CONTRACT_STATUS[contract.status] ?? { tone: "neutral" as const, label: contract.status }
+    : null;
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.alquilerkaraoke.com").replace(/\/$/, "");
 
   return (
     <div>
@@ -189,6 +195,85 @@ export default async function ReservaDetailPage({ params }: { params: Promise<{ 
             )}
 
             <PaymentForm bookingId={b.id} defaultAmount={centsToInput(due > 0 ? due : b.deposit)} />
+          </div>
+
+          {/* Contrato */}
+          <div className="rounded-2xl border border-brand-border bg-brand-surface p-6">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="font-semibold text-white">Contrato</h2>
+              {contractSt && <StatusBadge tone={contractSt.tone}>{contractSt.label}</StatusBadge>}
+            </div>
+
+            {!contract ? (
+              <>
+                <p className="mt-1 mb-4 text-sm text-brand-muted">
+                  Genera el contrato para poder enviarlo al cliente y que lo firme online.
+                </p>
+                <form action={generateContract}>
+                  <input type="hidden" name="bookingId" value={b.id} />
+                  <button
+                    type="submit"
+                    className="inline-flex items-center gap-2 rounded-lg bg-brand-neon px-3 py-2 text-sm font-semibold text-brand-bg transition hover:bg-brand-neon-strong"
+                  >
+                    <Icon name="box" className="h-4 w-4" />
+                    Generar contrato
+                  </button>
+                </form>
+              </>
+            ) : (
+              <div className="mt-3 space-y-3">
+                <p className="text-sm text-brand-muted">
+                  Nº <span className="text-brand-text">{contract.number}</span>
+                  {contract.signedAt && (
+                    <> · firmado el {contract.signedAt.toLocaleDateString("es-ES")} por{" "}
+                      <span className="text-brand-text">{contract.signedName}</span></>
+                  )}
+                </p>
+
+                {contract.status !== "SIGNED" && contract.status !== "CANCELLED" && (
+                  <div>
+                    <p className="mb-1 text-xs font-medium text-brand-muted">Enlace de firma para el cliente</p>
+                    <CopyLink url={`${siteUrl}/contrato/${contract.token}`} />
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href={`/contrato/${contract.token}/pdf`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg border border-brand-border px-3 py-2 text-sm text-brand-text transition hover:border-brand-neon/60"
+                  >
+                    <Icon name="box" className="h-4 w-4" />
+                    PDF del contrato
+                  </a>
+
+                  {contract.status !== "SIGNED" && contract.status !== "CANCELLED" && (
+                    <form action={sendContract}>
+                      <input type="hidden" name="bookingId" value={b.id} />
+                      <button
+                        type="submit"
+                        className="rounded-lg border border-brand-border px-3 py-2 text-sm text-brand-text transition hover:border-brand-neon/60"
+                      >
+                        {contract.status === "SENT" ? "Reenviar por email" : "Enviar por email"}
+                      </button>
+                    </form>
+                  )}
+
+                  {contract.status !== "SIGNED" && contract.status !== "CANCELLED" && (
+                    <form action={cancelContract}>
+                      <input type="hidden" name="bookingId" value={b.id} />
+                      <ConfirmButton
+                        confirmMessage="¿Anular este contrato?"
+                        className="rounded-lg border border-red-500/40 px-3 py-2 text-sm text-red-300 transition hover:bg-red-500/10 disabled:opacity-50"
+                      >
+                        Anular
+                      </ConfirmButton>
+                    </form>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -23,6 +23,7 @@ const schema = z.object({
   iban: z.string().trim().max(40).optional(),
   bizum: z.string().trim().max(40).optional(),
   paymentInfo: z.string().trim().max(1000).optional(),
+  contractTerms: z.string().trim().max(8000).optional(),
 });
 
 export type ConfigFormState = {
@@ -66,6 +67,7 @@ export async function updateSiteConfig(
       iban: orNull(d.iban),
       bizum: orNull(d.bizum),
       paymentInfo: orNull(d.paymentInfo),
+      contractTerms: orNull(d.contractTerms),
     },
     create: {
       id: "default",
@@ -80,6 +82,7 @@ export async function updateSiteConfig(
       iban: orNull(d.iban),
       bizum: orNull(d.bizum),
       paymentInfo: orNull(d.paymentInfo),
+      contractTerms: orNull(d.contractTerms),
     },
   });
 

@@ -45,6 +45,14 @@ enum BookingStatus {
   CANCELLED
 }
 
+// Estado de un contrato.
+enum ContractStatus {
+  DRAFT // generado, aún no enviado
+  SENT // enviado al cliente (link disponible)
+  SIGNED // firmado por el cliente
+  CANCELLED
+}
+
 // Método de pago de un cobro manual (CARD reservado para Stripe en Fase 4).
 enum PaymentMethod {
   TRANSFER
@@ -92,6 +100,7 @@ model User {
   contactResponses ContactRequest[]
   handledBookings  Booking[]
   payments         Payment[]
+  contracts        Contract[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -177,6 +186,8 @@ model SiteConfig {
   iban         String?
   bizum        String?
   paymentInfo  String? // instrucciones libres mostradas al cliente
+  // Cláusulas por defecto para los contratos (snapshot al generar cada contrato)
+  contractTerms String?
   // Campos extra flexibles (redes, horarios, etc.) sin tocar el esquema.
   extra        Json?
 
@@ -329,6 +340,7 @@ model Booking {
   paymentStatus PaymentStatus @default(PENDING)
   amountPaid    Int           @default(0) // céntimos cobrados (caché de la suma de Payment)
   payments      Payment[]
+  contract      Contract?
 
   // Cliente
   name       String
@@ -378,6 +390,32 @@ model Payment {
   createdAt   DateTime      @default(now())
 
   @@index([bookingId])
+}
+
+// ── Contratos (generación PDF + firma web) ───────────────────────
+model Contract {
+  id          String         @id @default(cuid())
+  bookingId   String         @unique
+  booking     Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  number      String         @unique // CON-2026-XXXXXX
+  status      ContractStatus @default(DRAFT)
+  terms       String // snapshot de las cláusulas en el momento de generar
+  token       String         @unique // secreto del enlace público de firma
+  contentHash String? // sha256 del contenido firmado (integridad)
+
+  // Firma del cliente
+  signedName      String?
+  signedAt        DateTime?
+  signerIp        String?
+  signerUserAgent String?
+  signatureImage  String? // PNG dataURL de la firma dibujada (opcional)
+
+  createdById String?
+  createdBy   User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
 }
 
 // ── Bloqueos de fecha (disponibilidad) ──────────────────────────
