@@ -23,7 +23,7 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 - [x] **Bloque 2 — Admin CRUD de packs**: módulo `/admin/packs` (listado con precio/estado, crear, editar) con `savePack` (Server Action + Zod), manejo de dinero €↔céntimos (`src/lib/money.ts`), reserva (%/fijo), fianza, traducciones EN/FR (JSON), activo/orden, auditoría y `updateTag(PACKS_TAG)`. Verificado: typecheck + lint + build + E2E (crear+editar) 4/4 (2026-06-07).
 - [x] **Bloque 2b — Admin de extras, suplementos e IVA**: `/admin/extras` (CRUD con precio €, traducciones, activo), `/admin/tarifas` (editar **IVA** + alta/edición/borrado de **suplementos por provincia**). Helpers cacheados `src/server/pricing.ts` (`PRICING_TAG`) para el motor de presupuestos. Auditoría + `updateTag`. Verificado: typecheck + lint + build + E2E 5/5 (2026-06-07).
 - [ ] Bloque 3 — Páginas públicas de packs (desde BD).
-- [ ] Bloque 3 — Páginas públicas de packs (desde BD).
+- [x] **Bloque 3 — Páginas públicas de packs**: `/packs` (listado SSG desde BD, precio "Desde X € + IVA", traducciones con fallback) y `/packs/[slug]` (detalle dinámico cacheado, JSON-LD `Product`/`Offer`, detalles de reserva/fianza/horas, CTA). Nav "Packs" + sitemap con slugs. Verificado: build + runtime (ES/EN, 404 slug inválido, JSON-LD, sitemap) + E2E 5/5 (2026-06-07).
 - [ ] Bloque 4 — Motor de presupuestos (función pura) + formulario.
 - [ ] Bloque 5 — Presupuesto → reserva pendiente de validación.
 

@@ -18,6 +18,7 @@ export function SiteHeader() {
 
   const hrefByKey: Record<string, string> = {
     services: `/${locale}/servicios`,
+    packs: `/${locale}/packs`,
     contact: contactHref,
   };
   const navItems = NAV_KEYS.map((key) => ({

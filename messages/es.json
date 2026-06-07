@@ -130,6 +130,24 @@
     "ctaText": "Pídenos presupuesto para tu evento en {city}, sin compromiso.",
     "otherCitiesTitle": "Otras ciudades"
   },
+  "PacksMeta": {
+    "title": "Packs de karaoke y eventos | Alquiler Karaoke",
+    "description": "Elige tu pack de karaoke: precios desde, horas incluidas, reserva y fianza. Pedimos presupuesto a medida para tu evento en España."
+  },
+  "PacksPage": {
+    "title": "Packs",
+    "intro": "Elige el pack que mejor encaje con tu evento. Todos incluyen montaje profesional. ¿Dudas? Te hacemos un presupuesto a medida.",
+    "from": "Desde",
+    "vat": "+ IVA",
+    "perDay": "por día",
+    "viewDetails": "Ver detalles",
+    "ctaQuote": "Pedir presupuesto",
+    "includedHours": "{hours} h incluidas",
+    "extraHourLabel": "Hora extra",
+    "depositLabel": "Reserva",
+    "securityDepositLabel": "Fianza",
+    "detailsTitle": "Detalles del pack"
+  },
   "LocaleSwitcher": {
     "label": "Idioma",
     "es": "Español",

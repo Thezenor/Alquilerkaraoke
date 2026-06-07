@@ -130,6 +130,24 @@
     "ctaText": "Demandez un devis pour votre événement à {city}, sans engagement.",
     "otherCitiesTitle": "Autres villes"
   },
+  "PacksMeta": {
+    "title": "Forfaits karaoké et événements | Alquiler Karaoke",
+    "description": "Choisissez votre forfait karaoké : prix à partir de, heures incluses, acompte et caution. Nous préparons un devis sur mesure pour votre événement en Espagne."
+  },
+  "PacksPage": {
+    "title": "Forfaits",
+    "intro": "Choisissez le forfait qui correspond le mieux à votre événement. Tous incluent l'installation professionnelle. Des questions ? Nous préparons un devis sur mesure.",
+    "from": "À partir de",
+    "vat": "+ TVA",
+    "perDay": "par jour",
+    "viewDetails": "Voir les détails",
+    "ctaQuote": "Demander un devis",
+    "includedHours": "{hours} h incluses",
+    "extraHourLabel": "Heure supplémentaire",
+    "depositLabel": "Acompte",
+    "securityDepositLabel": "Caution",
+    "detailsTitle": "Détails du forfait"
+  },
   "LocaleSwitcher": {
     "label": "Langue",
     "es": "Espagnol",

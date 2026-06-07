@@ -130,6 +130,24 @@
     "ctaText": "Ask us for a quote for your event in {city}, no obligation.",
     "otherCitiesTitle": "Other cities"
   },
+  "PacksMeta": {
+    "title": "Karaoke & event packages | Alquiler Karaoke",
+    "description": "Choose your karaoke package: prices from, included hours, deposit and security deposit. We'll prepare a tailored quote for your event in Spain."
+  },
+  "PacksPage": {
+    "title": "Packages",
+    "intro": "Choose the package that best fits your event. All include professional setup. Questions? We'll prepare a tailored quote.",
+    "from": "From",
+    "vat": "+ VAT",
+    "perDay": "per day",
+    "viewDetails": "View details",
+    "ctaQuote": "Get a quote",
+    "includedHours": "{hours} h included",
+    "extraHourLabel": "Extra hour",
+    "depositLabel": "Deposit",
+    "securityDepositLabel": "Security deposit",
+    "detailsTitle": "Package details"
+  },
   "LocaleSwitcher": {
     "label": "Language",
     "es": "Spanish",
