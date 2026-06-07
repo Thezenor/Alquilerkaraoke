@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { pageRequireRole } from "@/server/auth/guards";
+import { Role } from "@/generated/prisma/enums";
 
 export const metadata: Metadata = {
   title: "Clientes · Panel Alquiler Karaoke",
@@ -8,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ClientesPage() {
+  await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
   const customers = await prisma.customer.findMany({ orderBy: { createdAt: "desc" }, take: 200 });
 
   return (

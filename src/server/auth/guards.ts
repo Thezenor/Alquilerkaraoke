@@ -1,6 +1,16 @@
+import { redirect } from "next/navigation";
 import { auth } from "@/server/auth";
 import { canAccessAdmin, hasRole } from "@/lib/auth-roles";
 import type { Role } from "@/generated/prisma/enums";
+
+/** Guard para páginas admin: redirige a /admin si la sesión no tiene el rol. */
+export async function pageRequireRole(...roles: Role[]) {
+  const session = await auth();
+  if (!session?.user || !hasRole(session.user.roles, ...roles)) {
+    redirect("/admin");
+  }
+  return session;
+}
 
 /** Garantiza sesión con acceso al panel. Lanza si no. Devuelve la sesión. */
 export async function requireAdminSession() {

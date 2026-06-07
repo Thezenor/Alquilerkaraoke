@@ -175,6 +175,18 @@ No hace falta inventario completo en esta primera versión.
 - Permitir/bloquear descargas.
 - Galería por evento.
 
+## Clientes y descuentos (añadido 2026-06-07)
+- Modelo `Customer`. El **descuento solo se aplica si el admin marca al cliente como "profesional"** y le asigna un `discountPercent` (0–35). Sin profesional → 0. Las reservas crean/enlazan el cliente por email; desde el formulario público NO se sobrescriben nombre/teléfono de un cliente existente (email no verificado).
+
+## Auditoría de coherencia (2026-06-07) — pendientes registrados
+Revisión con agentes (arquitectura, código, seguridad). Corregido: `/packs/[slug]` force-dynamic, tope de reserva %, separador de miles en importes, `formatCents` por locale, dedupe de suplementos por tipo, guard de lectura de PII en clientes/reservas/solicitudes, cabeceras de seguridad HTTP, enlace muerto "Canciones" eliminado, `aria-label` traducible, nav con Link i18n.
+**Pendiente (siguientes fases):**
+- Motor: suplementos por **km, fecha especial, alta demanda, exterior, dificultad de montaje, tipo de evento** y suplementos FIXED (hoy solo WEEKEND/NIGHT en %). Falta admin CRUD de `Surcharge`.
+- **RGPD**: flujo de **borrado/anonimización** (ContactRequest/Booking/Customer) y **baja de marketing** (opt-out); retención/purga de IP.
+- **Anti-abuso** en formularios públicos (rate-limit por IP, honeypot) antes de activar emails.
+- Unificar patrón de Server Actions (tipo de estado, mensajes Zod, helper de rol) y extraer helpers duplicados (`int`, `orNull`).
+- Disponibilidad/calendario + índice en `Booking.eventDate` (Fase 4).
+
 ## Marketing y RGPD (añadido 2026-06-07)
 - **Objetivo**: web muy completa de servicios + captación para publicidad propia. Recoger emails (con consentimiento) para enviar **ofertas, novedades y eventos** de forma **programada/automática** en fechas concretas.
 - **Consentimiento (RGPD/LOPDGDD)**:

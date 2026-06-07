@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/cn";
 import { formatCents } from "@/lib/money";
 import { BOOKING_STATUS_LABELS, BOOKING_STATUS_CLASSES } from "./status";
+import { pageRequireRole } from "@/server/auth/guards";
+import { Role } from "@/generated/prisma/enums";
 
 export const metadata: Metadata = {
   title: "Reservas · Panel Alquiler Karaoke",
@@ -11,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ReservasPage() {
+  await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
   const bookings = await prisma.booking.findMany({ orderBy: { createdAt: "desc" }, take: 100 });
   const pending = bookings.filter((b) => b.status === "PENDING").length;
 

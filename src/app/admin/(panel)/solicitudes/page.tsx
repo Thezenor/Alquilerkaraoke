@@ -3,6 +3,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/cn";
 import { STATUS_LABELS, STATUS_CLASSES } from "./status";
+import { pageRequireRole } from "@/server/auth/guards";
+import { Role } from "@/generated/prisma/enums";
 
 export const metadata: Metadata = {
   title: "Solicitudes · Panel Alquiler Karaoke",
@@ -10,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function SolicitudesPage() {
+  await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
   const items = await prisma.contactRequest.findMany({
     orderBy: { createdAt: "desc" },
     take: 100,

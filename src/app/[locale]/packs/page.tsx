@@ -49,7 +49,7 @@ export default async function PacksPage({ params }: { params: Promise<{ locale: 
                 <div className="mt-4">
                   <span className="text-xs text-brand-muted">{t("from")}</span>
                   <div className="text-2xl font-bold text-brand-neon">
-                    {formatCents(pack.basePrice)}
+                    {formatCents(pack.basePrice, locale)}
                     <span className="ml-1 text-sm font-normal text-brand-muted">
                       {t("vat")}
                       {pack.isPerDay ? ` · ${t("perDay")}` : ""}

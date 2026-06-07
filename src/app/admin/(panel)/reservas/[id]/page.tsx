@@ -6,6 +6,8 @@ import { cn } from "@/lib/cn";
 import { formatCents } from "@/lib/money";
 import { BOOKING_STATUS_LABELS, BOOKING_STATUS_CLASSES } from "../status";
 import { BookingForm } from "./booking-form";
+import { pageRequireRole } from "@/server/auth/guards";
+import { Role } from "@/generated/prisma/enums";
 
 export const metadata: Metadata = {
   title: "Reserva · Panel Alquiler Karaoke",
@@ -22,6 +24,7 @@ function waLink(phone: string | null): string | null {
 type ExtraSnap = { name: string; price: number };
 
 export default async function ReservaDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
   const { id } = await params;
   const b = await prisma.booking.findUnique({ where: { id } });
   if (!b) notFound();

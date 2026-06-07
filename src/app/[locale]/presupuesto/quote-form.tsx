@@ -16,11 +16,11 @@ export type QuoteOptions = {
   provinces: string[];
 };
 
-function Row({ label, value, strong }: { label: string; value: number; strong?: boolean }) {
+function Row({ label, value, locale, strong }: { label: string; value: number; locale: string; strong?: boolean }) {
   return (
     <div className={`flex justify-between py-1.5 ${strong ? "text-white" : "text-brand-muted"}`}>
       <span>{label}</span>
-      <span className={strong ? "font-semibold" : ""}>{formatCents(value)}</span>
+      <span className={strong ? "font-semibold" : ""}>{formatCents(value, locale)}</span>
     </div>
   );
 }
@@ -77,7 +77,7 @@ export function QuoteForm({ options }: { options: QuoteOptions }) {
               {options.extras.map((e) => (
                 <label key={e.id} className="flex items-center gap-2 text-sm text-brand-muted">
                   <input type="checkbox" name="extras" value={e.id} className="h-4 w-4 accent-brand-neon" />
-                  {e.name} <span className="text-xs">({formatCents(e.price)})</span>
+                  {e.name} <span className="text-xs">({formatCents(e.price, locale)})</span>
                 </label>
               ))}
             </div>
@@ -165,19 +165,19 @@ export function QuoteForm({ options }: { options: QuoteOptions }) {
             <h2 className="text-lg font-semibold text-white">{t("resultTitle")}</h2>
             <p className="mt-1 text-sm text-brand-neon">{r.packName}</p>
             <div className="mt-4 border-t border-brand-border pt-4 text-sm">
-              <Row label={t("base")} value={r.base} />
-              {r.extraHours > 0 && <Row label={t("extraHours")} value={r.extraHours} />}
-              {r.province > 0 && <Row label={t("provinceLabel")} value={r.province} />}
-              {r.extras > 0 && <Row label={t("extrasLabel")} value={r.extras} />}
-              {r.surcharges > 0 && <Row label={t("surcharges")} value={r.surcharges} />}
+              <Row locale={locale} label={t("base")} value={r.base} />
+              {r.extraHours > 0 && <Row locale={locale} label={t("extraHours")} value={r.extraHours} />}
+              {r.province > 0 && <Row locale={locale} label={t("provinceLabel")} value={r.province} />}
+              {r.extras > 0 && <Row locale={locale} label={t("extrasLabel")} value={r.extras} />}
+              {r.surcharges > 0 && <Row locale={locale} label={t("surcharges")} value={r.surcharges} />}
               <div className="my-2 border-t border-brand-border" />
-              <Row label={t("subtotal")} value={r.subtotal} />
-              <Row label={t("vat")} value={r.vat} />
+              <Row locale={locale} label={t("subtotal")} value={r.subtotal} />
+              <Row locale={locale} label={t("vat")} value={r.vat} />
               <div className="my-2 border-t border-brand-border" />
-              <Row label={t("total")} value={r.total} strong />
+              <Row locale={locale} label={t("total")} value={r.total} strong />
               <div className="my-2 border-t border-brand-border" />
-              <Row label={t("deposit")} value={r.deposit} />
-              {r.securityDeposit > 0 && <Row label={t("securityDeposit")} value={r.securityDeposit} />}
+              <Row locale={locale} label={t("deposit")} value={r.deposit} />
+              {r.securityDeposit > 0 && <Row locale={locale} label={t("securityDeposit")} value={r.securityDeposit} />}
             </div>
             <p className="mt-4 text-xs text-brand-muted">{t("estimateNote")}</p>
           </div>

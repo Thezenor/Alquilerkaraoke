@@ -8,6 +8,9 @@ import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { formatCents, centsToEuros } from "@/lib/money";
 import { getPackBySlug, localizedPack } from "@/server/packs";
 
+// Datos desde BD: render en runtime (el build de Railway no accede a la BD).
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {
@@ -22,7 +25,7 @@ export async function generateMetadata({
     locale,
     pathname: `/packs/${slug}`,
     title: `${l.name} | Alquiler Karaoke`,
-    description: l.shortDescription || `${l.name} — ${t("from")} ${formatCents(pack.basePrice)} ${t("vat")}.`,
+    description: l.shortDescription || `${l.name} — ${t("from")} ${formatCents(pack.basePrice, locale)} ${t("vat")}.`,
   });
 }
 
@@ -40,7 +43,7 @@ export default async function PackDetailPage({
   const l = localizedPack(pack, locale);
 
   const deposit =
-    pack.depositType === "PERCENT" ? `${pack.depositValue}%` : formatCents(pack.depositValue);
+    pack.depositType === "PERCENT" ? `${pack.depositValue}%` : formatCents(pack.depositValue, locale);
 
   const schema = {
     "@context": "https://schema.org",
@@ -65,7 +68,7 @@ export default async function PackDetailPage({
 
           <div className="mt-4">
             <span className="text-sm text-brand-muted">{t("from")}</span>{" "}
-            <span className="text-3xl font-bold text-brand-neon">{formatCents(pack.basePrice)}</span>
+            <span className="text-3xl font-bold text-brand-neon">{formatCents(pack.basePrice, locale)}</span>
             <span className="ml-1 text-sm text-brand-muted">
               {t("vat")}
               {pack.isPerDay ? ` · ${t("perDay")}` : ""}
@@ -89,7 +92,7 @@ export default async function PackDetailPage({
             {pack.extraHourPrice > 0 && (
               <div className="rounded-xl border border-brand-border bg-brand-surface p-4">
                 <dt className="text-xs uppercase tracking-wide text-brand-muted">{t("extraHourLabel")}</dt>
-                <dd className="mt-1 font-medium text-white">{formatCents(pack.extraHourPrice)}</dd>
+                <dd className="mt-1 font-medium text-white">{formatCents(pack.extraHourPrice, locale)}</dd>
               </div>
             )}
             <div className="rounded-xl border border-brand-border bg-brand-surface p-4">
@@ -99,7 +102,7 @@ export default async function PackDetailPage({
             {pack.securityDeposit > 0 && (
               <div className="rounded-xl border border-brand-border bg-brand-surface p-4">
                 <dt className="text-xs uppercase tracking-wide text-brand-muted">{t("securityDepositLabel")}</dt>
-                <dd className="mt-1 font-medium text-white">{formatCents(pack.securityDeposit)}</dd>
+                <dd className="mt-1 font-medium text-white">{formatCents(pack.securityDeposit, locale)}</dd>
               </div>
             )}
           </dl>

@@ -65,6 +65,11 @@ test("reserva fija no supera el total", () => {
   assert.equal(b.deposit, b.total);
 });
 
+test("reserva en % se capa al total si el porcentaje supera 100", () => {
+  const b = calculateBudget({ ...base, depositType: "PERCENT", depositValue: 150 });
+  assert.equal(b.deposit, b.total);
+});
+
 test("valores negativos se tratan como cero", () => {
   const b = calculateBudget({ ...base, hours: 1 }); // menos de las incluidas
   assert.equal(b.extraHours, 0);

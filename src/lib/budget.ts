@@ -62,7 +62,7 @@ export function calculateBudget(input: BudgetInput): BudgetBreakdown {
 
   const deposit =
     input.depositType === "PERCENT"
-      ? r((total * nonNeg(input.depositValue)) / 100)
+      ? Math.min(total, r((total * nonNeg(input.depositValue)) / 100))
       : Math.min(total, nonNeg(input.depositValue));
 
   return {

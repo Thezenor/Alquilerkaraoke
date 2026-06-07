@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/cn";
 import { STATUS_LABELS, STATUS_CLASSES } from "../status";
 import { RespondForm } from "./respond-form";
+import { pageRequireRole } from "@/server/auth/guards";
+import { Role } from "@/generated/prisma/enums";
 
 export const metadata: Metadata = {
   title: "Solicitud · Panel Alquiler Karaoke",
@@ -23,6 +25,7 @@ export default async function SolicitudDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
   const { id } = await params;
   const item = await prisma.contactRequest.findUnique({ where: { id } });
   if (!item) notFound();

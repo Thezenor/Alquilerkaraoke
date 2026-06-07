@@ -9,24 +9,18 @@ import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/cn";
 
-const NAV_KEYS = ["services", "packs", "songs", "contact"] as const;
+// Rutas internas localizadas (el Link i18n añade el prefijo de idioma).
+const NAV_ITEMS = [
+  { key: "services", href: "/servicios" },
+  { key: "packs", href: "/packs" },
+  { key: "contact", href: "/contacto" },
+] as const;
 
 export function SiteHeader() {
   const t = useTranslations("Nav");
   const locale = useLocale();
-  const contactHref = `/${locale}/contacto`;
   const quoteHref = `/${locale}/presupuesto`;
   const [open, setOpen] = useState(false);
-
-  const hrefByKey: Record<string, string> = {
-    services: `/${locale}/servicios`,
-    packs: `/${locale}/packs`,
-    contact: contactHref,
-  };
-  const navItems = NAV_KEYS.map((key) => ({
-    key,
-    href: hrefByKey[key] ?? "#",
-  }));
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-brand-border/60 bg-brand-bg/80 backdrop-blur-md">
@@ -38,14 +32,14 @@ export function SiteHeader() {
 
         {/* Navegación desktop */}
         <nav className="hidden items-center gap-7 md:flex">
-          {navItems.map((item) => (
-            <a
+          {NAV_ITEMS.map((item) => (
+            <Link
               key={item.key}
               href={item.href}
               className="text-sm text-brand-muted transition hover:text-white"
             >
               {t(item.key)}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -66,7 +60,7 @@ export function SiteHeader() {
           {/* Botón menú móvil */}
           <button
             type="button"
-            aria-label="Menú"
+            aria-label={t("menu")}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
             className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-brand-border text-brand-text md:hidden"
@@ -99,15 +93,15 @@ export function SiteHeader() {
       {open && (
         <div className="border-t border-brand-border/60 bg-brand-surface md:hidden">
           <Container className="flex flex-col gap-1 py-4">
-            {navItems.map((item) => (
-              <a
+            {NAV_ITEMS.map((item) => (
+              <Link
                 key={item.key}
                 href={item.href}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-2.5 text-brand-text transition hover:bg-brand-surface-2"
               >
                 {t(item.key)}
-              </a>
+              </Link>
             ))}
             <NextLink
               href="/admin/login"

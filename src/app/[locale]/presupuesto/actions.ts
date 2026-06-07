@@ -24,7 +24,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
     if (!pack) return { status: "error", message: "Pack no válido." };
 
     const hoursRaw = parseInt(String(formData.get("hours") ?? ""), 10);
-    const hours = Number.isFinite(hoursRaw) && hoursRaw > 0 ? hoursRaw : pack.includedHours || 4;
+    const hours = Number.isFinite(hoursRaw) && hoursRaw > 0 ? Math.min(hoursRaw, 48) : pack.includedHours || 4;
     const province = String(formData.get("province") ?? "").trim();
     const date = String(formData.get("date") ?? "").trim();
     const night = formData.get("night") === "on";
@@ -43,10 +43,19 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       prisma.pricingConfig.findUnique({ where: { id: "default" } }),
     ]);
 
+    // Solo un suplemento por tipo (evita sumar duplicados si hay varias filas activas).
     const surchargePercents: number[] = [];
+    const appliedTypes = new Set<string>();
     for (const s of surcharges) {
-      if (s.type === "WEEKEND" && date && isWeekend(date)) surchargePercents.push(s.value);
-      if (s.type === "NIGHT" && night) surchargePercents.push(s.value);
+      if (appliedTypes.has(s.type)) continue;
+      if (s.type === "WEEKEND" && date && isWeekend(date)) {
+        surchargePercents.push(s.value);
+        appliedTypes.add(s.type);
+      }
+      if (s.type === "NIGHT" && night) {
+        surchargePercents.push(s.value);
+        appliedTypes.add(s.type);
+      }
     }
 
     const inputs = {
@@ -90,9 +99,11 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
 
     // Cliente: se crea si no existe (no profesional). El descuento SOLO se aplica
     // si el admin lo ha marcado como profesional y le ha asignado un porcentaje.
+    // No se sobrescriben nombre/teléfono de un cliente existente desde el formulario
+    // público (el email no está verificado: evita envenenar datos de clientes reales).
     const dbCustomer = await prisma.customer.upsert({
       where: { email: c.email },
-      update: { name: c.name, phone: orNull(c.phone ?? "") },
+      update: {},
       create: { email: c.email, name: c.name, phone: orNull(c.phone ?? "") },
     });
     const discountPercent = dbCustomer.isProfessional ? dbCustomer.discountPercent : 0;

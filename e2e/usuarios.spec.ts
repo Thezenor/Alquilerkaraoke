@@ -7,7 +7,7 @@ async function loginAs(page: Page, email: string, password: string) {
   await page.click('button[type="submit"]');
 }
 
-test("usuarios: superadmin crea un usuario y ese usuario inicia sesión", async ({ page }) => {
+test("usuarios: superadmin crea un usuario y ese usuario inicia sesión", async ({ page, browser }) => {
   const stamp = Date.now();
   const email = `staff_${stamp}@example.com`;
   const password = "Staff_pass_2026";
@@ -24,10 +24,11 @@ test("usuarios: superadmin crea un usuario y ese usuario inicia sesión", async 
   await page.waitForURL("**/admin/usuarios");
   await expect(page.getByText(email)).toBeVisible();
 
-  // Cerrar sesión y entrar como el nuevo usuario
-  await page.getByRole("button", { name: "Cerrar sesión" }).click();
-  await page.waitForURL("**/admin/login");
-  await loginAs(page, email, password);
-  await page.waitForURL("**/admin");
-  await expect(page).toHaveURL(/\/admin$/);
+  // El nuevo usuario inicia sesión en un contexto/navegador limpio (sesión aislada)
+  const ctx = await browser.newContext();
+  const page2 = await ctx.newPage();
+  await loginAs(page2, email, password);
+  await page2.waitForURL("**/admin");
+  await expect(page2).toHaveURL(/\/admin$/);
+  await ctx.close();
 });

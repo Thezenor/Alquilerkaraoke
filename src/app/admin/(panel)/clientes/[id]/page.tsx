@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatCents } from "@/lib/money";
 import { CustomerForm, type CustomerFormValues } from "../customer-form";
+import { pageRequireRole } from "@/server/auth/guards";
+import { Role } from "@/generated/prisma/enums";
 
 export const metadata: Metadata = {
   title: "Editar cliente · Panel Alquiler Karaoke",
@@ -11,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function EditCustomerPage({ params }: { params: Promise<{ id: string }> }) {
+  await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
   const { id } = await params;
   const customer = await prisma.customer.findUnique({
     where: { id },
