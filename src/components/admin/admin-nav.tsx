@@ -14,12 +14,13 @@ const ITEMS = [
   { href: "/admin/configuracion", label: "Configuración empresa" },
 ];
 
-export function AdminNav() {
+export function AdminNav({ canManageUsers = false }: { canManageUsers?: boolean }) {
   const pathname = usePathname();
+  const items = canManageUsers ? [...ITEMS, { href: "/admin/usuarios", label: "Usuarios" }] : ITEMS;
 
   return (
     <nav className="flex gap-1 overflow-x-auto">
-      {ITEMS.map((item) => {
+      {items.map((item) => {
         const active = pathname === item.href;
         return (
           <Link

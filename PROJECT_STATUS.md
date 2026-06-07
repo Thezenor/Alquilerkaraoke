@@ -29,6 +29,10 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 
 **Fase 3 COMPLETA** ✅ (packs, tarifas, extras, suplementos, IVA, motor de presupuestos y reservas).
 
+## Extras admin
+- [x] **Acceso al panel desde el menú público** ("Acceso" en cabecera + móvil → `/admin/login`).
+- [x] **Gestión de usuarios** (`/admin/usuarios`, solo SUPERADMIN): crear/editar usuarios, asignar **roles** (multi), **cambiar contraseña** (bcrypt), activar/desactivar, con salvaguardas (no quitarte SUPERADMIN ni desactivarte). Auditoría. Verificado E2E (crear usuario + login del nuevo usuario). → permite cambiar la contraseña del Superadmin de producción desde el panel.
+
 ## Marketing y RGPD (groundwork)
 - [x] **Consentimiento en contacto**: checkbox de **política de privacidad** (obligatorio) + **opt-in de marketing** (opcional), guardando prueba (`acceptedTerms`, `marketingConsent`, `consentVersion`, `consentAt`, IP). Migración `contact_consent`.
 - [x] **Página de privacidad** `/privacidad` (ES/EN/FR, borrador RGPD con datos de empresa desde `SiteConfig`, derechos incl. supresión) enlazada desde formulario y footer; en sitemap. El admin ve el consentimiento de cada lead.

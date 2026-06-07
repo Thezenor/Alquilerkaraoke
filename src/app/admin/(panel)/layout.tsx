@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/server/auth";
-import { canAccessAdmin } from "@/lib/auth-roles";
+import { canAccessAdmin, hasRole } from "@/lib/auth-roles";
+import { Role } from "@/generated/prisma/enums";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Container } from "@/components/ui/container";
@@ -30,7 +31,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
       <div className="border-b border-brand-border bg-brand-bg">
         <Container className="py-2">
-          <AdminNav />
+          <AdminNav canManageUsers={hasRole(session.user.roles, Role.SUPERADMIN)} />
         </Container>
       </div>
 
