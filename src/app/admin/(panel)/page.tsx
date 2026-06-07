@@ -32,6 +32,16 @@ export default async function AdminDashboardPage() {
         </Link>
 
         <Link
+          href="/admin/clientes"
+          className="rounded-xl border border-brand-border bg-brand-surface p-5 transition hover:border-brand-neon/60"
+        >
+          <h2 className="font-semibold text-white">Clientes</h2>
+          <p className="mt-1 text-sm text-brand-muted">
+            Marca clientes profesionales y asígnales descuento.
+          </p>
+        </Link>
+
+        <Link
           href="/admin/solicitudes"
           className="rounded-xl border border-brand-border bg-brand-surface p-5 transition hover:border-brand-neon/60"
         >

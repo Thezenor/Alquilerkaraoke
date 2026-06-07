@@ -298,16 +298,19 @@ model Booking {
 
   // Importe (snapshot en céntimos, sin/with IVA según campo)
   subtotal        Int @default(0)
+  discount        Int @default(0) // descuento cliente profesional (céntimos)
   vat             Int @default(0)
   total           Int @default(0)
   deposit         Int @default(0)
   securityDeposit Int @default(0)
 
   // Cliente
-  name    String
-  email   String
-  phone   String?
-  message String?
+  name       String
+  email      String
+  phone      String?
+  message    String?
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
 
   // Consentimiento RGPD
   acceptedTerms    Boolean   @default(false)
@@ -330,4 +333,20 @@ model Booking {
 
   @@index([status])
   @@index([createdAt])
+}
+
+// ── Clientes (con descuento para profesionales) ─────────────────
+model Customer {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String?
+  phone           String?
+  isProfessional  Boolean   @default(false)
+  discountPercent Int       @default(0) // 0–35; solo se aplica si isProfessional
+  notes           String?
+  bookings        Booking[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([isProfessional])
 }

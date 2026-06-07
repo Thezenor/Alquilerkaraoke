@@ -49,7 +49,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       if (s.type === "NIGHT" && night) surchargePercents.push(s.value);
     }
 
-    const breakdown = calculateBudget({
+    const inputs = {
       basePrice: pack.basePrice,
       isPerDay: pack.isPerDay,
       includedHours: pack.includedHours,
@@ -59,16 +59,15 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       extras: extras.map((e) => e.price),
       surchargePercents,
       vatPercent: config?.vatPercent ?? 21,
-      discountPercent: 0,
       depositType: pack.depositType,
       depositValue: pack.depositValue,
       securityDeposit: pack.securityDeposit,
-    });
+    };
 
-    const result = { ...breakdown, packName: pack.name };
-
+    // Cálculo público (sin descuento: solo aplica a clientes profesionales).
     if (intent !== "book") {
-      return { status: "ok", result };
+      const breakdown = calculateBudget({ ...inputs, discountPercent: 0 });
+      return { status: "ok", result: { ...breakdown, packName: pack.name } };
     }
 
     // ── Envío de solicitud de reserva (PENDING) ──
@@ -89,6 +88,17 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
     }
     const c = customer.data;
 
+    // Cliente: se crea si no existe (no profesional). El descuento SOLO se aplica
+    // si el admin lo ha marcado como profesional y le ha asignado un porcentaje.
+    const dbCustomer = await prisma.customer.upsert({
+      where: { email: c.email },
+      update: { name: c.name, phone: orNull(c.phone ?? "") },
+      create: { email: c.email, name: c.name, phone: orNull(c.phone ?? "") },
+    });
+    const discountPercent = dbCustomer.isProfessional ? dbCustomer.discountPercent : 0;
+
+    const breakdown = calculateBudget({ ...inputs, discountPercent });
+
     const h = await headers();
     const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
     const userAgent = h.get("user-agent") ?? null;
@@ -103,6 +113,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
         night,
         extras: extras.map((e) => ({ name: e.name, price: e.price })),
         subtotal: breakdown.subtotal,
+        discount: breakdown.discount,
         vat: breakdown.vat,
         total: breakdown.total,
         deposit: breakdown.deposit,
@@ -111,6 +122,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
         email: c.email,
         phone: orNull(c.phone ?? ""),
         message: orNull(c.message ?? ""),
+        customerId: dbCustomer.id,
         acceptedTerms: true,
         marketingConsent: c.marketing === "on",
         consentVersion: CONSENT_VERSION,
@@ -126,10 +138,10 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       action: "booking.create",
       entity: "Booking",
       entityId: created.id,
-      metadata: { email: c.email, total: breakdown.total },
+      metadata: { email: c.email, total: breakdown.total, discount: breakdown.discount },
     });
 
-    return { status: "booked", message: "ok", result };
+    return { status: "booked", message: "ok", result: { ...breakdown, packName: pack.name } };
   } catch {
     return { status: "error", message: "No se pudo procesar la solicitud." };
   }

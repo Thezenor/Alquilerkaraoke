@@ -35,6 +35,11 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 - [x] Admin `/tarifas` gestiona **zonas** (suplemento por zona, badge "pendiente"); packs/extras editan **categoría**.
 - Pendiente (del informe): import/export Excel de tarifas; descuento por cliente (15%/35%); landings SEO por producto; corregir textos/typos de descripciones.
 
+## Clientes y descuentos profesionales — 2026-06-07
+- [x] **Modelo `Customer`** (email único, `isProfessional`, `discountPercent` 0–35). Las reservas crean/enlazan el cliente por email.
+- [x] **Descuento**: el motor aplica el % **solo si el cliente está marcado como profesional** por el admin; si no, 0. Snapshot `discount` en `Booking`.
+- [x] Admin **`/admin/clientes`** (lista + crear/editar): marcar profesional + asignar descuento + notas + ver reservas del cliente. Detalle de reserva muestra "Descuento profesional". Verificado E2E (9/9).
+
 ## Extras admin
 - [x] **Acceso al panel desde el menú público** ("Acceso" en cabecera + móvil → `/admin/login`).
 - [x] **Gestión de usuarios** (`/admin/usuarios`, solo SUPERADMIN): crear/editar usuarios, asignar **roles** (multi), **cambiar contraseña** (bcrypt), activar/desactivar, con salvaguardas (no quitarte SUPERADMIN ni desactivarte). Auditoría. Verificado E2E (crear usuario + login del nuevo usuario). → permite cambiar la contraseña del Superadmin de producción desde el panel.
