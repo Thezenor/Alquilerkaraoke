@@ -45,6 +45,22 @@ enum BookingStatus {
   CANCELLED
 }
 
+// Método de pago de un cobro manual (CARD reservado para Stripe en Fase 4).
+enum PaymentMethod {
+  TRANSFER
+  BIZUM
+  CASH
+  CARD
+  OTHER
+}
+
+// Estado de pago de una reserva (derivado de la suma de cobros).
+enum PaymentStatus {
+  PENDING
+  PARTIAL
+  PAID
+}
+
 // Tipos de suplemento configurables (DECISIONS.md / docs 08).
 enum SurchargeType {
   WEEKEND
@@ -75,6 +91,7 @@ model User {
   auditLogs        AuditLog[]
   contactResponses ContactRequest[]
   handledBookings  Booking[]
+  payments         Payment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -156,6 +173,10 @@ model SiteConfig {
   faviconUrl   String?
   ogImageUrl   String?
   primaryColor String? @default("#22d3ee")
+  // Datos de pago para el cliente (transferencia / Bizum)
+  iban         String?
+  bizum        String?
+  paymentInfo  String? // instrucciones libres mostradas al cliente
   // Campos extra flexibles (redes, horarios, etc.) sin tocar el esquema.
   extra        Json?
 
@@ -304,6 +325,11 @@ model Booking {
   deposit         Int @default(0)
   securityDeposit Int @default(0)
 
+  // Pagos (cobros manuales registrados por el admin)
+  paymentStatus PaymentStatus @default(PENDING)
+  amountPaid    Int           @default(0) // céntimos cobrados (caché de la suma de Payment)
+  payments      Payment[]
+
   // Cliente
   name       String
   email      String
@@ -334,6 +360,24 @@ model Booking {
   @@index([status])
   @@index([createdAt])
   @@index([eventDate])
+  @@index([paymentStatus])
+}
+
+// ── Pagos (cobros manuales: transferencia, Bizum, efectivo…) ─────
+model Payment {
+  id          String        @id @default(cuid())
+  bookingId   String
+  booking     Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  amount      Int // céntimos (positivo = cobro, negativo = reembolso)
+  method      PaymentMethod @default(TRANSFER)
+  reference   String? // nº de operación / concepto
+  note        String?
+  paidAt      DateTime      @default(now())
+  createdById String?
+  createdBy   User?         @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime      @default(now())
+
+  @@index([bookingId])
 }
 
 // ── Bloqueos de fecha (disponibilidad) ──────────────────────────

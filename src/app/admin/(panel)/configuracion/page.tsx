@@ -19,6 +19,9 @@ export default async function ConfigPage() {
     whatsapp: c?.whatsapp ?? "",
     address: c?.address ?? "",
     primaryColor: c?.primaryColor ?? "",
+    iban: c?.iban ?? "",
+    bizum: c?.bizum ?? "",
+    paymentInfo: c?.paymentInfo ?? "",
   };
 
   return (

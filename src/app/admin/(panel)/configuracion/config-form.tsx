@@ -14,6 +14,9 @@ export type ConfigValues = {
   whatsapp: string;
   address: string;
   primaryColor: string;
+  iban: string;
+  bizum: string;
+  paymentInfo: string;
 };
 
 function Field({
@@ -64,6 +67,27 @@ export function ConfigForm({ values }: { values: ConfigValues }) {
         <Field name="whatsapp" label="WhatsApp" defaultValue={values.whatsapp} placeholder="Si difiere del teléfono" />
         <Field name="address" label="Dirección" defaultValue={values.address} />
         <Field name="primaryColor" label="Color principal (hex)" defaultValue={values.primaryColor} placeholder="#22d3ee" />
+      </div>
+
+      <h2 className="mt-8 mb-1 text-sm font-semibold tracking-wide text-brand-muted uppercase">Datos de pago</h2>
+      <p className="mb-4 text-sm text-brand-muted">Se muestran al cliente en el email del presupuesto.</p>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field name="iban" label="IBAN (transferencia)" defaultValue={values.iban} placeholder="ES00 0000 0000 0000 0000 0000" />
+        <Field name="bizum" label="Bizum (teléfono)" defaultValue={values.bizum} placeholder="607724965" />
+        <div className="sm:col-span-2 flex flex-col gap-1.5">
+          <label htmlFor="paymentInfo" className="text-sm font-medium text-brand-text">
+            Instrucciones de pago (opcional)
+          </label>
+          <textarea
+            id="paymentInfo"
+            name="paymentInfo"
+            defaultValue={values.paymentInfo}
+            rows={3}
+            maxLength={1000}
+            placeholder="Ej. Indica tu nombre y la fecha del evento en el concepto."
+            className="rounded-lg border border-brand-border bg-brand-bg px-3 py-2.5 text-brand-text outline-none transition focus:border-brand-neon focus:ring-2 focus:ring-brand-neon/30"
+          />
+        </div>
       </div>
 
       {state.status !== "idle" && state.message && (

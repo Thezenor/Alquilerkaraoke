@@ -39,7 +39,18 @@ export async function notifyNewBooking(
   try {
     const adminUrl = `${siteUrl()}/admin/reservas/${bookingId}`;
 
-    const customer = bookingCustomerEmail(data);
+    // Datos de pago (transferencia/Bizum) para incluir en el email del cliente.
+    let payment: BookingEmailData["payment"];
+    try {
+      const cfg = await getSiteConfig();
+      if (cfg && (cfg.iban || cfg.bizum || cfg.paymentInfo)) {
+        payment = { iban: cfg.iban, bizum: cfg.bizum, info: cfg.paymentInfo };
+      }
+    } catch {
+      // sin datos de pago: el email se envía igualmente
+    }
+
+    const customer = bookingCustomerEmail({ ...data, payment });
     const toCustomer = sendEmail({ to: data.email, subject: customer.subject, html: customer.html });
 
     const adminEmail = await resolveAdminEmail();

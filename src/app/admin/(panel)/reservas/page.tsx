@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { formatCents } from "@/lib/money";
 import { pageRequireRole } from "@/server/auth/guards";
 import { Role, type BookingStatus } from "@/generated/prisma/enums";
-import { StatusBadge, BOOKING_STATUS } from "@/components/admin/status-badge";
+import { StatusBadge, BOOKING_STATUS, PAYMENT_STATUS } from "@/components/admin/status-badge";
 import { ListControls } from "@/components/admin/list-controls";
 import { Pagination } from "@/components/admin/pagination";
 import { Icon } from "@/components/admin/icons";
@@ -83,6 +83,7 @@ export default async function ReservasPage({
         <ul className="mt-4 divide-y divide-brand-border overflow-hidden rounded-xl border border-brand-border bg-brand-surface">
           {bookings.map((b) => {
             const st = BOOKING_STATUS[b.status] ?? { tone: "neutral" as const, label: b.status };
+            const pay = PAYMENT_STATUS[b.paymentStatus] ?? { tone: "neutral" as const, label: b.paymentStatus };
             return (
               <li key={b.id}>
                 <Link
@@ -98,8 +99,9 @@ export default async function ReservasPage({
                       {b.eventDate ? ` · ${b.eventDate.toLocaleDateString("es-ES")}` : ""}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3 text-sm">
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
                     <span className="font-semibold text-white">{formatCents(b.total)}</span>
+                    <StatusBadge tone={pay.tone}>{pay.label}</StatusBadge>
                     <StatusBadge tone={st.tone}>{st.label}</StatusBadge>
                   </div>
                 </Link>

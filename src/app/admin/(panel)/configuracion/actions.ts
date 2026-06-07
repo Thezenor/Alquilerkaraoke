@@ -20,6 +20,9 @@ const schema = z.object({
   primaryColor: z
     .union([z.literal(""), z.string().regex(/^#[0-9a-fA-F]{6}$/, "Color hex no válido (ej. #22d3ee).")])
     .optional(),
+  iban: z.string().trim().max(40).optional(),
+  bizum: z.string().trim().max(40).optional(),
+  paymentInfo: z.string().trim().max(1000).optional(),
 });
 
 export type ConfigFormState = {
@@ -60,6 +63,9 @@ export async function updateSiteConfig(
       whatsapp: orNull(d.whatsapp),
       address: orNull(d.address),
       primaryColor: orNull(d.primaryColor),
+      iban: orNull(d.iban),
+      bizum: orNull(d.bizum),
+      paymentInfo: orNull(d.paymentInfo),
     },
     create: {
       id: "default",
@@ -71,6 +77,9 @@ export async function updateSiteConfig(
       whatsapp: orNull(d.whatsapp),
       address: orNull(d.address),
       primaryColor: orNull(d.primaryColor),
+      iban: orNull(d.iban),
+      bizum: orNull(d.bizum),
+      paymentInfo: orNull(d.paymentInfo),
     },
   });
 

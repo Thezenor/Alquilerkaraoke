@@ -39,6 +39,20 @@ export const BOOKING_STATUS: Record<string, { tone: Tone; label: string }> = {
   CANCELLED: { tone: "neutral", label: "Cancelada" },
 };
 
+export const PAYMENT_STATUS: Record<string, { tone: Tone; label: string }> = {
+  PENDING: { tone: "danger", label: "Sin pagar" },
+  PARTIAL: { tone: "pending", label: "Parcial" },
+  PAID: { tone: "success", label: "Pagado" },
+};
+
+export const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  TRANSFER: "Transferencia",
+  BIZUM: "Bizum",
+  CASH: "Efectivo",
+  CARD: "Tarjeta",
+  OTHER: "Otro",
+};
+
 export const CONTACT_STATUS: Record<string, { tone: Tone; label: string }> = {
   NEW: { tone: "info", label: "Nueva" },
   IN_PROGRESS: { tone: "pending", label: "En curso" },

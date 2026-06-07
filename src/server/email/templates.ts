@@ -45,6 +45,7 @@ export type BookingEmailData = {
   adminUrl?: string;
   email?: string;
   phone?: string | null;
+  payment?: { iban?: string | null; bizum?: string | null; info?: string | null };
 };
 
 function summaryTable(d: BookingEmailData): string {
@@ -68,6 +69,26 @@ function priceTable(b: BudgetBreakdown): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #1f2937;margin-top:8px;padding-top:8px">${lines.join("")}</table>`;
 }
 
+function paymentBlock(d: BookingEmailData): string {
+  const p = d.payment;
+  if (!p || (!p.iban && !p.bizum && !p.info)) return "";
+  const lines: string[] = [];
+  if (p.iban) lines.push(row("Transferencia (IBAN)", esc(p.iban)));
+  if (p.bizum) lines.push(row("Bizum", esc(p.bizum)));
+  const table = lines.length
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${lines.join("")}</table>`
+    : "";
+  const info = p.info
+    ? `<p style="margin:8px 0 0;color:#9ca3af;font-size:13px">${esc(p.info)}</p>`
+    : "";
+  return `<div style="margin-top:16px;padding:12px;background:#0b0f14;border:1px solid #1f2937;border-radius:8px">
+      <p style="margin:0 0 8px;color:#fff;font-size:14px;font-weight:bold">Cómo reservar</p>
+      <p style="margin:0 0 8px;color:#cbd5e1;font-size:13px">Para confirmar, abona la reserva de ${formatCents(d.breakdown.deposit)}:</p>
+      ${table}
+      ${info}
+    </div>`;
+}
+
 /** Presupuesto orientativo para el cliente. */
 export function bookingCustomerEmail(d: BookingEmailData): EmailContent {
   const body = `
@@ -77,6 +98,7 @@ export function bookingCustomerEmail(d: BookingEmailData): EmailContent {
     </p>
     ${summaryTable(d)}
     ${priceTable(d.breakdown)}
+    ${paymentBlock(d)}
     <p style="margin:16px 0 0;color:#9ca3af;font-size:12px">
       Importes con IVA incluido salvo indicación. El presupuesto no constituye una reserva confirmada
       hasta nuestra validación.
