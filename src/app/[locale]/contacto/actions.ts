@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { logAudit } from "@/server/audit";
+import { CONSENT_VERSION } from "@/lib/consent";
 
 const schema = z.object({
   name: z.string().trim().min(1).max(120),
@@ -12,6 +13,9 @@ const schema = z.object({
   city: z.string().trim().max(120).optional(),
   message: z.string().trim().min(1).max(4000),
   locale: z.string().trim().max(5).optional(),
+  // Checkbox HTML: envía "on" si está marcado.
+  acceptedTerms: z.literal("on"),
+  marketing: z.string().optional(),
 });
 
 export type ContactFormState = { status: "idle" | "success" | "error" };
@@ -41,6 +45,10 @@ export async function submitContactRequest(
         city: orNull(d.city),
         message: d.message,
         locale: orNull(d.locale),
+        acceptedTerms: true,
+        marketingConsent: d.marketing === "on",
+        consentVersion: CONSENT_VERSION,
+        consentAt: new Date(),
         ip,
         userAgent,
       },

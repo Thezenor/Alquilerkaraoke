@@ -9,6 +9,7 @@ const publicPaths = [
   "",
   "/servicios",
   "/contacto",
+  "/privacidad",
   ...CITIES.map((c) => `/karaoke/${c.slug}`),
 ];
 

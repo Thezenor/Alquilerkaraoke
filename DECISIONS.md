@@ -175,6 +175,16 @@ No hace falta inventario completo en esta primera versión.
 - Permitir/bloquear descargas.
 - Galería por evento.
 
+## Marketing y RGPD (añadido 2026-06-07)
+- **Objetivo**: web muy completa de servicios + captación para publicidad propia. Recoger emails (con consentimiento) para enviar **ofertas, novedades y eventos** de forma **programada/automática** en fechas concretas.
+- **Consentimiento (RGPD/LOPDGDD)**:
+  - Todo formulario (contacto, registro, newsletter) exige **aceptación de términos y política de privacidad** (checkbox obligatorio, sin premarcar).
+  - **Opt-in de marketing separado y opcional** (recibir comunicaciones comerciales). Doble base: sin opt-in NO se envía publicidad.
+  - Se guarda **prueba de consentimiento**: fecha/hora, versión de la política, IP.
+- **Derechos del interesado**: acceso, rectificación, **supresión/borrado**, oposición y portabilidad. Habrá flujo de baja (unsubscribe) en cada email y borrado de datos desde admin/solicitud del usuario.
+- **Páginas legales**: política de privacidad, aviso legal, términos y política de cookies (datos de empresa desde `SiteConfig`). Borradores marcados como **pendientes de revisión legal**.
+- **Roadmap marketing** (fases posteriores): modelo `NewsletterSubscriber` + alta desde web; segmentación (leads con `marketingConsent`); campañas programadas (ofertas/eventos) con proveedor de email (Resend/Brevo); plantillas; métricas; gestión de bajas.
+
 ## IA
 - Módulo IA indispensable.
 - Proveedores: OpenAI, Claude, Gemini y otros.

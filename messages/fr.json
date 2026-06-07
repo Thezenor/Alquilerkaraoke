@@ -69,8 +69,30 @@
       "submit": "Envoyer la demande",
       "submitting": "Envoi…",
       "success": "Merci ! Nous avons bien reçu votre demande et vous contacterons bientôt.",
-      "error": "Échec de l'envoi. Vérifiez les informations et réessayez."
+      "error": "Échec de l'envoi. Vérifiez les informations et réessayez.",
+      "terms": "J'ai lu et j'accepte la <link>politique de confidentialité</link>.",
+      "marketing": "Je souhaite recevoir des offres, actualités et événements par email (facultatif).",
+      "termsRequired": "Vous devez accepter la politique de confidentialité pour continuer."
     }
+  },
+  "PrivacyMeta": {
+    "title": "Politique de confidentialité | Alquiler Karaoke",
+    "description": "Informations sur le traitement de vos données personnelles : responsable, finalité, base juridique et vos droits (accès, rectification, suppression)."
+  },
+  "Privacy": {
+    "title": "Politique de confidentialité",
+    "draftNotice": "Brouillon indicatif en attente de révision juridique. Complétez les données de l'entreprise dans le panneau d'administration.",
+    "controllerTitle": "Responsable du traitement",
+    "purposeTitle": "Finalité du traitement",
+    "purposeText": "Nous traitons vos données pour répondre à votre demande, établir des devis et gérer la réservation de nos services. Avec votre consentement, également pour vous envoyer des communications commerciales (offres, actualités et événements).",
+    "legalBasisTitle": "Base juridique",
+    "legalBasisText": "Le traitement repose sur votre consentement et, le cas échéant, sur l'exécution d'un contrat ou de mesures précontractuelles à votre demande.",
+    "marketingTitle": "Communications commerciales",
+    "marketingText": "Nous n'envoyons de la publicité que si vous avez coché la case de consentement marketing. Vous pouvez vous désabonner à tout moment via le lien inclus dans chaque email ou en nous contactant.",
+    "rightsTitle": "Vos droits",
+    "rightsText": "Vous pouvez exercer vos droits d'accès, de rectification, de suppression, d'opposition, de limitation du traitement et de portabilité en écrivant à notre email de contact. Vous pouvez aussi déposer une réclamation auprès de l'autorité de contrôle (AEPD).",
+    "retentionTitle": "Conservation",
+    "retentionText": "Nous conservons vos données aussi longtemps que nécessaire à la finalité indiquée puis pendant les délais légaux applicables."
   },
   "ServicesMeta": {
     "title": "Services de karaoké, son et événements | Alquiler Karaoke",

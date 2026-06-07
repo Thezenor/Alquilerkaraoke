@@ -69,8 +69,30 @@
       "submit": "Enviar solicitud",
       "submitting": "Enviando…",
       "success": "¡Gracias! Hemos recibido tu solicitud y te contactaremos pronto.",
-      "error": "No se pudo enviar. Revisa los datos e inténtalo de nuevo."
+      "error": "No se pudo enviar. Revisa los datos e inténtalo de nuevo.",
+      "terms": "He leído y acepto la <link>política de privacidad</link>.",
+      "marketing": "Quiero recibir ofertas, novedades y eventos por email (opcional).",
+      "termsRequired": "Debes aceptar la política de privacidad para continuar."
     }
+  },
+  "PrivacyMeta": {
+    "title": "Política de privacidad | Alquiler Karaoke",
+    "description": "Información sobre el tratamiento de tus datos personales: responsable, finalidad, base jurídica y tus derechos (acceso, rectificación, supresión)."
+  },
+  "Privacy": {
+    "title": "Política de privacidad",
+    "draftNotice": "Borrador orientativo pendiente de revisión legal. Completa los datos de empresa en el panel de administración.",
+    "controllerTitle": "Responsable del tratamiento",
+    "purposeTitle": "Finalidad del tratamiento",
+    "purposeText": "Tratamos tus datos para atender tu solicitud o consulta, elaborar presupuestos y gestionar la contratación de nuestros servicios. Si nos das tu consentimiento, también para enviarte comunicaciones comerciales (ofertas, novedades y eventos).",
+    "legalBasisTitle": "Base jurídica",
+    "legalBasisText": "El tratamiento se basa en tu consentimiento y, en su caso, en la ejecución de un contrato o medidas precontractuales a petición tuya.",
+    "marketingTitle": "Comunicaciones comerciales",
+    "marketingText": "Solo enviamos publicidad si has marcado la casilla de consentimiento de marketing. Podrás darte de baja en cualquier momento desde el enlace incluido en cada email o escribiéndonos.",
+    "rightsTitle": "Tus derechos",
+    "rightsText": "Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad escribiéndonos al correo de contacto. También puedes reclamar ante la autoridad de control (AEPD).",
+    "retentionTitle": "Conservación",
+    "retentionText": "Conservamos tus datos el tiempo necesario para la finalidad indicada y, después, durante los plazos legales aplicables."
   },
   "ServicesMeta": {
     "title": "Servicios de karaoke, sonido y eventos | Alquiler Karaoke",

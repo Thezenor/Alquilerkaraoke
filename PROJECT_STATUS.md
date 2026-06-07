@@ -25,6 +25,11 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 - [ ] Bloque 4 — Motor de presupuestos (función pura) + formulario.
 - [ ] Bloque 5 — Presupuesto → reserva pendiente de validación.
 
+## Marketing y RGPD (groundwork)
+- [x] **Consentimiento en contacto**: checkbox de **política de privacidad** (obligatorio) + **opt-in de marketing** (opcional), guardando prueba (`acceptedTerms`, `marketingConsent`, `consentVersion`, `consentAt`, IP). Migración `contact_consent`.
+- [x] **Página de privacidad** `/privacidad` (ES/EN/FR, borrador RGPD con datos de empresa desde `SiteConfig`, derechos incl. supresión) enlazada desde formulario y footer; en sitemap. El admin ve el consentimiento de cada lead.
+- [ ] Newsletter (alta web) + campañas programadas de ofertas/eventos con proveedor de email (fase posterior). Textos legales finales pendientes de revisión.
+
 ## Bloques Fase 1
 - [x] **Bloque 1 — Scaffolding**: Next.js 16 (App Router, TS estricto, Tailwind v4), estructura de carpetas (`src/lib`, `src/components`, `src/server`, `messages/`), ESLint + Prettier (orden clases Tailwind), `.editorconfig`, `.env.example`, scripts npm. Verificado: typecheck + lint + format + build en verde (2026-06-06).
 - [x] **Bloque 2 — Base de datos y Prisma**: Prisma 7 con adapter `pg`, esquema mínimo (`User` + enum `Role`, `Account`/`Session`/`VerificationToken` para NextAuth, `AuditLog`, `SiteConfig`), migración inicial `init` aplicada y seed (SiteConfig + Superadmin). PostgreSQL 17 local. Verificado: datos en BD + typecheck + lint + build en verde (2026-06-06).

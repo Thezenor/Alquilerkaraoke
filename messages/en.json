@@ -69,8 +69,30 @@
       "submit": "Send request",
       "submitting": "Sending…",
       "success": "Thank you! We've received your request and will contact you soon.",
-      "error": "Could not send. Please check the details and try again."
+      "error": "Could not send. Please check the details and try again.",
+      "terms": "I have read and accept the <link>privacy policy</link>.",
+      "marketing": "I'd like to receive offers, news and events by email (optional).",
+      "termsRequired": "You must accept the privacy policy to continue."
     }
+  },
+  "PrivacyMeta": {
+    "title": "Privacy policy | Alquiler Karaoke",
+    "description": "Information about the processing of your personal data: controller, purpose, legal basis and your rights (access, rectification, erasure)."
+  },
+  "Privacy": {
+    "title": "Privacy policy",
+    "draftNotice": "Indicative draft pending legal review. Complete the company details in the admin panel.",
+    "controllerTitle": "Data controller",
+    "purposeTitle": "Purpose of processing",
+    "purposeText": "We process your data to handle your request or enquiry, prepare quotes and manage the booking of our services. With your consent, also to send you commercial communications (offers, news and events).",
+    "legalBasisTitle": "Legal basis",
+    "legalBasisText": "Processing is based on your consent and, where applicable, on the performance of a contract or pre-contractual measures at your request.",
+    "marketingTitle": "Commercial communications",
+    "marketingText": "We only send advertising if you ticked the marketing consent box. You can unsubscribe at any time via the link in each email or by contacting us.",
+    "rightsTitle": "Your rights",
+    "rightsText": "You can exercise your rights of access, rectification, erasure, objection, restriction of processing and portability by writing to our contact email. You may also lodge a complaint with the supervisory authority (AEPD).",
+    "retentionTitle": "Retention",
+    "retentionText": "We keep your data for as long as necessary for the stated purpose and, afterwards, for the applicable legal periods."
   },
   "ServicesMeta": {
     "title": "Karaoke, sound & event services | Alquiler Karaoke",

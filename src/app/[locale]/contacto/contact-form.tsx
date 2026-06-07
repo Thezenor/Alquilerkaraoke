@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { submitContactRequest, type ContactFormState } from "./actions";
 
@@ -58,6 +59,25 @@ export function ContactForm() {
           {t("message")} <span className="text-brand-neon">*</span>
         </label>
         <textarea id="message" name="message" required rows={5} maxLength={4000} className={inputClass} />
+      </div>
+
+      <div className="flex flex-col gap-2.5">
+        <label className="flex items-start gap-2.5 text-sm text-brand-muted">
+          <input type="checkbox" name="acceptedTerms" required className="mt-0.5 h-4 w-4 accent-brand-neon" />
+          <span>
+            {t.rich("terms", {
+              link: (chunks) => (
+                <Link href={`/${locale}/privacidad`} className="text-brand-neon underline">
+                  {chunks}
+                </Link>
+              ),
+            })}
+          </span>
+        </label>
+        <label className="flex items-start gap-2.5 text-sm text-brand-muted">
+          <input type="checkbox" name="marketing" className="mt-0.5 h-4 w-4 accent-brand-neon" />
+          <span>{t("marketing")}</span>
+        </label>
       </div>
 
       {state.status === "error" && (

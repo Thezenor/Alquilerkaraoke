@@ -14,6 +14,8 @@ test("contacto: enviar formulario público y gestionarlo en el admin", async ({ 
   await page.fill("#email", email);
   await page.fill("#phone", "600111222");
   await page.fill("#message", "Solicitud de prueba E2E.");
+  await page.check('input[name="acceptedTerms"]');
+  await page.check('input[name="marketing"]');
   await page.getByRole("button", { name: "Enviar solicitud" }).click();
   await expect(page.getByText("Hemos recibido tu solicitud")).toBeVisible();
 

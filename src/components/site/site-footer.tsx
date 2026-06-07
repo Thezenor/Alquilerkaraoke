@@ -1,9 +1,18 @@
+import Link from "next/link";
 import { Container } from "@/components/ui/container";
 
-export function SiteFooter({ companyName, phone, phoneHref }: {
+export function SiteFooter({
+  companyName,
+  phone,
+  phoneHref,
+  privacyHref,
+  privacyLabel,
+}: {
   companyName: string;
   phone: string;
   phoneHref: string;
+  privacyHref: string;
+  privacyLabel: string;
 }) {
   const year = new Date().getFullYear();
 
@@ -18,6 +27,9 @@ export function SiteFooter({ companyName, phone, phoneHref }: {
           <a href={phoneHref} className="transition hover:text-white">
             {phone}
           </a>
+          <Link href={privacyHref} className="transition hover:text-white">
+            {privacyLabel}
+          </Link>
           <span>© {year} {companyName}</span>
         </div>
       </Container>

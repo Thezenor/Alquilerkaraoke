@@ -68,6 +68,25 @@ export default async function SolicitudDetailPage({
               <dt className="text-xs uppercase tracking-wide text-brand-muted">Recibida</dt>
               <dd className="mt-1 text-white">{item.createdAt.toLocaleString("es-ES")}</dd>
             </div>
+            <div>
+              <dt className="text-xs uppercase tracking-wide text-brand-muted">Marketing</dt>
+              <dd className="mt-1">
+                {item.marketingConsent ? (
+                  <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs text-emerald-300">
+                    Acepta publicidad
+                  </span>
+                ) : (
+                  <span className="text-brand-muted">No acepta</span>
+                )}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-wide text-brand-muted">Consentimiento</dt>
+              <dd className="mt-1 text-white">
+                {item.acceptedTerms ? "Términos aceptados" : "—"}
+                {item.consentVersion ? ` (v${item.consentVersion})` : ""}
+              </dd>
+            </div>
           </dl>
 
           <div className="mt-6">

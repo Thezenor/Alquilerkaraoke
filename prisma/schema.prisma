@@ -164,6 +164,12 @@ model ContactRequest {
   locale  String?
   status  ContactStatus @default(NEW)
 
+  // Consentimiento RGPD
+  acceptedTerms    Boolean   @default(false)
+  marketingConsent Boolean   @default(false)
+  consentVersion   String?
+  consentAt        DateTime?
+
   // Respuesta del admin
   response      String?
   respondedById String?
