@@ -13,17 +13,13 @@ test("reserva: solicitar desde presupuesto y validar en admin", async ({ page })
   const name = `Reserva E2E ${stamp}`;
   const email = `reserva_${stamp}@example.com`;
 
-  // Presupuesto: calcular
+  // Presupuesto: rellenar y solicitar (un solo paso)
   await page.goto("/es/presupuesto");
   await page.fill("#hours", "5");
-  await page.getByRole("button", { name: "Calcular presupuesto" }).click();
-  await expect(page.getByRole("heading", { name: "Presupuesto orientativo" })).toBeVisible();
-
-  // Rellenar datos y enviar solicitud de reserva
   await page.fill("#name", name);
   await page.fill("#email", email);
   await page.check('input[name="acceptedTerms"]');
-  await page.getByRole("button", { name: "Enviar solicitud de reserva" }).click();
+  await page.getByRole("button", { name: "Solicitar presupuesto" }).click();
   await expect(page.getByRole("heading", { name: "¡Solicitud enviada!" })).toBeVisible();
 
   // Admin: ver y validar

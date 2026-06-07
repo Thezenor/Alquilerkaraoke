@@ -11,12 +11,10 @@ async function adminLogin(page: Page) {
 async function makeBooking(page: Page, name: string, email: string) {
   await page.goto("/es/presupuesto");
   await page.fill("#hours", "5");
-  await page.getByRole("button", { name: "Calcular presupuesto" }).click();
-  await expect(page.getByRole("heading", { name: "Presupuesto orientativo" })).toBeVisible();
   await page.fill("#name", name);
   await page.fill("#email", email);
   await page.check('input[name="acceptedTerms"]');
-  await page.getByRole("button", { name: "Enviar solicitud de reserva" }).click();
+  await page.getByRole("button", { name: "Solicitar presupuesto" }).click();
   await expect(page.getByRole("heading", { name: "¡Solicitud enviada!" })).toBeVisible();
 }
 

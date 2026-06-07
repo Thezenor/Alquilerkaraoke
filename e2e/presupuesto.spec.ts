@@ -1,14 +1,14 @@
 import { test, expect } from "@playwright/test";
 
-test("presupuesto: calcular un presupuesto orientativo", async ({ page }) => {
+test("presupuesto: solicitar (se envía por email, sin mostrar precio)", async ({ page }) => {
   await page.goto("/es/presupuesto");
-  await expect(page.getByRole("heading", { name: "Calcula tu presupuesto" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pide tu presupuesto" })).toBeVisible();
 
-  // El select de pack ya tiene opciones (packs sembrados); usamos el primero por defecto.
-  await page.fill("#hours", "6");
-  await page.getByRole("button", { name: "Calcular presupuesto" }).click();
+  await page.fill("#hours", "5");
+  await page.fill("#name", "Test Presupuesto");
+  await page.fill("#email", `presu_${Date.now()}@example.com`);
+  await page.check('input[name="acceptedTerms"]');
+  await page.getByRole("button", { name: "Solicitar presupuesto" }).click();
 
-  await expect(page.getByRole("heading", { name: "Presupuesto orientativo" })).toBeVisible();
-  // Tras calcular aparece el bloque de datos para solicitar la reserva.
-  await expect(page.getByRole("button", { name: "Enviar solicitud de reserva" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "¡Solicitud enviada!" })).toBeVisible();
 });

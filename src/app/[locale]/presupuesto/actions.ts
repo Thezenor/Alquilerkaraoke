@@ -3,25 +3,53 @@
 import { headers } from "next/headers";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { calculateBudget, isWeekend, type BudgetBreakdown } from "@/lib/budget";
+import { calculateBudget, isWeekend } from "@/lib/budget";
 import { logAudit } from "@/server/audit";
 import { CONSENT_VERSION } from "@/lib/consent";
+import { rateLimit, isHoneypotFilled } from "@/server/rate-limit";
 
+// El presupuesto NO se muestra en la web: se calcula y guarda en servidor, y se
+// envía por email. El público solo ve una confirmación.
 export type QuoteState = {
-  status: "idle" | "ok" | "error" | "booked";
+  status: "idle" | "error" | "booked";
   message?: string;
-  result?: BudgetBreakdown & { packName: string };
 };
 
 const orNull = (v: string) => (v && v.length ? v : null);
 
 export async function quoteAction(_prev: QuoteState, formData: FormData): Promise<QuoteState> {
   try {
-    const intent = String(formData.get("intent") ?? "calculate");
+    // Anti-spam: honeypot (silencioso) + rate-limit por IP.
+    if (isHoneypotFilled(formData)) {
+      return { status: "booked" }; // fingir éxito ante bots
+    }
+    const h = await headers();
+    const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    const userAgent = h.get("user-agent") ?? null;
+    if (!rateLimit(`quote:${ip}`)) {
+      return { status: "error", message: "Has enviado demasiadas solicitudes. Inténtalo más tarde." };
+    }
+
+    const customer = z
+      .object({
+        name: z.string().trim().min(1).max(120),
+        email: z.email(),
+        phone: z.string().trim().max(40).optional(),
+        message: z.string().trim().max(4000).optional(),
+        acceptedTerms: z.literal("on"),
+        marketing: z.string().optional(),
+        locale: z.string().trim().max(5).optional(),
+      })
+      .safeParse(Object.fromEntries(formData));
+
+    if (!customer.success) {
+      return { status: "error", message: "Revisa tu nombre, email y la aceptación de la política." };
+    }
+    const c = customer.data;
 
     const packId = String(formData.get("packId") ?? "");
     const pack = await prisma.pack.findFirst({ where: { id: packId, isActive: true } });
-    if (!pack) return { status: "error", message: "Pack no válido." };
+    if (!pack) return { status: "error", message: "Selecciona un pack válido." };
 
     const hoursRaw = parseInt(String(formData.get("hours") ?? ""), 10);
     const hours = Number.isFinite(hoursRaw) && hoursRaw > 0 ? Math.min(hoursRaw, 48) : pack.includedHours || 4;
@@ -43,7 +71,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       prisma.pricingConfig.findUnique({ where: { id: "default" } }),
     ]);
 
-    // Solo un suplemento por tipo (evita sumar duplicados si hay varias filas activas).
+    // Solo un suplemento por tipo (evita duplicados si hay varias filas activas).
     const surchargePercents: number[] = [];
     const appliedTypes = new Set<string>();
     for (const s of surcharges) {
@@ -58,7 +86,16 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       }
     }
 
-    const inputs = {
+    // Cliente: se crea si no existe (no profesional). Descuento solo si es profesional.
+    // No se sobrescriben datos de un cliente existente desde el formulario público.
+    const dbCustomer = await prisma.customer.upsert({
+      where: { email: c.email },
+      update: {},
+      create: { email: c.email, name: c.name, phone: orNull(c.phone ?? "") },
+    });
+    const discountPercent = dbCustomer.isProfessional ? dbCustomer.discountPercent : 0;
+
+    const breakdown = calculateBudget({
       basePrice: pack.basePrice,
       isPerDay: pack.isPerDay,
       includedHours: pack.includedHours,
@@ -68,51 +105,11 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       extras: extras.map((e) => e.price),
       surchargePercents,
       vatPercent: config?.vatPercent ?? 21,
+      discountPercent,
       depositType: pack.depositType,
       depositValue: pack.depositValue,
       securityDeposit: pack.securityDeposit,
-    };
-
-    // Cálculo público (sin descuento: solo aplica a clientes profesionales).
-    if (intent !== "book") {
-      const breakdown = calculateBudget({ ...inputs, discountPercent: 0 });
-      return { status: "ok", result: { ...breakdown, packName: pack.name } };
-    }
-
-    // ── Envío de solicitud de reserva (PENDING) ──
-    const customer = z
-      .object({
-        name: z.string().trim().min(1).max(120),
-        email: z.email(),
-        phone: z.string().trim().max(40).optional(),
-        message: z.string().trim().max(4000).optional(),
-        acceptedTerms: z.literal("on"),
-        marketing: z.string().optional(),
-        locale: z.string().trim().max(5).optional(),
-      })
-      .safeParse(Object.fromEntries(formData));
-
-    if (!customer.success) {
-      return { status: "error", message: "Revisa tu nombre, email y la aceptación de la política." };
-    }
-    const c = customer.data;
-
-    // Cliente: se crea si no existe (no profesional). El descuento SOLO se aplica
-    // si el admin lo ha marcado como profesional y le ha asignado un porcentaje.
-    // No se sobrescriben nombre/teléfono de un cliente existente desde el formulario
-    // público (el email no está verificado: evita envenenar datos de clientes reales).
-    const dbCustomer = await prisma.customer.upsert({
-      where: { email: c.email },
-      update: {},
-      create: { email: c.email, name: c.name, phone: orNull(c.phone ?? "") },
     });
-    const discountPercent = dbCustomer.isProfessional ? dbCustomer.discountPercent : 0;
-
-    const breakdown = calculateBudget({ ...inputs, discountPercent });
-
-    const h = await headers();
-    const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
-    const userAgent = h.get("user-agent") ?? null;
 
     const created = await prisma.booking.create({
       data: {
@@ -139,9 +136,8 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
         consentVersion: CONSENT_VERSION,
         consentAt: new Date(),
         locale: orNull(c.locale ?? ""),
-        ip,
+        ip: ip === "unknown" ? null : ip,
         userAgent,
-        // status PENDING por defecto
       },
     });
 
@@ -149,10 +145,13 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       action: "booking.create",
       entity: "Booking",
       entityId: created.id,
-      metadata: { email: c.email, total: breakdown.total, discount: breakdown.discount },
+      metadata: { email: c.email, total: breakdown.total },
     });
 
-    return { status: "booked", message: "ok", result: { ...breakdown, packName: pack.name } };
+    // TODO(email): enviar el presupuesto por correo al cliente y aviso al admin
+    // cuando se configure el proveedor (Resend/Brevo).
+
+    return { status: "booked" };
   } catch {
     return { status: "error", message: "No se pudo procesar la solicitud." };
   }

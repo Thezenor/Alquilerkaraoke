@@ -155,8 +155,8 @@
     "description": "Obtenez une estimation instantanée pour votre événement : forfait, date, province et extras. Sans engagement."
   },
   "Quote": {
-    "title": "Calculez votre devis",
-    "intro": "Choisissez le forfait et les détails de votre événement pour voir une estimation. Nous confirmerons le prix final avec vous.",
+    "title": "Demandez votre devis",
+    "intro": "Choisissez le forfait et les dÃ©tails de votre Ã©vÃ©nement et nous vous enverrons un devis sur mesure par email, sans engagement.",
     "pack": "Forfait",
     "hours": "Heures",
     "province": "Province",
@@ -187,10 +187,10 @@
     "messageLabel": "Message (facultatif)",
     "terms": "J'ai lu et j'accepte la <link>politique de confidentialité</link>.",
     "marketing": "Je souhaite recevoir des offres, actualités et événements par email (facultatif).",
-    "submitBooking": "Envoyer la demande de réservation",
+    "submitBooking": "Demander un devis",
     "sending": "Envoi…",
     "bookedTitle": "Demande envoyée !",
-    "bookedText": "Nous avons reçu votre demande de réservation. Nous vous contacterons pour confirmer la disponibilité. Elle est en attente de validation."
+    "bookedText": "Nous avons reÃ§u votre demande. Nous vous enverrons un devis sur mesure par email dÃ¨s que possible."
   },
   "LocaleSwitcher": {
     "label": "Langue",

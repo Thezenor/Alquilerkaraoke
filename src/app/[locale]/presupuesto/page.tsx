@@ -33,14 +33,10 @@ export default async function PresupuestoPage({ params }: { params: Promise<{ lo
   ]);
 
   const options: QuoteOptions = {
-    packs: packs.map((p) => ({
-      id: p.id,
-      name: localizedPack(p, locale).name,
-      includedHours: p.includedHours,
-    })),
+    packs: packs.map((p) => ({ id: p.id, name: localizedPack(p, locale).name })),
     extras: extras.map((e) => {
       const tr = (e.translations ?? {}) as Record<string, ExtraTr>;
-      return { id: e.id, name: tr[locale]?.name ?? e.name, price: e.price };
+      return { id: e.id, name: tr[locale]?.name ?? e.name };
     }),
     provinces: provinces.map((p) => p.name),
   };

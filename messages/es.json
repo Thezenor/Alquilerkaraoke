@@ -155,8 +155,8 @@
     "description": "Calcula un presupuesto orientativo para tu evento: pack, fecha, provincia y extras. Sin compromiso."
   },
   "Quote": {
-    "title": "Calcula tu presupuesto",
-    "intro": "Elige el pack y los detalles de tu evento para ver un presupuesto orientativo. El precio final lo confirmamos contigo.",
+    "title": "Pide tu presupuesto",
+    "intro": "Elige el pack y los detalles de tu evento y te enviaremos un presupuesto a medida por email, sin compromiso.",
     "pack": "Pack",
     "hours": "Horas",
     "province": "Provincia",
@@ -187,10 +187,10 @@
     "messageLabel": "Mensaje (opcional)",
     "terms": "He leído y acepto la <link>política de privacidad</link>.",
     "marketing": "Quiero recibir ofertas, novedades y eventos por email (opcional).",
-    "submitBooking": "Enviar solicitud de reserva",
+    "submitBooking": "Solicitar presupuesto",
     "sending": "Enviando…",
     "bookedTitle": "¡Solicitud enviada!",
-    "bookedText": "Hemos recibido tu solicitud de reserva. Te contactaremos para confirmar disponibilidad. Queda pendiente de validación."
+    "bookedText": "Hemos recibido tu solicitud. Te enviaremos el presupuesto a medida por email lo antes posible."
   },
   "LocaleSwitcher": {
     "label": "Idioma",

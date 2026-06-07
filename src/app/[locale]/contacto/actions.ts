@@ -5,6 +5,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { logAudit } from "@/server/audit";
 import { CONSENT_VERSION } from "@/lib/consent";
+import { rateLimit, isHoneypotFilled } from "@/server/rate-limit";
 
 const schema = z.object({
   name: z.string().trim().min(1).max(120),
@@ -26,6 +27,11 @@ export async function submitContactRequest(
   _prev: ContactFormState,
   formData: FormData,
 ): Promise<ContactFormState> {
+  // Anti-spam: honeypot (silencioso) + rate-limit por IP.
+  if (isHoneypotFilled(formData)) {
+    return { status: "success" };
+  }
+
   const parsed = schema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) {
     return { status: "error" };
@@ -35,6 +41,10 @@ export async function submitContactRequest(
   const h = await headers();
   const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
   const userAgent = h.get("user-agent") ?? null;
+
+  if (!rateLimit(`contact:${ip ?? "unknown"}`)) {
+    return { status: "error" };
+  }
 
   try {
     const created = await prisma.contactRequest.create({

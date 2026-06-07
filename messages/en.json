@@ -155,8 +155,8 @@
     "description": "Get an instant estimate for your event: package, date, province and extras. No obligation."
   },
   "Quote": {
-    "title": "Calculate your quote",
-    "intro": "Pick the package and your event details to see an estimate. We'll confirm the final price with you.",
+    "title": "Request your quote",
+    "intro": "Pick the package and your event details and we will email you a tailored quote, no obligation.",
     "pack": "Package",
     "hours": "Hours",
     "province": "Province",
@@ -187,10 +187,10 @@
     "messageLabel": "Message (optional)",
     "terms": "I have read and accept the <link>privacy policy</link>.",
     "marketing": "I'd like to receive offers, news and events by email (optional).",
-    "submitBooking": "Send booking request",
+    "submitBooking": "Request quote",
     "sending": "Sending…",
     "bookedTitle": "Request sent!",
-    "bookedText": "We've received your booking request. We'll contact you to confirm availability. It is pending validation."
+    "bookedText": "We have received your request. We will email you a tailored quote as soon as possible."
   },
   "LocaleSwitcher": {
     "label": "Language",
