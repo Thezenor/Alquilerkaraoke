@@ -3,15 +3,62 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { pageRequireRole } from "@/server/auth/guards";
 import { Role } from "@/generated/prisma/enums";
+import { ListControls } from "@/components/admin/list-controls";
+import { Pagination } from "@/components/admin/pagination";
+import { Icon } from "@/components/admin/icons";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Clientes · Panel Alquiler Karaoke",
   robots: { index: false, follow: false },
 };
 
-export default async function ClientesPage() {
+const PAGE_SIZE = 30;
+
+export default async function ClientesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; pro?: string; page?: string }>;
+}) {
   await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
-  const customers = await prisma.customer.findMany({ orderBy: { createdAt: "desc" }, take: 200 });
+
+  const sp = await searchParams;
+  const q = (sp.q ?? "").trim();
+  const proOnly = sp.pro === "1";
+  const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
+
+  const where = {
+    ...(proOnly ? { isProfessional: true } : {}),
+    ...(q
+      ? {
+          OR: [
+            { name: { contains: q, mode: "insensitive" as const } },
+            { email: { contains: q, mode: "insensitive" as const } },
+          ],
+        }
+      : {}),
+  };
+
+  const [customers, total] = await Promise.all([
+    prisma.customer.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.customer.count({ where }),
+  ]);
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const makeHref = (p: number) => {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (proOnly) params.set("pro", "1");
+    if (p > 1) params.set("page", String(p));
+    const qs = params.toString();
+    return qs ? `/admin/clientes?${qs}` : "/admin/clientes";
+  };
 
   return (
     <div>
@@ -25,13 +72,25 @@ export default async function ClientesPage() {
         </Link>
       </div>
 
+      <ListControls chips={[{ value: "1", label: "Profesionales" }]} filterParam="pro" placeholder="Buscar por nombre o email…" />
+
       {customers.length === 0 ? (
-        <p className="mt-8 text-brand-muted">Aún no hay clientes. Se crean automáticamente al recibir reservas.</p>
+        <div className="mt-4 rounded-xl border border-dashed border-brand-border p-10 text-center">
+          <Icon name="users" className="mx-auto h-8 w-8 text-brand-muted/50" />
+          <p className="mt-2 text-brand-muted">
+            {q || proOnly
+              ? "Ningún cliente coincide con el filtro."
+              : "Aún no hay clientes. Se crean automáticamente al recibir reservas."}
+          </p>
+        </div>
       ) : (
-        <ul className="mt-8 divide-y divide-brand-border overflow-hidden rounded-xl border border-brand-border bg-brand-surface">
+        <ul className="mt-4 divide-y divide-brand-border overflow-hidden rounded-xl border border-brand-border bg-brand-surface">
           {customers.map((c) => (
             <li key={c.id}>
-              <Link href={`/admin/clientes/${c.id}`} className="flex items-center justify-between gap-4 px-4 py-4 transition hover:bg-brand-surface-2">
+              <Link
+                href={`/admin/clientes/${c.id}`}
+                className="flex items-center justify-between gap-4 px-4 py-4 transition hover:bg-brand-surface-2"
+              >
                 <div className="min-w-0">
                   <p className="font-medium text-white">{c.name || c.email}</p>
                   <p className="truncate text-sm text-brand-muted">{c.email}</p>
@@ -48,6 +107,8 @@ export default async function ClientesPage() {
           ))}
         </ul>
       )}
+
+      <Pagination page={page} totalPages={totalPages} total={total} makeHref={makeHref} />
     </div>
   );
 }

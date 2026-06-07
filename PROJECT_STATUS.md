@@ -40,11 +40,11 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 - [x] **Descuento**: el motor aplica el % **solo si el cliente está marcado como profesional** por el admin; si no, 0. Snapshot `discount` en `Booking`.
 - [x] Admin **`/admin/clientes`** (lista + crear/editar): marcar profesional + asignar descuento + notas + ver reservas del cliente. Detalle de reserva muestra "Descuento profesional". Verificado E2E (9/9).
 
-## Rediseño admin (plan en docs/22) — en curso
+## Rediseño admin (plan en docs/22) — completado
 - [x] **Fase A — Shell + Dashboard**: nuevo shell con **sidebar colapsable** (escritorio) + **drawer móvil**, navegación **agrupada** (Operativa/Catálogo/Precios/Sistema, filtrada por rol), iconos SVG propios, `StatusBadge` reutilizable. **Dashboard con KPIs** (reservas pendientes, del mes, leads, clientes pro, próximos eventos) + listas recientes + acciones rápidas. Placeholders de `/admin/calendario` y `/admin/recargos`. Verificado: typecheck+lint+build+E2E 9/9 (2026-06-07).
-- [ ] Fase B — Backend de recargos por fecha (`Surcharge.config` tipado, `DateBlock`, índice eventDate, motor ampliado FIXED/SPECIAL_DATE + tests, CRUD Surcharge).
-- [ ] Fase C — Calendario UI (mes + agenda + panel).
-- [ ] Fase D — Mejoras de listas (filtros/búsqueda/StatusBadge/paginación).
+- [x] **Fase B — Backend de recargos por fecha**: modelo `DateBlock` + índice `Booking.eventDate` (migración `date_block`), `Surcharge.config` tipado (`SurchargeConfig`), motor ampliado con suplementos **FIXED** + función pura **`matchSurcharge`** (WEEKEND/NIGHT/SPECIAL_DATE single·range·weekday). `quoteAction` aplica todos los suplementos activos (uno por tipo, % y fijos). CRUD `Surcharge`/`DateBlock` (Zod+rol+audit+`updateTag`). +7 tests unitarios (15/15). Verificado: typecheck+lint+build+unit+E2E (2026-06-07).
+- [x] **Fase C — Calendario UI**: `/admin/calendario` mobile-first (rejilla mensual escritorio + hoja inferior móvil), panel por día con reservas, recargos que aplican y bloqueo de disponibilidad. `/admin/recargos`: gestión de recargos recurrentes y por fecha (activar/desactivar/borrar) + fechas bloqueadas. `src/server/calendar.ts` (carga por mes). E2E `calendario.spec`. Desplegado en Railway (2026-06-07).
+- [x] **Fase D — Mejoras de listas**: primitivos reutilizables `ListControls` (búsqueda con debounce + chips de filtro vía searchParams) y `Pagination` (enlaces, preserva filtros). Refactor de `/admin/reservas`, `/admin/solicitudes` y `/admin/clientes` con búsqueda server-side, filtro por estado/profesional, `StatusBadge`, estados vacíos y paginación (20–30/pág). Verificado: typecheck+lint+build+E2E 10/10 (2026-06-07).
 
 ## Pendientes funcionales
 - **Email** (proveedor por decidir): enviar presupuesto por email al cliente + aviso al admin (hoy la solicitud se guarda y se ve en admin).
