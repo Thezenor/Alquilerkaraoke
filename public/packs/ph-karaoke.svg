@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Karaoke">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#131a2b"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#g)"/>
+  <rect width="800" height="500" fill="url(#glow)"/>
+  <g transform="translate(400 215)" fill="none" stroke="#22d3ee" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="-26" y="-90" width="52" height="115" rx="26"/>
+    <path d="M-54 -10 a54 54 0 0 0 108 0"/>
+    <path d="M0 44 v34 M-30 86 h60"/>
+  </g>
+  <text x="400" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="bold" fill="#e5e7eb">Karaoke</text>
+  <text x="400" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#9ca3af">Foto provisional</text>
+</svg>

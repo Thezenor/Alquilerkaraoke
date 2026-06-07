@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/seo";
 import { formatCents } from "@/lib/money";
 import { getActivePacks, localizedPack } from "@/server/packs";
+import { packImage, descriptionToFeatures } from "@/lib/pack-image";
 
 // Catálogo desde BD: render en runtime (la BD no es accesible en build).
 // getActivePacks va cacheado (tag PACKS_TAG) para rendimiento.
@@ -36,14 +37,23 @@ export default async function PacksPage({ params }: { params: Promise<{ locale: 
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {packs.map((pack) => {
             const l = localizedPack(pack, locale);
+            const subtitle = l.shortDescription || descriptionToFeatures(l.description).slice(0, 2).join(" · ");
             return (
               <article
                 key={pack.id}
-                className="flex flex-col rounded-2xl border border-brand-border bg-brand-surface p-6 transition hover:border-brand-neon/50"
+                className="flex flex-col overflow-hidden rounded-2xl border border-brand-border bg-brand-surface transition hover:border-brand-neon/50"
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={packImage(pack)}
+                  alt={pack.imageAlt || l.name}
+                  loading="lazy"
+                  className="aspect-[16/10] w-full object-cover"
+                />
+                <div className="flex flex-1 flex-col p-6">
                 <h2 className="text-lg font-semibold text-white">{l.name}</h2>
-                {l.shortDescription && (
-                  <p className="mt-1 text-sm text-brand-muted">{l.shortDescription}</p>
+                {subtitle && (
+                  <p className="mt-1 line-clamp-2 text-sm text-brand-muted">{subtitle}</p>
                 )}
 
                 <div className="mt-4">
@@ -69,6 +79,7 @@ export default async function PacksPage({ params }: { params: Promise<{ locale: 
                   <Button href={`/${locale}/contacto`} size="md">
                     {t("ctaQuote")}
                   </Button>
+                </div>
                 </div>
               </article>
             );

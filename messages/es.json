@@ -148,7 +148,8 @@
     "extraHourLabel": "Hora extra",
     "depositLabel": "Reserva",
     "securityDepositLabel": "Fianza",
-    "detailsTitle": "Detalles del pack"
+    "detailsTitle": "Detalles del pack",
+    "includesTitle": "Qué incluye"
   },
   "PresupuestoMeta": {
     "title": "Presupuesto de karaoke al instante | Alquiler Karaoke",

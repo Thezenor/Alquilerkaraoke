@@ -28,6 +28,8 @@ export default async function EditPackPage({ params }: { params: Promise<{ id: s
     shortDescription: pack.shortDescription ?? "",
     description: pack.description ?? "",
     category: pack.category ?? "",
+    imageUrl: pack.imageUrl ?? "",
+    imageAlt: pack.imageAlt ?? "",
     basePrice: centsToInput(pack.basePrice),
     includedHours: String(pack.includedHours),
     extraHourPrice: centsToInput(pack.extraHourPrice),

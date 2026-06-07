@@ -3,6 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/cn";
 import { formatCents } from "@/lib/money";
+import { packImage } from "@/lib/pack-image";
 
 export const metadata: Metadata = {
   title: "Packs · Panel Alquiler Karaoke",
@@ -34,12 +35,20 @@ export default async function PacksPage() {
                 href={`/admin/packs/${p.id}`}
                 className="flex items-center justify-between gap-4 px-4 py-4 transition hover:bg-brand-surface-2"
               >
-                <div className="min-w-0">
-                  <p className="font-medium text-white">
-                    {p.name}
-                    {p.isPerDay && <span className="ml-2 text-xs text-brand-muted">/día</span>}
-                  </p>
-                  <p className="truncate text-sm text-brand-muted">/{p.slug}</p>
+                <div className="flex min-w-0 items-center gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={packImage(p)}
+                    alt=""
+                    className="h-12 w-16 shrink-0 rounded-md border border-brand-border object-cover"
+                  />
+                  <div className="min-w-0">
+                    <p className="font-medium text-white">
+                      {p.name}
+                      {p.isPerDay && <span className="ml-2 text-xs text-brand-muted">/día</span>}
+                    </p>
+                    <p className="truncate text-sm text-brand-muted">/{p.slug}</p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <span className="font-semibold text-white">{formatCents(p.basePrice)}</span>

@@ -148,7 +148,8 @@
     "extraHourLabel": "Heure supplémentaire",
     "depositLabel": "Acompte",
     "securityDepositLabel": "Caution",
-    "detailsTitle": "Détails du forfait"
+    "detailsTitle": "Détails du forfait",
+    "includesTitle": "Ce qui est inclus"
   },
   "PresupuestoMeta": {
     "title": "Devis karaoké instantané | Alquiler Karaoke",

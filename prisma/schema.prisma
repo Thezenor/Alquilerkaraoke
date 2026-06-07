@@ -235,6 +235,8 @@ model Pack {
   shortDescription String?
   description      String?
   category         String? // p. ej. "Karaoke", "Gaming / Consolas", "Fiesta Holi"
+  imageUrl         String? // foto del producto (si vacío, se usa un placeholder por categoría)
+  imageAlt         String? // texto alternativo de la foto (SEO/accesibilidad)
   basePrice        Int // céntimos, sin IVA (precio base, 4 h salvo isPerDay)
   includedHours    Int     @default(4)
   extraHourPrice   Int     @default(0) // céntimos por hora extra

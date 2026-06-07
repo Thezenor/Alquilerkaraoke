@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { formatCents, centsToEuros } from "@/lib/money";
 import { getPackBySlug, localizedPack } from "@/server/packs";
+import { packImage, descriptionToFeatures } from "@/lib/pack-image";
 
 // Datos desde BD: render en runtime (el build de Railway no accede a la BD).
 export const dynamic = "force-dynamic";
@@ -45,11 +46,15 @@ export default async function PackDetailPage({
   const deposit =
     pack.depositType === "PERCENT" ? `${pack.depositValue}%` : formatCents(pack.depositValue, locale);
 
+  const imageSrc = packImage(pack);
+  const features = descriptionToFeatures(l.description);
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: l.name,
     description: l.description || l.shortDescription || l.name,
+    image: absoluteUrl(imageSrc),
     offers: {
       "@type": "Offer",
       price: centsToEuros(pack.basePrice),
@@ -64,6 +69,13 @@ export default async function PackDetailPage({
       <JsonLd data={schema} />
       <section className="py-16 sm:py-20">
         <Container className="max-w-3xl">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imageSrc}
+            alt={pack.imageAlt || l.name}
+            className="mb-8 aspect-[16/9] w-full rounded-2xl border border-brand-border object-cover"
+          />
+
           <h1 className="text-3xl font-bold text-white sm:text-4xl">{l.name}</h1>
 
           <div className="mt-4">
@@ -75,8 +87,20 @@ export default async function PackDetailPage({
             </span>
           </div>
 
-          {l.description && (
-            <p className="mt-6 whitespace-pre-wrap text-brand-muted">{l.description}</p>
+          {l.shortDescription && <p className="mt-6 text-brand-muted">{l.shortDescription}</p>}
+
+          {features.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-lg font-semibold text-white">{t("includesTitle")}</h2>
+              <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+                {features.map((f, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-brand-text">
+                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-neon" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
 
           {/* Detalles */}

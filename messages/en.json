@@ -148,7 +148,8 @@
     "extraHourLabel": "Extra hour",
     "depositLabel": "Deposit",
     "securityDepositLabel": "Security deposit",
-    "detailsTitle": "Package details"
+    "detailsTitle": "Package details",
+    "includesTitle": "What's included"
   },
   "PresupuestoMeta": {
     "title": "Instant karaoke quote | Alquiler Karaoke",

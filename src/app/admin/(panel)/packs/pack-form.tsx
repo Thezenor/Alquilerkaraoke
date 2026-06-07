@@ -15,6 +15,8 @@ export type PackFormValues = {
   shortDescription: string;
   description: string;
   category: string;
+  imageUrl: string;
+  imageAlt: string;
   basePrice: string;
   includedHours: string;
   extraHourPrice: string;
@@ -89,15 +91,22 @@ export function PackForm({ values }: { values: PackFormValues }) {
         <Field label="Descripción corta" name="shortDescription" defaultValue={values.shortDescription} />
         <Field label="Categoría" name="category" defaultValue={values.category} hint="ej. Karaoke, Gaming / Consolas, Fiesta Holi" />
         <Field label="Orden" name="sortOrder" type="number" defaultValue={values.sortOrder} />
+        <Field
+          label="Foto (URL)"
+          name="imageUrl"
+          defaultValue={values.imageUrl}
+          hint="Vacío = placeholder provisional por categoría"
+        />
+        <Field label="Texto alternativo de la foto" name="imageAlt" defaultValue={values.imageAlt} hint="Para SEO/accesibilidad" />
       </div>
       <div className="mt-5 flex flex-col gap-1.5">
         <label htmlFor="description" className="text-sm font-medium text-brand-text">
-          Descripción
+          Descripción · qué incluye (una línea por elemento)
         </label>
         <textarea
           id="description"
           name="description"
-          rows={4}
+          rows={6}
           defaultValue={values.description}
           className={inputClass}
         />
