@@ -17,7 +17,13 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 - [x] **Bloque 1 — Infraestructura SEO + Home enriquecido**: helper `buildMetadata` (canonical + hreflang **por página**), JSON-LD `LocalBusiness` (desde `SiteConfig`), imagen OG dinámica de marca (`opengraph-image`), `metadataBase` global, y home con secciones reales (servicios, segmentos, cómo trabajamos, CTA) trilingües. Middleware excluye rutas de metadata. Verificado: build + runtime (secciones ES/EN, JSON-LD, OG 200, canonical/hreflang) + E2E sin regresión (2026-06-06).
 - [x] **Bloque 2 — Contacto con captación de leads**: página pública `/contacto` (ES/EN/FR) con formulario (Server Action + Zod) que **guarda en BD** (`ContactRequest`) y panel **WhatsApp/teléfono**; módulo admin **Solicitudes** (lista + detalle + responder/estado, auditoría, enlaces rápidos email/WhatsApp). Nav y CTAs conectados al formulario. Verificado: build + E2E del flujo completo (enviar→admin→responder) 3/3 (2026-06-06). Email automático al recibir lead: pendiente de configurar proveedor.
 - [x] **Bloque 3 — Servicios + landings por ciudad (SEO local)**: página `/servicios` (servicios, FAQ + JSON-LD FAQPage, enlaces internos) y landings dinámicas `/karaoke/[ciudad]` para 13 ciudades × 3 idiomas (SSG), con H1/intro/FAQ interpolados por ciudad, JSON-LD `Service` + `FAQPage`, CTA y enlazado interno. Sitemap ampliado (servicios, contacto, ciudades). Nav "Servicios" conectado. Verificado: build SSG (39 páginas de ciudad), runtime (ES/EN/FR, 404 ciudad inválida, sitemap) + E2E 3/3 (2026-06-07).
-- [ ] Bloque 4 (Fase 2) — Packs y secciones restantes / pulido.
+
+## Fase 3 — Packs, tarifas y motor de presupuestos (en curso)
+- [x] **Bloque 1 — Modelo de datos + seed**: modelos `Pack`, `Extra`, `ProvinceSupplement`, `Surcharge`, `PricingConfig` (precios en céntimos sin IVA, IVA configurable, traducciones JSON, reserva/fianza por pack). Migración `packs_pricing` aplicada y seed idempotente (8 packs, 4 extras, suplementos de ejemplo, IVA 21%) — `update:{}` para no pisar ediciones de admin. Verificado: datos en BD + typecheck + lint + build (2026-06-07).
+- [ ] Bloque 2 — Admin CRUD de packs (y extras/suplementos).
+- [ ] Bloque 3 — Páginas públicas de packs (desde BD).
+- [ ] Bloque 4 — Motor de presupuestos (función pura) + formulario.
+- [ ] Bloque 5 — Presupuesto → reserva pendiente de validación.
 
 ## Bloques Fase 1
 - [x] **Bloque 1 — Scaffolding**: Next.js 16 (App Router, TS estricto, Tailwind v4), estructura de carpetas (`src/lib`, `src/components`, `src/server`, `messages/`), ESLint + Prettier (orden clases Tailwind), `.editorconfig`, `.env.example`, scripts npm. Verificado: typecheck + lint + format + build en verde (2026-06-06).

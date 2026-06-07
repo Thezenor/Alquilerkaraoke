@@ -31,6 +31,24 @@ enum ContactStatus {
   ARCHIVED
 }
 
+// Tipo de modificador de precio: cantidad fija (céntimos) o porcentaje.
+enum PriceModifierType {
+  FIXED
+  PERCENT
+}
+
+// Tipos de suplemento configurables (DECISIONS.md / docs 08).
+enum SurchargeType {
+  WEEKEND
+  NIGHT
+  SPECIAL_DATE
+  HIGH_DEMAND
+  EXTERIOR
+  DIFFICULT_SETUP
+  EVENT_TYPE
+  OTHER
+}
+
 // ── Usuarios y autenticación (compatible Auth.js / NextAuth) ─────
 model User {
   id            String    @id @default(cuid())
@@ -159,4 +177,71 @@ model ContactRequest {
 
   @@index([status])
   @@index([createdAt])
+}
+
+// ── Packs, precios y tarifas (Fase 3) ────────────────────────────
+// Precios SIEMPRE en céntimos (Int), SIN IVA. Se muestran como "desde X € + IVA".
+model Pack {
+  id               String  @id @default(cuid())
+  slug             String  @unique
+  name             String
+  shortDescription String?
+  description      String?
+  basePrice        Int // céntimos, sin IVA (precio base, 4 h salvo isPerDay)
+  includedHours    Int     @default(4)
+  extraHourPrice   Int     @default(0) // céntimos por hora extra
+  isPerDay         Boolean @default(false) // OkeBox: precio por día completo
+
+  // Reserva (pago para reservar)
+  depositType  PriceModifierType @default(PERCENT)
+  depositValue Int               @default(30) // % o céntimos según depositType
+
+  // Fianza (céntimos)
+  securityDeposit Int @default(0)
+
+  // Traducciones por locale: { "en": { name, shortDescription, description }, "fr": {...} }
+  translations Json?
+
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
+model Extra {
+  id           String  @id @default(cuid())
+  slug         String  @unique
+  name         String
+  description  String?
+  price        Int // céntimos, sin IVA
+  translations Json?
+  isActive     Boolean @default(true)
+  sortOrder    Int     @default(0)
+}
+
+model ProvinceSupplement {
+  id       String  @id @default(cuid())
+  province String  @unique
+  amount   Int     @default(0) // suplemento fijo en céntimos, sin IVA
+  isActive Boolean @default(true)
+}
+
+model Surcharge {
+  id        String            @id @default(cuid())
+  name      String
+  type      SurchargeType
+  valueType PriceModifierType @default(PERCENT)
+  value     Int // % o céntimos según valueType
+  isActive  Boolean           @default(true)
+  config    Json? // condiciones flexibles (días, rango de fechas, etc.)
+}
+
+// Configuración global de precios (singleton: id = "default").
+model PricingConfig {
+  id         String   @id @default("default")
+  vatPercent Int      @default(21)
+  currency   String   @default("EUR")
+  updatedAt  DateTime @updatedAt
 }
