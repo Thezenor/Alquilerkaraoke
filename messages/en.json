@@ -72,6 +72,42 @@
       "error": "Could not send. Please check the details and try again."
     }
   },
+  "ServicesMeta": {
+    "title": "Karaoke, sound & event services | Alquiler Karaoke",
+    "description": "Professional karaoke, DJ, sound, lighting, photo booth and events for individuals and companies across Spain. Get a quote."
+  },
+  "ServicesPage": {
+    "title": "Karaoke & event services",
+    "intro": "Everything you need for your event, with professional gear and setup included. Pick a service or combine them into a tailored package.",
+    "servicesTitle": "What we offer",
+    "faqTitle": "Frequently asked questions",
+    "faq": [
+      { "q": "Do you work across Spain?", "a": "Yes. We cover the main cities and provinces; ask us about your area." },
+      { "q": "Does karaoke include a technician?", "a": "You can book it with or without a technician, depending on the service and package." },
+      { "q": "How much does it cost?", "a": "It depends on the service, date and location. Ask us for a no-obligation quote." }
+    ],
+    "ctaTitle": "Shall we set up your event?",
+    "ctaText": "Tell us what you need and we'll prepare a tailored quote."
+  },
+  "CityLandingMeta": {
+    "title": "Karaoke rental in {city} | Alquiler Karaoke",
+    "description": "Professional karaoke rental in {city}: gear, screens, sound and lighting with setup. Get a no-obligation quote."
+  },
+  "CityLanding": {
+    "title": "Karaoke rental in {city}",
+    "intro": "We bring professional karaoke to {city}: gear, thousands of songs, sound and lighting, with or without a technician. Perfect for parties, weddings, birthdays and company events.",
+    "servicesTitle": "Services in {city}",
+    "faqTitle": "Frequently asked questions",
+    "faqQ1": "Do you offer karaoke rental in {city}?",
+    "faqA1": "Yes, we offer karaoke and event rental in {city} and surrounding areas, setup included.",
+    "faqQ2": "Can you set up at my venue or home in {city}?",
+    "faqA2": "Yes. We adapt to halls, venues and homes in {city}; tell us about the space.",
+    "faqQ3": "How far in advance should I book?",
+    "faqA3": "The sooner the better, especially on weekends and key dates. Write to us and we'll confirm availability in {city}.",
+    "ctaTitle": "Your karaoke in {city}",
+    "ctaText": "Ask us for a quote for your event in {city}, no obligation.",
+    "otherCitiesTitle": "Other cities"
+  },
   "LocaleSwitcher": {
     "label": "Language",
     "es": "Spanish",

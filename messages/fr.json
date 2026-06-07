@@ -72,6 +72,42 @@
       "error": "Échec de l'envoi. Vérifiez les informations et réessayez."
     }
   },
+  "ServicesMeta": {
+    "title": "Services de karaoké, son et événements | Alquiler Karaoke",
+    "description": "Karaoké professionnel, DJ, son, éclairage, photobooth et événements pour particuliers et entreprises dans toute l'Espagne. Demandez un devis."
+  },
+  "ServicesPage": {
+    "title": "Services de karaoké et d'événements",
+    "intro": "Tout ce qu'il faut pour votre événement, avec du matériel professionnel et l'installation incluse. Choisissez un service ou combinez-les dans un forfait sur mesure.",
+    "servicesTitle": "Ce que nous proposons",
+    "faqTitle": "Questions fréquentes",
+    "faq": [
+      { "q": "Travaillez-vous dans toute l'Espagne ?", "a": "Oui. Nous couvrons les principales villes et provinces ; demandez-nous pour votre zone." },
+      { "q": "Le karaoké inclut-il un technicien ?", "a": "Vous pouvez le réserver avec ou sans technicien, selon le service et le forfait." },
+      { "q": "Combien ça coûte ?", "a": "Cela dépend du service, de la date et du lieu. Demandez-nous un devis sans engagement." }
+    ],
+    "ctaTitle": "On organise votre événement ?",
+    "ctaText": "Dites-nous ce dont vous avez besoin et nous préparons un devis sur mesure."
+  },
+  "CityLandingMeta": {
+    "title": "Location de karaoké à {city} | Alquiler Karaoke",
+    "description": "Location de karaoké professionnel à {city} : matériel, écrans, son et éclairage avec installation. Demandez un devis sans engagement."
+  },
+  "CityLanding": {
+    "title": "Location de karaoké à {city}",
+    "intro": "Nous apportons le karaoké professionnel à {city} : matériel, des milliers de chansons, son et éclairage, avec ou sans technicien. Idéal pour fêtes, mariages, anniversaires et événements d'entreprise.",
+    "servicesTitle": "Services à {city}",
+    "faqTitle": "Questions fréquentes",
+    "faqQ1": "Proposez-vous la location de karaoké à {city} ?",
+    "faqA1": "Oui, nous proposons la location de karaoké et d'événements à {city} et ses environs, installation incluse.",
+    "faqQ2": "Pouvez-vous installer dans ma salle ou à domicile à {city} ?",
+    "faqA2": "Oui. Nous nous adaptons aux salles, locaux et domiciles de {city} ; parlez-nous de l'espace.",
+    "faqQ3": "Combien de temps à l'avance dois-je réserver ?",
+    "faqA3": "Le plus tôt sera le mieux, surtout les week-ends et dates clés. Écrivez-nous et nous confirmons la disponibilité à {city}.",
+    "ctaTitle": "Votre karaoké à {city}",
+    "ctaText": "Demandez un devis pour votre événement à {city}, sans engagement.",
+    "otherCitiesTitle": "Autres villes"
+  },
   "LocaleSwitcher": {
     "label": "Langue",
     "es": "Espagnol",

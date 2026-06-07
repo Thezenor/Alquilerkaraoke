@@ -1,11 +1,16 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
+import { CITIES } from "@/lib/cities";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-// Rutas públicas (sin prefijo de idioma). Se ampliará en fases posteriores
-// (servicios, packs, ciudades, etc.).
-const publicPaths = [""];
+// Rutas públicas (sin prefijo de idioma).
+const publicPaths = [
+  "",
+  "/servicios",
+  "/contacto",
+  ...CITIES.map((c) => `/karaoke/${c.slug}`),
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return publicPaths.flatMap((path) =>

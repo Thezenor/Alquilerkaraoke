@@ -16,9 +16,13 @@ export function SiteHeader() {
   const contactHref = `/${locale}/contacto`;
   const [open, setOpen] = useState(false);
 
+  const hrefByKey: Record<string, string> = {
+    services: `/${locale}/servicios`,
+    contact: contactHref,
+  };
   const navItems = NAV_KEYS.map((key) => ({
     key,
-    href: key === "contact" ? contactHref : "#",
+    href: hrefByKey[key] ?? "#",
   }));
 
   return (

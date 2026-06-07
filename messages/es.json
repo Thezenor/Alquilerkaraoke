@@ -72,6 +72,42 @@
       "error": "No se pudo enviar. Revisa los datos e inténtalo de nuevo."
     }
   },
+  "ServicesMeta": {
+    "title": "Servicios de karaoke, sonido y eventos | Alquiler Karaoke",
+    "description": "Karaoke profesional, DJ, sonido, iluminación, fotomatón y eventos para particulares y empresas en toda España. Pide presupuesto."
+  },
+  "ServicesPage": {
+    "title": "Servicios de karaoke y eventos",
+    "intro": "Todo lo necesario para tu evento, con equipos profesionales y montaje incluido. Elige un servicio o combínalos en un pack a medida.",
+    "servicesTitle": "Qué ofrecemos",
+    "faqTitle": "Preguntas frecuentes",
+    "faq": [
+      { "q": "¿Trabajáis en toda España?", "a": "Sí. Damos servicio en las principales ciudades y provincias; consúltanos tu localidad." },
+      { "q": "¿El karaoke incluye técnico?", "a": "Puedes contratarlo con o sin técnico, según el servicio y el pack." },
+      { "q": "¿Cuánto cuesta?", "a": "Depende del servicio, la fecha y la ubicación. Pídenos un presupuesto sin compromiso." }
+    ],
+    "ctaTitle": "¿Montamos tu evento?",
+    "ctaText": "Cuéntanos qué necesitas y te preparamos un presupuesto a medida."
+  },
+  "CityLandingMeta": {
+    "title": "Alquiler de karaoke en {city} | Alquiler Karaoke",
+    "description": "Alquiler de karaoke profesional en {city}: equipos, pantallas, sonido e iluminación con montaje. Pide presupuesto sin compromiso."
+  },
+  "CityLanding": {
+    "title": "Alquiler de karaoke en {city}",
+    "intro": "Llevamos el karaoke profesional a {city}: equipos, miles de canciones, sonido e iluminación, con o sin técnico. Ideal para fiestas, bodas, cumpleaños y eventos de empresa.",
+    "servicesTitle": "Servicios en {city}",
+    "faqTitle": "Preguntas frecuentes",
+    "faqQ1": "¿Hacéis alquiler de karaoke en {city}?",
+    "faqA1": "Sí, ofrecemos alquiler de karaoke y eventos en {city} y alrededores, con montaje incluido.",
+    "faqQ2": "¿Podéis montar en mi local o domicilio en {city}?",
+    "faqA2": "Sí. Nos adaptamos a salones, locales y domicilios de {city}; cuéntanos el espacio.",
+    "faqQ3": "¿Con cuánto tiempo debo reservar?",
+    "faqA3": "Cuanto antes mejor, sobre todo en fines de semana y fechas señaladas. Escríbenos y confirmamos disponibilidad en {city}.",
+    "ctaTitle": "Tu karaoke en {city}",
+    "ctaText": "Pídenos presupuesto para tu evento en {city}, sin compromiso.",
+    "otherCitiesTitle": "Otras ciudades"
+  },
   "LocaleSwitcher": {
     "label": "Idioma",
     "es": "Español",
