@@ -75,6 +75,11 @@ export function QuoteForm({ options }: { options: QuoteOptions }) {
         {t("night")}
       </label>
 
+      <div className="mt-5 flex flex-col gap-1.5 sm:max-w-xs">
+        <label htmlFor="code" className="text-sm font-medium text-brand-text">{t("discountCode")}</label>
+        <input id="code" name="code" maxLength={40} placeholder={t("discountCodePlaceholder")} className={inputClass} />
+      </div>
+
       {options.extras.length > 0 && (
         <fieldset className="mt-5">
           <legend className="text-sm font-medium text-brand-text">{t("extras")}</legend>

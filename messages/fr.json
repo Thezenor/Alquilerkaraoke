@@ -165,6 +165,8 @@
     "noProvince": "Autre / je ne sais pas",
     "date": "Date",
     "night": "Événement nocturne",
+    "discountCode": "Code de réduction",
+    "discountCodePlaceholder": "Si vous en avez un",
     "extras": "Extras",
     "calculate": "Calculer le devis",
     "calculating": "Calcul…",

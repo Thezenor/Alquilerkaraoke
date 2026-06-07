@@ -81,6 +81,16 @@ test("isWeekend detecta sábado y domingo", () => {
   assert.equal(isWeekend("2026-06-08"), false); // lunes
 });
 
+test("descuento fijo se suma al porcentual y no supera el subtotal", () => {
+  const b = calculateBudget({ ...base, discountPercent: 10, discountFixed: 2000 });
+  // subtotal 10000; 10% = 1000 + 2000 fijo = 3000
+  assert.equal(b.discount, 3000);
+  assert.equal(b.taxableBase, 7000);
+  const capped = calculateBudget({ ...base, discountFixed: 999999 });
+  assert.equal(capped.discount, capped.subtotal); // nunca supera el subtotal
+  assert.equal(capped.taxableBase, 0);
+});
+
 test("suplementos fijos se suman a los porcentuales", () => {
   const b = calculateBudget({ ...base, surchargePercents: [10], surchargeFixed: [2000, 500] });
   // 10% de 10000 = 1000 + 2500 fijo = 3500

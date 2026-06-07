@@ -307,6 +307,23 @@ model Surcharge {
   config    Json? // condiciones flexibles (días, rango de fechas, etc.)
 }
 
+// Códigos de descuento promocionales (aplicados al solicitar presupuesto).
+model DiscountCode {
+  id         String            @id @default(cuid())
+  code       String            @unique // se guarda en MAYÚSCULAS
+  valueType  PriceModifierType @default(PERCENT)
+  value      Int // % o céntimos según valueType
+  isActive   Boolean           @default(true)
+  maxUses    Int? // null = ilimitado
+  usedCount  Int               @default(0)
+  validFrom  DateTime?
+  validUntil DateTime?
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  @@index([isActive])
+}
+
 // Configuración global de precios (singleton: id = "default").
 model PricingConfig {
   id         String   @id @default("default")
@@ -332,7 +349,8 @@ model Booking {
 
   // Importe (snapshot en céntimos, sin/with IVA según campo)
   subtotal        Int @default(0)
-  discount        Int @default(0) // descuento cliente profesional (céntimos)
+  discount        Int @default(0) // descuento total aplicado (profesional + código), céntimos
+  discountCode    String? // código promocional usado (snapshot)
   vat             Int @default(0)
   total           Int @default(0)
   deposit         Int @default(0)

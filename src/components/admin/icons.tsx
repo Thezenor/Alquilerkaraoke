@@ -110,6 +110,12 @@ const PATHS: Record<string, React.ReactNode> = {
       <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
     </>
   ),
+  ticket: (
+    <>
+      <path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4Z" />
+      <path d="M13 6v12" stroke-dasharray="2 3" />
+    </>
+  ),
   ban: (
     <>
       <circle cx="12" cy="12" r="9" />

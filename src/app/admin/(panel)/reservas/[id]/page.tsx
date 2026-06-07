@@ -108,7 +108,10 @@ export default async function ReservaDetailPage({ params }: { params: Promise<{ 
           <div className="mt-6 rounded-xl border border-brand-border bg-brand-bg p-4 text-sm">
             <div className="flex justify-between py-1 text-brand-muted"><span>Subtotal (sin IVA)</span><span>{formatCents(b.subtotal)}</span></div>
             {b.discount > 0 && (
-              <div className="flex justify-between py-1 text-emerald-300"><span>Descuento profesional</span><span>−{formatCents(b.discount)}</span></div>
+              <div className="flex justify-between py-1 text-emerald-300">
+                <span>Descuento{b.discountCode ? ` (código ${b.discountCode})` : " profesional"}</span>
+                <span>−{formatCents(b.discount)}</span>
+              </div>
             )}
             <div className="flex justify-between py-1 text-brand-muted"><span>IVA</span><span>{formatCents(b.vat)}</span></div>
             <div className="flex justify-between py-1 font-semibold text-white"><span>Total</span><span>{formatCents(b.total)}</span></div>

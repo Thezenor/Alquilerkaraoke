@@ -35,6 +35,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/admin/tarifas", label: "Tarifas", icon: "tag" },
       { href: "/admin/recargos", label: "Recargos y fechas", icon: "percent" },
+      { href: "/admin/descuentos", label: "Descuentos", icon: "ticket" },
     ],
   },
   {

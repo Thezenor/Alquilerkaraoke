@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { calculateBudget, matchSurcharge } from "@/lib/budget";
+import { evaluateDiscountCode, normalizeCode } from "@/lib/discount";
 import { logAudit } from "@/server/audit";
 import { CONSENT_VERSION } from "@/lib/consent";
 import { rateLimit, isHoneypotFilled } from "@/server/rate-limit";
@@ -90,7 +91,35 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       update: {},
       create: { email: c.email, name: c.name, phone: orNull(c.phone ?? "") },
     });
-    const discountPercent = dbCustomer.isProfessional ? dbCustomer.discountPercent : 0;
+    let discountPercent = dbCustomer.isProfessional ? dbCustomer.discountPercent : 0;
+    let discountFixed = 0;
+    let appliedCode: string | null = null;
+
+    // Código de descuento promocional (opcional). Códigos no válidos se ignoran.
+    const rawCode = String(formData.get("code") ?? "").trim();
+    if (rawCode) {
+      const code = normalizeCode(rawCode);
+      const rec = await prisma.discountCode.findUnique({ where: { code } });
+      if (rec) {
+        const ev = evaluateDiscountCode(
+          {
+            valueType: rec.valueType,
+            value: rec.value,
+            isActive: rec.isActive,
+            maxUses: rec.maxUses,
+            usedCount: rec.usedCount,
+            validFromMs: rec.validFrom ? rec.validFrom.getTime() : null,
+            validUntilMs: rec.validUntil ? rec.validUntil.getTime() : null,
+          },
+          { nowMs: Date.now() },
+        );
+        if (ev.valid) {
+          discountPercent += ev.percent;
+          discountFixed += ev.fixed;
+          appliedCode = code;
+        }
+      }
+    }
 
     const breakdown = calculateBudget({
       basePrice: pack.basePrice,
@@ -104,6 +133,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       surchargeFixed,
       vatPercent: config?.vatPercent ?? 21,
       discountPercent,
+      discountFixed,
       depositType: pack.depositType,
       depositValue: pack.depositValue,
       securityDeposit: pack.securityDeposit,
@@ -120,6 +150,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
         extras: extras.map((e) => ({ name: e.name, price: e.price })),
         subtotal: breakdown.subtotal,
         discount: breakdown.discount,
+        discountCode: appliedCode,
         vat: breakdown.vat,
         total: breakdown.total,
         deposit: breakdown.deposit,
@@ -139,11 +170,20 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       },
     });
 
+    // Incrementa el uso del código aplicado (best-effort).
+    if (appliedCode) {
+      try {
+        await prisma.discountCode.update({ where: { code: appliedCode }, data: { usedCount: { increment: 1 } } });
+      } catch {
+        // no bloquea la reserva
+      }
+    }
+
     await logAudit({
       action: "booking.create",
       entity: "Booking",
       entityId: created.id,
-      metadata: { email: c.email, total: breakdown.total },
+      metadata: { email: c.email, total: breakdown.total, discountCode: appliedCode },
     });
 
     // Envía el presupuesto al cliente y avisa al admin (no-op si no hay proveedor).

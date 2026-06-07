@@ -14,6 +14,7 @@ export type BudgetInput = {
   surchargeFixed?: number[]; // suplementos en cantidad fija (céntimos)
   vatPercent: number;
   discountPercent: number; // descuento cliente (%)
+  discountFixed?: number; // descuento adicional en cantidad fija (céntimos)
   depositType: "PERCENT" | "FIXED";
   depositValue: number; // % o céntimos según depositType
   securityDeposit: number; // céntimos
@@ -57,7 +58,8 @@ export function calculateBudget(input: BudgetInput): BudgetBreakdown {
   const subtotal = preSurcharge + surcharges;
 
   const discountPct = Math.min(100, nonNeg(input.discountPercent));
-  const discount = r((subtotal * discountPct) / 100);
+  const discountPercentAmount = r((subtotal * discountPct) / 100);
+  const discount = Math.min(subtotal, discountPercentAmount + nonNeg(input.discountFixed ?? 0));
   const taxableBase = subtotal - discount;
 
   const vat = r((taxableBase * nonNeg(input.vatPercent)) / 100);

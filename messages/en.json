@@ -165,6 +165,8 @@
     "noProvince": "Other / not sure",
     "date": "Date",
     "night": "Night event",
+    "discountCode": "Discount code",
+    "discountCodePlaceholder": "If you have one",
     "extras": "Extras",
     "calculate": "Calculate quote",
     "calculating": "Calculating…",
