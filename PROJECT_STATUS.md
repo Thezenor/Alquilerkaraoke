@@ -40,6 +40,16 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 - [x] **Descuento**: el motor aplica el % **solo si el cliente está marcado como profesional** por el admin; si no, 0. Snapshot `discount` en `Booking`.
 - [x] Admin **`/admin/clientes`** (lista + crear/editar): marcar profesional + asignar descuento + notas + ver reservas del cliente. Detalle de reserva muestra "Descuento profesional". Verificado E2E (9/9).
 
+## Rediseño admin (plan en docs/22) — en curso
+- [x] **Fase A — Shell + Dashboard**: nuevo shell con **sidebar colapsable** (escritorio) + **drawer móvil**, navegación **agrupada** (Operativa/Catálogo/Precios/Sistema, filtrada por rol), iconos SVG propios, `StatusBadge` reutilizable. **Dashboard con KPIs** (reservas pendientes, del mes, leads, clientes pro, próximos eventos) + listas recientes + acciones rápidas. Placeholders de `/admin/calendario` y `/admin/recargos`. Verificado: typecheck+lint+build+E2E 9/9 (2026-06-07).
+- [ ] Fase B — Backend de recargos por fecha (`Surcharge.config` tipado, `DateBlock`, índice eventDate, motor ampliado FIXED/SPECIAL_DATE + tests, CRUD Surcharge).
+- [ ] Fase C — Calendario UI (mes + agenda + panel).
+- [ ] Fase D — Mejoras de listas (filtros/búsqueda/StatusBadge/paginación).
+
+## Pendientes funcionales
+- **Email** (proveedor por decidir): enviar presupuesto por email al cliente + aviso al admin (hoy la solicitud se guarda y se ve en admin).
+- Flujo RGPD de borrado/baja de marketing.
+
 ## Extras admin
 - [x] **Acceso al panel desde el menú público** ("Acceso" en cabecera + móvil → `/admin/login`).
 - [x] **Gestión de usuarios** (`/admin/usuarios`, solo SUPERADMIN): crear/editar usuarios, asignar **roles** (multi), **cambiar contraseña** (bcrypt), activar/desactivar, con salvaguardas (no quitarte SUPERADMIN ni desactivarte). Auditoría. Verificado E2E (crear usuario + login del nuevo usuario). → permite cambiar la contraseña del Superadmin de producción desde el panel.
