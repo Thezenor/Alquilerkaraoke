@@ -7,6 +7,7 @@ import { calculateBudget, matchSurcharge } from "@/lib/budget";
 import { logAudit } from "@/server/audit";
 import { CONSENT_VERSION } from "@/lib/consent";
 import { rateLimit, isHoneypotFilled } from "@/server/rate-limit";
+import { notifyNewBooking } from "@/server/email";
 
 // El presupuesto NO se muestra en la web: se calcula y guarda en servidor, y se
 // envía por email. El público solo ve una confirmación.
@@ -145,8 +146,18 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       metadata: { email: c.email, total: breakdown.total },
     });
 
-    // TODO(email): enviar el presupuesto por correo al cliente y aviso al admin
-    // cuando se configure el proveedor (Resend/Brevo).
+    // Envía el presupuesto al cliente y avisa al admin (no-op si no hay proveedor).
+    await notifyNewBooking(created.id, {
+      customerName: c.name,
+      packName: pack.name,
+      hours,
+      eventDate: date || null,
+      province: orNull(province),
+      extras: extras.map((e) => ({ name: e.name, price: e.price })),
+      breakdown,
+      email: c.email,
+      phone: orNull(c.phone ?? ""),
+    });
 
     return { status: "booked" };
   } catch {

@@ -6,7 +6,7 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 
 ## Pendiente menor
 - Cambiar la contraseña del Superadmin de producción (sembrado con `Admin_dev_2026!`).
-- Email automático al recibir leads (Resend/Brevo) — pendiente de proveedor.
+- **Email**: infraestructura lista (no-op sin clave). Para activarlo en producción, fijar `RESEND_API_KEY` **o** `BREVO_API_KEY` + `EMAIL_FROM` (dominio verificado) y, opcional, `EMAIL_ADMIN` en Railway.
 
 ## Despliegue
 - Railway (staging). **Auto-deploy desde GitHub reconectado** (2026-06-07): la GitHub App de Railway necesitaba acceso explícito al repo `Alquilerkaraoke`. Ahora cada push a `main` despliega solo.
@@ -47,7 +47,7 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 - [x] **Fase D — Mejoras de listas**: primitivos reutilizables `ListControls` (búsqueda con debounce + chips de filtro vía searchParams) y `Pagination` (enlaces, preserva filtros). Refactor de `/admin/reservas`, `/admin/solicitudes` y `/admin/clientes` con búsqueda server-side, filtro por estado/profesional, `StatusBadge`, estados vacíos y paginación (20–30/pág). Verificado: typecheck+lint+build+E2E 10/10 (2026-06-07).
 
 ## Pendientes funcionales
-- **Email** (proveedor por decidir): enviar presupuesto por email al cliente + aviso al admin (hoy la solicitud se guarda y se ve en admin).
+- [x] **Email**: módulo provider-agnóstico (`src/server/email`, Resend **o** Brevo vía fetch, sin SDK; no-op seguro si no hay clave). Al enviar `/presupuesto` se manda el presupuesto al cliente + aviso al admin; al recibir un lead de `/contacto` se avisa al admin. Plantillas HTML puras con escape anti-inyección. +3 tests unitarios (18/18). Best-effort: nunca bloquea la acción. **Falta solo** fijar la API key en Railway para activarlo (ver "Pendiente menor").
 - Flujo RGPD de borrado/baja de marketing.
 
 ## Extras admin

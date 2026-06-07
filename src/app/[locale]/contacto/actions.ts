@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { logAudit } from "@/server/audit";
 import { CONSENT_VERSION } from "@/lib/consent";
 import { rateLimit, isHoneypotFilled } from "@/server/rate-limit";
+import { notifyNewContact } from "@/server/email";
 
 const schema = z.object({
   name: z.string().trim().min(1).max(120),
@@ -69,6 +70,15 @@ export async function submitContactRequest(
       entity: "ContactRequest",
       entityId: created.id,
       metadata: { email: d.email },
+    });
+
+    // Aviso al admin (no-op si no hay proveedor de email configurado).
+    await notifyNewContact(created.id, {
+      name: d.name,
+      email: d.email,
+      phone: orNull(d.phone),
+      city: orNull(d.city),
+      message: d.message,
     });
 
     return { status: "success" };
