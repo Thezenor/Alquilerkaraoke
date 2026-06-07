@@ -5,8 +5,12 @@ Fase: **1 — Base técnica** · Bloques 1–7 ✅ · **Desplegado en Railway (s
 Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en producción (2026-06-06).
 
 ## Pendiente menor
-- Definir `NEXT_PUBLIC_SITE_URL` / `NEXTAUTH_URL` / `AUTH_URL` en Railway (SEO/canonical; ahora robots apunta a localhost).
 - Cambiar la contraseña del Superadmin de producción (sembrado con `Admin_dev_2026!`).
+- Email automático al recibir leads (Resend/Brevo) — pendiente de proveedor.
+
+## Despliegue
+- Railway (staging). **Auto-deploy desde GitHub reconectado** (2026-06-07): la GitHub App de Railway necesitaba acceso explícito al repo `Alquilerkaraoke`. Ahora cada push a `main` despliega solo.
+- `NEXT_PUBLIC_SITE_URL` / `NEXTAUTH_URL` / `AUTH_URL` ya configuradas (SEO/canonical correctos).
 
 ## Objetivo inmediato
 **Fase 2 — Web pública SEO mobile-first** en curso.
