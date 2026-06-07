@@ -126,6 +126,15 @@ export default async function ReservaDetailPage({ params }: { params: Promise<{ 
                 WhatsApp
               </a>
             )}
+            <a
+              href={`/admin/reservas/${b.id}/proforma`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-brand-border px-4 py-2 text-sm text-brand-text transition hover:border-brand-neon/60"
+            >
+              <Icon name="box" className="h-4 w-4" />
+              Proforma (PDF)
+            </a>
           </div>
         </div>
 
