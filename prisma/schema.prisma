@@ -431,6 +431,21 @@ model DateBlock {
   @@index([date])
 }
 
+// ── Marcas colaboradoras (logo, enlace y descripción) ───────────
+model Collaborator {
+  id          String   @id @default(cuid())
+  name        String
+  logoUrl     String?
+  url         String?
+  description String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
 // ── Clientes (con descuento para profesionales) ─────────────────
 model Customer {
   id              String    @id @default(cuid())

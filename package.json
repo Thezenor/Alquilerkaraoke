@@ -17,6 +17,7 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:seed:catalog": "tsx prisma/seed-catalog.ts",
+    "db:seed:collaborators": "tsx prisma/seed-collaborators.ts",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
     "test:e2e": "playwright test",

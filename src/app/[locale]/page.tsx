@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { getContact } from "@/server/site-config";
+import { getActiveCollaborators } from "@/server/collaborators";
 import { buildMetadata } from "@/lib/seo";
 
 type Item = { title: string; text: string };
@@ -31,6 +32,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const segments = (await getTranslations("HomeSegments")).raw("items") as Item[];
   const steps = (await getTranslations("HomeProcess")).raw("steps") as Item[];
   const contact = await getContact();
+  const collaborators = await getActiveCollaborators();
 
   return (
     <>
@@ -121,6 +123,44 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </ol>
         </Container>
       </section>
+
+      {/* COLABORADORES */}
+      {collaborators.length > 0 && (
+        <section className="bg-brand-surface py-16 sm:py-20">
+          <Container>
+            <h2 className="text-center text-2xl font-bold text-white sm:text-3xl">{t("collaboratorsTitle")}</h2>
+            <ul className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              {collaborators.map((c) => {
+                const inner = c.logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={c.logoUrl} alt={c.name} loading="lazy" className="max-h-12 w-auto object-contain" />
+                ) : (
+                  <span className="font-semibold text-white">{c.name}</span>
+                );
+                return (
+                  <li key={c.id}>
+                    {c.url ? (
+                      <a
+                        href={c.url}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        title={c.name}
+                        className="flex h-20 min-w-[140px] items-center justify-center rounded-xl border border-brand-border bg-brand-bg px-6 transition hover:border-brand-neon/50"
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <span className="flex h-20 min-w-[140px] items-center justify-center rounded-xl border border-brand-border bg-brand-bg px-6">
+                        {inner}
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </Container>
+        </section>
+      )}
 
       {/* CTA BAND */}
       <section className="py-16 sm:py-20">
