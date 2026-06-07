@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import NextLink from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -49,6 +50,12 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <NextLink
+            href="/admin/login"
+            className="hidden text-sm text-brand-muted transition hover:text-white md:inline"
+          >
+            {t("access")}
+          </NextLink>
           <div className="hidden md:block">
             <LocaleSwitcher />
           </div>
@@ -102,6 +109,13 @@ export function SiteHeader() {
                 {t(item.key)}
               </a>
             ))}
+            <NextLink
+              href="/admin/login"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2.5 text-brand-muted transition hover:bg-brand-surface-2 hover:text-white"
+            >
+              {t("access")}
+            </NextLink>
             <div className="mt-3 flex items-center justify-between gap-3">
               <LocaleSwitcher />
               <Button href={quoteHref} size="md" className="flex-1">
