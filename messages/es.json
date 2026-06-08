@@ -89,6 +89,7 @@
     "searchPlaceholder": "Título o intérprete",
     "language": "Idioma",
     "allLanguages": "Todos los idiomas",
+    "unclassified": "Sin clasificar",
     "search": "Buscar",
     "total": "{count} canciones disponibles",
     "byLanguage": "Por idioma",

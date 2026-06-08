@@ -45,25 +45,25 @@ export const getCatalogStats = unstable_cache(
   { tags: [SONGS_TAG], revalidate: 3600 },
 );
 
-/** Nº de canciones (no repetidas) por idioma, de mayor a menor. */
-export const getLanguageCounts = unstable_cache(
-  async () => {
-    try {
-      const rows = await prisma.song.groupBy({
-        by: ["languageCode"],
-        where: { isPrimary: true },
-        _count: { _all: true },
-      });
-      return rows
-        .map((r) => ({ code: r.languageCode, count: r._count._all }))
-        .sort((a, b) => b.count - a.count);
-    } catch {
-      return [];
-    }
-  },
-  ["songs-lang-counts"],
-  { tags: [SONGS_TAG], revalidate: 3600 },
-);
+/**
+ * Nº de canciones (no repetidas) por idioma, de mayor a menor.
+ * Sin caché: la página de canciones es dinámica y debe reflejar el catálogo
+ * recién importado de inmediato (el groupBy va sobre el índice y es rápido).
+ */
+export async function getLanguageCounts() {
+  try {
+    const rows = await prisma.song.groupBy({
+      by: ["languageCode"],
+      where: { isPrimary: true },
+      _count: { _all: true },
+    });
+    return rows
+      .map((r) => ({ code: r.languageCode, count: r._count._all }))
+      .sort((a, b) => b.count - a.count);
+  } catch {
+    return [];
+  }
+}
 
 export type SongSearchResult = {
   items: { id: string; title: string; performer: string; languageCode: string; brand: { name: string } | null }[];
@@ -76,6 +76,7 @@ export type SongSearchResult = {
 export async function searchSongs(opts: {
   q?: string;
   lang?: string;
+  langIn?: string[];
   page?: number;
   pageSize?: number;
 }): Promise<SongSearchResult> {
@@ -84,7 +85,7 @@ export async function searchSongs(opts: {
   const q = (opts.q ?? "").trim();
   const where = {
     isPrimary: true,
-    ...(opts.lang ? { languageCode: opts.lang } : {}),
+    ...(opts.langIn ? { languageCode: { in: opts.langIn } } : opts.lang ? { languageCode: opts.lang } : {}),
     ...(q
       ? {
           OR: [

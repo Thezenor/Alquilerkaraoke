@@ -5,7 +5,8 @@ import { Container } from "@/components/ui/container";
 import { buildMetadata } from "@/lib/seo";
 import { prisma } from "@/lib/prisma";
 import { searchSongs, getLanguageCounts } from "@/server/songs";
-import { languageName, flagFor } from "@/lib/song-languages";
+import { languageName } from "@/lib/song-languages";
+import { LanguageFlag } from "@/components/language-flag";
 import { cn } from "@/lib/cn";
 
 async function uniqueCount(): Promise<number> {
@@ -41,21 +42,35 @@ export default async function SongsPage({
   const t = await getTranslations("Songs");
 
   const q = (sp.q ?? "").trim();
-  const lang = (sp.lang ?? "").trim().toUpperCase();
+  const rawLang = (sp.lang ?? "").trim();
+  const langParam = rawLang.toUpperCase();
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
+  const OTHER = "_OTHER";
+  const THRESHOLD = 10;
 
-  const [unique, langCounts, result] = await Promise.all([
-    uniqueCount(),
-    getLanguageCounts(),
-    searchSongs({ q, lang: lang || undefined, page, pageSize: 40 }),
-  ]);
+  const [unique, langCounts] = await Promise.all([uniqueCount(), getLanguageCounts()]);
+  // Idiomas con ≥10 canciones (ya ordenados de más a menos); el resto + "Ninguno"
+  // se agrupan en "Sin clasificar", que va siempre al final.
+  const major = langCounts.filter((c) => c.code !== "NI" && c.count >= THRESHOLD);
+  const minor = langCounts.filter((c) => c.code === "NI" || c.count < THRESHOLD);
+  const minorCodes = minor.map((c) => c.code);
+  const minorTotal = minor.reduce((s, c) => s + c.count, 0);
+  const isOther = langParam === OTHER;
+  const lang = isOther ? "" : langParam;
+
+  const result = await searchSongs({
+    q,
+    page,
+    pageSize: 40,
+    ...(isOther ? { langIn: minorCodes.length ? minorCodes : ["__none__"] } : { lang: lang || undefined }),
+  });
   const stats = { unique };
   const loc: "es" | "en" = locale === "en" ? "en" : "es";
 
   const makeHref = (p: number) => {
     const u = new URLSearchParams();
     if (q) u.set("q", q);
-    if (lang) u.set("lang", lang);
+    if (rawLang) u.set("lang", rawLang);
     if (p > 1) u.set("page", String(p));
     const qs = u.toString();
     return qs ? `/${locale}/canciones?${qs}` : `/${locale}/canciones`;
@@ -78,7 +93,7 @@ export default async function SongsPage({
           <>
             {/* Buscador (GET, sin JS) — conserva el idioma activo */}
             <form method="get" action={`/${locale}/canciones`} className="mt-8 flex flex-col gap-3 sm:flex-row">
-              {lang && <input type="hidden" name="lang" value={lang} />}
+              {rawLang && <input type="hidden" name="lang" value={rawLang} />}
               <input
                 type="search"
                 name="q"
@@ -98,15 +113,15 @@ export default async function SongsPage({
                 href={q ? `/${locale}/canciones?q=${encodeURIComponent(q)}` : `/${locale}/canciones`}
                 className={cn(
                   "flex w-24 flex-col items-center gap-1 rounded-xl border px-2 py-3 text-center transition",
-                  !lang ? "border-brand-neon bg-brand-neon/10" : "border-brand-border bg-brand-surface hover:border-brand-neon/50",
+                  !langParam ? "border-brand-neon bg-brand-neon/10" : "border-brand-border bg-brand-surface hover:border-brand-neon/50",
                 )}
               >
-                <span className="text-2xl">🌐</span>
+                <span className="text-2xl leading-none">🌐</span>
                 <span className="text-xs font-medium text-white">{t("allLanguages")}</span>
                 <span className="text-sm font-bold text-brand-neon">{stats.unique.toLocaleString("es-ES")}</span>
               </Link>
-              {langCounts.map((l) => {
-                const active = lang === l.code;
+              {major.map((l) => {
+                const active = langParam === l.code;
                 const params = new URLSearchParams({ lang: l.code, ...(q ? { q } : {}) });
                 return (
                   <Link
@@ -118,17 +133,30 @@ export default async function SongsPage({
                       active ? "border-brand-neon bg-brand-neon/10" : "border-brand-border bg-brand-surface hover:border-brand-neon/50",
                     )}
                   >
-                    <span className="text-2xl leading-none">{flagFor(l.code)}</span>
+                    <LanguageFlag code={l.code} />
                     <span className="line-clamp-1 text-xs font-medium text-white">{languageName(l.code, loc)}</span>
                     <span className="text-sm font-bold text-brand-neon">{l.count.toLocaleString("es-ES")}</span>
                   </Link>
                 );
               })}
+              {minorTotal > 0 && (
+                <Link
+                  href={`/${locale}/canciones?${new URLSearchParams({ lang: "_other", ...(q ? { q } : {}) }).toString()}`}
+                  className={cn(
+                    "flex w-24 flex-col items-center gap-1 rounded-xl border px-2 py-3 text-center transition",
+                    isOther ? "border-brand-neon bg-brand-neon/10" : "border-brand-border bg-brand-surface hover:border-brand-neon/50",
+                  )}
+                >
+                  <span className="text-2xl leading-none">🌐</span>
+                  <span className="line-clamp-1 text-xs font-medium text-white">{t("unclassified")}</span>
+                  <span className="text-sm font-bold text-brand-neon">{minorTotal.toLocaleString("es-ES")}</span>
+                </Link>
+              )}
             </div>
 
             <div className="mt-6 flex flex-wrap items-center justify-between gap-2">
               <p className="text-sm text-brand-muted">{t("results", { count: result.total })}</p>
-              {result.total > 0 && (
+              {result.total > 0 && !isOther && (
                 <a
                   href={`/${locale}/canciones/pdf?${new URLSearchParams({ ...(lang ? { lang } : {}), ...(q ? { q } : {}) }).toString()}`}
                   target="_blank"

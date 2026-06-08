@@ -89,6 +89,7 @@
     "searchPlaceholder": "Title or performer",
     "language": "Language",
     "allLanguages": "All languages",
+    "unclassified": "Unclassified",
     "search": "Search",
     "total": "{count} songs available",
     "byLanguage": "By language",
