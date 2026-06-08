@@ -23,6 +23,7 @@ export async function generateMetadata({
     pathname: `/blog/${slug}`,
     title: post.metaTitle || `${post.title} | Alquiler Karaoke`,
     description: post.metaDescription || post.excerpt || markdownToPlain(post.content),
+    ...(post.coverImageUrl ? { images: [post.coverImageUrl] } : {}),
   });
 }
 
@@ -36,17 +37,34 @@ export default async function PostPage({
   if (!post) notFound();
   setRequestLocale(locale);
 
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.metaDescription || post.excerpt || markdownToPlain(post.content),
-    ...(post.coverImageUrl ? { image: post.coverImageUrl } : {}),
-    ...(post.publishedAt ? { datePublished: post.publishedAt.toISOString() } : {}),
-    dateModified: post.updatedAt.toISOString(),
-    mainEntityOfPage: absoluteUrl(`/${locale}/blog/${slug}`),
-    publisher: { "@type": "Organization", name: "Alquiler Karaoke" },
-  };
+  const schema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: post.metaDescription || post.excerpt || markdownToPlain(post.content),
+      ...(post.coverImageUrl ? { image: post.coverImageUrl } : {}),
+      ...(post.publishedAt ? { datePublished: post.publishedAt.toISOString() } : {}),
+      dateModified: post.updatedAt.toISOString(),
+      inLanguage: locale,
+      mainEntityOfPage: absoluteUrl(`/${locale}/blog/${slug}`),
+      author: { "@type": "Organization", name: "Alquiler Karaoke", url: absoluteUrl(`/${locale}`) },
+      publisher: {
+        "@type": "Organization",
+        name: "Alquiler Karaoke",
+        logo: { "@type": "ImageObject", url: absoluteUrl("/logo-badge.svg") },
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Alquiler Karaoke", item: absoluteUrl(`/${locale}`) },
+        { "@type": "ListItem", position: 2, name: "Blog", item: absoluteUrl(`/${locale}/blog`) },
+        { "@type": "ListItem", position: 3, name: post.title, item: absoluteUrl(`/${locale}/blog/${slug}`) },
+      ],
+    },
+  ];
 
   return (
     <>
