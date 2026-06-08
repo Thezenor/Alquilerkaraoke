@@ -39,6 +39,8 @@ export type BookingEmailData = {
   packName: string;
   hours: number;
   eventDate: string | null; // YYYY-MM-DD o null
+  eventTime?: string | null;
+  attendees?: number | null;
   province: string | null;
   extras: { name: string; price: number }[];
   breakdown: BudgetBreakdown;
@@ -51,8 +53,9 @@ export type BookingEmailData = {
 function summaryTable(d: BookingEmailData): string {
   const lines: string[] = [];
   lines.push(row("Pack", esc(d.packName)));
-  if (d.eventDate) lines.push(row("Fecha", d.eventDate));
+  if (d.eventDate) lines.push(row("Fecha", d.eventDate + (d.eventTime ? ` · ${esc(d.eventTime)}` : "")));
   lines.push(row("Duración", `${d.hours} h`));
+  if (d.attendees) lines.push(row("Asistentes", String(d.attendees)));
   if (d.province) lines.push(row("Provincia", esc(d.province)));
   if (d.extras.length) lines.push(row("Extras", d.extras.map((e) => esc(e.name)).join(", ")));
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px">${lines.join("")}</table>`;

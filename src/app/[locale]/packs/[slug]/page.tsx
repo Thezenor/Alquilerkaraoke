@@ -132,7 +132,7 @@ export default async function PackDetailPage({
           </dl>
 
           <div className="mt-10">
-            <Button href={`/${locale}/contacto`} size="lg">
+            <Button href={`/${locale}/presupuesto?pack=${slug}`} size="lg">
               {t("ctaQuote")}
             </Button>
           </div>

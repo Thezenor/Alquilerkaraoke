@@ -76,7 +76,7 @@ export default async function PacksPage({ params }: { params: Promise<{ locale: 
                   <Button href={`/${locale}/packs/${pack.slug}`} variant="secondary" size="md">
                     {t("viewDetails")}
                   </Button>
-                  <Button href={`/${locale}/contacto`} size="md">
+                  <Button href={`/${locale}/presupuesto?pack=${pack.slug}`} size="md">
                     {t("ctaQuote")}
                   </Button>
                 </div>

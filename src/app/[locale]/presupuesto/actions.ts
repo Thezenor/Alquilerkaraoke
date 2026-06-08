@@ -57,6 +57,9 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
     const hours = Number.isFinite(hoursRaw) && hoursRaw > 0 ? Math.min(hoursRaw, 48) : pack.includedHours || 4;
     const province = String(formData.get("province") ?? "").trim();
     const date = String(formData.get("date") ?? "").trim();
+    const eventTime = String(formData.get("eventTime") ?? "").trim().slice(0, 20);
+    const attendeesRaw = parseInt(String(formData.get("attendees") ?? ""), 10);
+    const attendees = Number.isFinite(attendeesRaw) && attendeesRaw > 0 ? Math.min(attendeesRaw, 100000) : null;
     const night = formData.get("night") === "on";
     const extraIds = formData.getAll("extras").map(String).filter(Boolean);
 
@@ -150,6 +153,8 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
         hours,
         province: orNull(province),
         eventDate: date ? new Date(`${date}T12:00:00`) : null,
+        eventTime: orNull(eventTime),
+        attendees,
         night,
         extras: extras.map((e) => ({ name: e.name, price: e.price })),
         subtotal: breakdown.subtotal,
@@ -187,6 +192,8 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       packName: pack.name,
       hours,
       eventDate: date || null,
+      eventTime: orNull(eventTime),
+      attendees,
       province: orNull(province),
       extras: extras.map((e) => ({ name: e.name, price: e.price })),
       breakdown,

@@ -77,12 +77,19 @@ export default async function ReservaDetailPage({ params }: { params: Promise<{ 
               <dd className="mt-1 text-white">{b.phone || "—"}</dd>
             </div>
             <div>
-              <dt className="text-xs uppercase tracking-wide text-brand-muted">Fecha evento</dt>
-              <dd className="mt-1 text-white">{b.eventDate ? b.eventDate.toLocaleDateString("es-ES") : "—"}</dd>
+              <dt className="text-xs uppercase tracking-wide text-brand-muted">Fecha · hora</dt>
+              <dd className="mt-1 text-white">
+                {b.eventDate ? b.eventDate.toLocaleDateString("es-ES") : "—"}
+                {b.eventTime ? ` · ${b.eventTime}` : ""}
+              </dd>
             </div>
             <div>
               <dt className="text-xs uppercase tracking-wide text-brand-muted">Provincia · Horas</dt>
               <dd className="mt-1 text-white">{b.province || "—"} · {b.hours} h{b.night ? " · nocturno" : ""}</dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-wide text-brand-muted">Asistentes</dt>
+              <dd className="mt-1 text-white">{b.attendees ?? "—"}</dd>
             </div>
           </dl>
 

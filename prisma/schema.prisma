@@ -351,6 +351,8 @@ model Booking {
   hours     Int      @default(4)
   province  String?
   eventDate DateTime?
+  eventTime String? // hora de inicio aproximada (texto, p. ej. "20:00")
+  attendees Int? // nº de asistentes previstos
   night     Boolean  @default(false)
   extras    Json? // snapshot: [{ name, price }]
 
