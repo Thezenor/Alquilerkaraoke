@@ -4,9 +4,11 @@ import { prisma } from "@/lib/prisma";
 export const SONGS_TAG = "songs";
 
 /**
- * Optimiza el catálogo: marca isPrimary la mejor versión de cada Título+Intérprete
- * (la marca con mayor "quality"; desempate por id). El resto queda isPrimary=false.
- * Hecho en SQL para que escale a cientos de miles de filas.
+ * Optimiza el catálogo: marca isPrimary la mejor versión de cada Título+Intérprete.
+ * Preferencia: marca activa antes que inactiva, luego mayor "quality", desempate por id.
+ * Una marca inactiva nunca hace desaparecer una canción: si todas las versiones de un
+ * tema son de marcas inactivas, una de ellas sigue quedando visible. El resto queda
+ * isPrimary=false. Hecho en SQL para que escale a cientos de miles de filas.
  */
 export async function optimizeCatalog(): Promise<{ total: number; unique: number }> {
   await prisma.$executeRawUnsafe('UPDATE "Song" SET "isPrimary" = true');
@@ -14,7 +16,7 @@ export async function optimizeCatalog(): Promise<{ total: number; unique: number
     WITH ranked AS (
       SELECT s.id, row_number() OVER (
         PARTITION BY s."dedupKey"
-        ORDER BY COALESCE(b."quality", 0) DESC, s.id ASC
+        ORDER BY COALESCE(b."isActive", true) DESC, COALESCE(b."quality", 0) DESC, s.id ASC
       ) AS rn
       FROM "Song" s LEFT JOIN "SongBrand" b ON b.id = s."brandId"
     )
@@ -63,6 +65,29 @@ export async function getLanguageCounts() {
   } catch {
     return [];
   }
+}
+
+/**
+ * Nº de canciones por marca: total y visibles (isPrimary) tras la última optimización.
+ * Permite al admin ver el peso de cada marca y el efecto de la calidad/activa.
+ */
+export async function getBrandSongCounts(): Promise<Map<string, { total: number; visible: number }>> {
+  const map = new Map<string, { total: number; visible: number }>();
+  try {
+    const [totals, visibles] = await Promise.all([
+      prisma.song.groupBy({ by: ["brandId"], _count: { _all: true } }),
+      prisma.song.groupBy({ by: ["brandId"], where: { isPrimary: true }, _count: { _all: true } }),
+    ]);
+    for (const r of totals) if (r.brandId) map.set(r.brandId, { total: r._count._all, visible: 0 });
+    for (const r of visibles) if (r.brandId) {
+      const e = map.get(r.brandId) ?? { total: 0, visible: 0 };
+      e.visible = r._count._all;
+      map.set(r.brandId, e);
+    }
+  } catch {
+    // sin datos: devolver mapa vacío
+  }
+  return map;
 }
 
 export type SongSearchResult = {

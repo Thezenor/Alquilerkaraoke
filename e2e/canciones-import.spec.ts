@@ -52,6 +52,12 @@ test("canciones: subir CSV importa, publica y genera PDF", async ({ page }) => {
   expect(csv.status()).toBe(200);
   expect(await csv.text()).toContain("Cancion Prueba E2E");
 
+  // Admin de canciones: estadísticas y contadores por marca.
+  await page.goto("/admin/canciones");
+  await expect(page.getByText("Duplicados ocultos")).toBeVisible();
+  await expect(page.locator('input[value="KaraokeMedia"]')).toBeVisible();
+  await expect(page.getByText(/canciones · /).first()).toBeVisible();
+
   // Limpieza: reimportar catálogo vacío → la web vuelve a mostrar el aviso.
   await importFile(page, "e2e/fixtures/songs-empty.csv");
   await page.goto("/es/canciones");

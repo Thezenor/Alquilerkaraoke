@@ -4,6 +4,7 @@ import { pageRequireRole } from "@/server/auth/guards";
 import { Role } from "@/generated/prisma/enums";
 import { Icon } from "@/components/admin/icons";
 import { ConfirmButton } from "@/components/admin/confirm-button";
+import { getBrandSongCounts } from "@/server/songs";
 import { saveSongBrand, deleteSongBrand, reoptimizeCatalog } from "./actions";
 import { ImportPanel } from "./import-panel";
 
@@ -18,11 +19,14 @@ const inputCls = "rounded-lg border border-brand-border bg-brand-bg px-2.5 py-1.
 
 export default async function AdminSongsPage() {
   await pageRequireRole(Role.SUPERADMIN, Role.ADMIN);
-  const [total, unique, brands] = await Promise.all([
+  const [total, unique, brands, noBrand, brandCounts] = await Promise.all([
     prisma.song.count(),
     prisma.song.count({ where: { isPrimary: true } }),
     prisma.songBrand.findMany({ orderBy: [{ quality: "desc" }, { name: "asc" }] }),
+    prisma.song.count({ where: { brandId: null } }),
+    getBrandSongCounts(),
   ]);
+  const hidden = total - unique;
 
   return (
     <div>
@@ -32,7 +36,7 @@ export default async function AdminSongsPage() {
       </p>
 
       {/* Estadísticas */}
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl border border-brand-border bg-brand-surface p-5">
           <p className="text-xs uppercase tracking-wide text-brand-muted">Importadas</p>
           <p className="mt-1 text-2xl font-bold text-white">{total.toLocaleString("es-ES")}</p>
@@ -42,8 +46,15 @@ export default async function AdminSongsPage() {
           <p className="mt-1 text-2xl font-bold text-brand-neon">{unique.toLocaleString("es-ES")}</p>
         </div>
         <div className="rounded-xl border border-brand-border bg-brand-surface p-5">
+          <p className="text-xs uppercase tracking-wide text-brand-muted">Duplicados ocultos</p>
+          <p className="mt-1 text-2xl font-bold text-white">{hidden.toLocaleString("es-ES")}</p>
+        </div>
+        <div className="rounded-xl border border-brand-border bg-brand-surface p-5">
           <p className="text-xs uppercase tracking-wide text-brand-muted">Marcas</p>
           <p className="mt-1 text-2xl font-bold text-white">{brands.length}</p>
+          {noBrand > 0 && (
+            <p className="mt-1 text-xs text-brand-muted">{noBrand.toLocaleString("es-ES")} sin marca</p>
+          )}
         </div>
       </div>
 
@@ -87,7 +98,10 @@ export default async function AdminSongsPage() {
 
       {/* Marcas */}
       <h2 className="mt-8 text-lg font-semibold text-white">Marcas y calidad</h2>
-      <p className="mt-1 text-sm text-brand-muted">Mayor calidad = versión preferida cuando una canción se repite.</p>
+      <p className="mt-1 text-sm text-brand-muted">
+        Al repetirse una canción, gana la marca <strong>activa</strong> y de mayor <strong>calidad</strong>. Desactivar una marca la relega
+        (solo se mostrará si no hay otra versión). Tras cambiar esto, pulsa <strong>Reoptimizar</strong>.
+      </p>
 
       <form action={saveSongBrand} className="mt-4 flex flex-wrap items-end gap-2 rounded-xl border border-brand-border bg-brand-surface p-4">
         <label className="flex flex-col gap-1">
@@ -108,12 +122,20 @@ export default async function AdminSongsPage() {
 
       {brands.length > 0 && (
         <ul className="mt-4 space-y-2">
-          {brands.map((b) => (
+          {brands.map((b) => {
+            const c = brandCounts.get(b.id) ?? { total: 0, visible: 0 };
+            return (
             <li key={b.id} className="rounded-xl border border-brand-border bg-brand-surface p-3">
               <form action={saveSongBrand} className="flex flex-wrap items-end gap-2">
                 <input type="hidden" name="id" value={b.id} />
                 <label className="flex flex-1 flex-col gap-1">
-                  <span className="text-xs text-brand-muted">Nombre</span>
+                  <span className="flex items-center justify-between gap-2 text-xs text-brand-muted">
+                    <span>Nombre</span>
+                    <span className="tabular-nums">
+                      {c.total.toLocaleString("es-ES")} canciones · <span className="text-brand-neon">{c.visible.toLocaleString("es-ES")} visibles</span>
+                      {c.total > c.visible && <span className="text-brand-muted"> · {(c.total - c.visible).toLocaleString("es-ES")} ocultas</span>}
+                    </span>
+                  </span>
                   <input name="name" defaultValue={b.name} required maxLength={120} className={`${inputCls} w-full`} />
                 </label>
                 <label className="flex flex-col gap-1">
@@ -134,7 +156,8 @@ export default async function AdminSongsPage() {
                 </ConfirmButton>
               </form>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </div>
