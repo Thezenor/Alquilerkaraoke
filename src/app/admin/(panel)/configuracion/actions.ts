@@ -20,6 +20,14 @@ const schema = z.object({
   primaryColor: z
     .union([z.literal(""), z.string().regex(/^#[0-9a-fA-F]{6}$/, "Color hex no válido (ej. #22d3ee).")])
     .optional(),
+  logoUrl: z.string().trim().max(500).optional(),
+  faviconUrl: z.string().trim().max(500).optional(),
+  ogImageUrl: z.string().trim().max(500).optional(),
+  instagram: z.union([z.literal(""), z.url("URL no válida.")]).optional(),
+  facebook: z.union([z.literal(""), z.url("URL no válida.")]).optional(),
+  tiktok: z.union([z.literal(""), z.url("URL no válida.")]).optional(),
+  youtube: z.union([z.literal(""), z.url("URL no válida.")]).optional(),
+  twitter: z.union([z.literal(""), z.url("URL no válida.")]).optional(),
   iban: z.string().trim().max(40).optional(),
   bizum: z.string().trim().max(40).optional(),
   paymentInfo: z.string().trim().max(1000).optional(),
@@ -53,37 +61,32 @@ export async function updateSiteConfig(
   }
 
   const d = parsed.data;
+  const data = {
+    companyName: d.companyName,
+    phone: d.phone,
+    legalName: orNull(d.legalName),
+    taxId: orNull(d.taxId),
+    email: orNull(d.email),
+    whatsapp: orNull(d.whatsapp),
+    address: orNull(d.address),
+    primaryColor: orNull(d.primaryColor),
+    logoUrl: orNull(d.logoUrl),
+    faviconUrl: orNull(d.faviconUrl),
+    ogImageUrl: orNull(d.ogImageUrl),
+    instagram: orNull(d.instagram),
+    facebook: orNull(d.facebook),
+    tiktok: orNull(d.tiktok),
+    youtube: orNull(d.youtube),
+    twitter: orNull(d.twitter),
+    iban: orNull(d.iban),
+    bizum: orNull(d.bizum),
+    paymentInfo: orNull(d.paymentInfo),
+    contractTerms: orNull(d.contractTerms),
+  };
   await prisma.siteConfig.upsert({
     where: { id: "default" },
-    update: {
-      companyName: d.companyName,
-      phone: d.phone,
-      legalName: orNull(d.legalName),
-      taxId: orNull(d.taxId),
-      email: orNull(d.email),
-      whatsapp: orNull(d.whatsapp),
-      address: orNull(d.address),
-      primaryColor: orNull(d.primaryColor),
-      iban: orNull(d.iban),
-      bizum: orNull(d.bizum),
-      paymentInfo: orNull(d.paymentInfo),
-      contractTerms: orNull(d.contractTerms),
-    },
-    create: {
-      id: "default",
-      companyName: d.companyName,
-      phone: d.phone,
-      legalName: orNull(d.legalName),
-      taxId: orNull(d.taxId),
-      email: orNull(d.email),
-      whatsapp: orNull(d.whatsapp),
-      address: orNull(d.address),
-      primaryColor: orNull(d.primaryColor),
-      iban: orNull(d.iban),
-      bizum: orNull(d.bizum),
-      paymentInfo: orNull(d.paymentInfo),
-      contractTerms: orNull(d.contractTerms),
-    },
+    update: data,
+    create: { id: "default", ...data },
   });
 
   await logAudit({

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { JsonLd } from "@/components/seo/json-ld";
 import { buildMetadata } from "@/lib/seo";
 import { CITIES } from "@/lib/cities";
 import { getActiveServices, localizedService } from "@/server/services";
@@ -11,7 +10,6 @@ import { getActiveServices, localizedService } from "@/server/services";
 export const dynamic = "force-dynamic";
 
 type Item = { title: string; text: string };
-type Faq = { q: string; a: string };
 
 export async function generateMetadata({
   params,
@@ -36,22 +34,9 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
   const cl = await getTranslations("CityLanding");
   const staticServices = (await getTranslations("HomeServices")).raw("items") as Item[];
   const dbServices = await getActiveServices();
-  const faq = t.raw("faq") as Faq[];
-
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faq.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-  };
 
   return (
     <>
-      <JsonLd data={faqSchema} />
-
       <section className="py-16 sm:py-20">
         <Container>
           <h1 className="text-3xl font-bold text-white sm:text-4xl">{t("title")}</h1>
@@ -81,17 +66,6 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                   </article>
                 ))}
           </div>
-
-          {/* FAQ */}
-          <h2 className="mt-14 text-xl font-semibold text-white">{t("faqTitle")}</h2>
-          <dl className="mt-6 space-y-4">
-            {faq.map((f) => (
-              <div key={f.q} className="rounded-xl border border-brand-border bg-brand-surface p-5">
-                <dt className="font-medium text-white">{f.q}</dt>
-                <dd className="mt-1 text-sm text-brand-muted">{f.a}</dd>
-              </div>
-            ))}
-          </dl>
 
           {/* Enlaces internos a ciudades */}
           <h2 className="mt-14 text-xl font-semibold text-white">{cl("otherCitiesTitle")}</h2>

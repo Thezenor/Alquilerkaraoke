@@ -54,6 +54,22 @@ export default async function LocaleLayout({
   const contact = await getContact();
   const services = (await getActiveServices()).map((s) => ({ slug: s.slug, name: localizedService(s, locale).name }));
 
+  const nav = await getTranslations({ locale, namespace: "Nav" });
+  const footerLinks = [
+    { href: `/${locale}/servicios`, label: nav("services") },
+    { href: `/${locale}/packs`, label: nav("packs") },
+    { href: `/${locale}/blog`, label: nav("blog") },
+    { href: `/${locale}/contacto`, label: nav("contact") },
+    { href: `/${locale}/faq`, label: (await getTranslations({ locale, namespace: "Faq" }))("title") },
+    { href: `/${locale}/privacidad`, label: (await getTranslations({ locale, namespace: "Privacy" }))("title") },
+    { href: `/${locale}/baja-marketing`, label: (await getTranslations({ locale, namespace: "Unsubscribe" }))("title") },
+  ];
+
+  // Color de marca configurable desde el admin (sobrescribe el token de tema).
+  const themeStyle = contact.primaryColor
+    ? ({ "--color-brand-neon": contact.primaryColor, "--color-brand-neon-strong": contact.primaryColor } as React.CSSProperties)
+    : undefined;
+
   const businessSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -67,7 +83,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={`${fontVariables} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col" style={themeStyle}>
         <JsonLd data={businessSchema} />
         <NextIntlClientProvider>
           <SiteHeader services={services} />
@@ -76,10 +92,8 @@ export default async function LocaleLayout({
             companyName={contact.companyName}
             phone={contact.phone}
             phoneHref={contact.phoneHref}
-            privacyHref={`/${locale}/privacidad`}
-            privacyLabel={(await getTranslations({ locale, namespace: "Privacy" }))("title")}
-            unsubscribeHref={`/${locale}/baja-marketing`}
-            unsubscribeLabel={(await getTranslations({ locale, namespace: "Unsubscribe" }))("title")}
+            links={footerLinks}
+            socials={contact.socials}
           />
           <WhatsappFab url={contact.whatsappUrl} />
         </NextIntlClientProvider>

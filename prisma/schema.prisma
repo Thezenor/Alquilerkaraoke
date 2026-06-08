@@ -189,6 +189,12 @@ model SiteConfig {
   faviconUrl   String?
   ogImageUrl   String?
   primaryColor String? @default("#22d3ee")
+  // Redes sociales (URLs)
+  instagram    String?
+  facebook     String?
+  tiktok       String?
+  youtube      String?
+  twitter      String?
   // Datos de pago para el cliente (transferencia / Bizum)
   iban         String?
   bizum        String?

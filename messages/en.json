@@ -79,6 +79,10 @@
       "termsRequired": "You must accept the privacy policy to continue."
     }
   },
+  "Faq": {
+    "title": "FAQ",
+    "intro": "Answers to the most common questions about our karaoke and event services. We'll keep adding more."
+  },
   "BlogMeta": {
     "title": "Blog | Alquiler Karaoke",
     "description": "Tips, ideas and news about karaoke and events to make your party unforgettable."

@@ -79,6 +79,10 @@
       "termsRequired": "Vous devez accepter la politique de confidentialité pour continuer."
     }
   },
+  "Faq": {
+    "title": "Questions fréquentes",
+    "intro": "Réponses aux questions les plus courantes sur nos services de karaoké et d'événements. Nous en ajouterons d'autres."
+  },
   "BlogMeta": {
     "title": "Blog | Alquiler Karaoke",
     "description": "Conseils, idées et actualités sur le karaoké et les événements pour une fête inoubliable."

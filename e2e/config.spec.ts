@@ -38,3 +38,29 @@ test("la configuración exige sesión", async ({ page }) => {
   await page.goto("/admin/configuracion");
   await expect(page).toHaveURL(/\/admin\/login/);
 });
+
+test("redes sociales del admin aparecen en el pie de página", async ({ page }) => {
+  const url = `https://instagram.com/akaraoke_${Date.now()}`;
+  await login(page);
+  await page.goto("/admin/configuracion");
+  await page.locator("#instagram").fill(url);
+  await page.getByRole("button", { name: "Guardar cambios" }).click();
+  await expect(page.getByText("Configuración guardada correctamente.")).toBeVisible();
+
+  // Aparece en el footer de una página dinámica (revalidación por tag).
+  await page.goto("/es/packs");
+  await expect(page.locator(`a[href="${url}"]`)).toBeVisible();
+
+  // Limpieza.
+  await page.goto("/admin/configuracion");
+  await page.locator("#instagram").fill("");
+  await page.getByRole("button", { name: "Guardar cambios" }).click();
+  await expect(page.getByText("Configuración guardada correctamente.")).toBeVisible();
+});
+
+test("FAQ accesible y enlazada desde el pie", async ({ page }) => {
+  await page.goto("/es/faq");
+  await expect(page.getByRole("heading", { name: "Preguntas frecuentes", level: 1 })).toBeVisible();
+  await page.goto("/es/packs");
+  await expect(page.locator('footer a[href="/es/faq"]')).toBeVisible();
+});

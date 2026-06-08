@@ -44,5 +44,13 @@ export async function getContact() {
     phone,
     phoneHref: `tel:+34${phone.replace(/\D/g, "")}`,
     whatsappUrl: `https://wa.me/${toWhatsappNumber(whatsappRaw)}`,
+    primaryColor: config?.primaryColor || null,
+    socials: {
+      instagram: config?.instagram || null,
+      facebook: config?.facebook || null,
+      tiktok: config?.tiktok || null,
+      youtube: config?.youtube || null,
+      twitter: config?.twitter || null,
+    },
   };
 }

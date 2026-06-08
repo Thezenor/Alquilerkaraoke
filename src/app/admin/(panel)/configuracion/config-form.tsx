@@ -14,6 +14,14 @@ export type ConfigValues = {
   whatsapp: string;
   address: string;
   primaryColor: string;
+  logoUrl: string;
+  faviconUrl: string;
+  ogImageUrl: string;
+  instagram: string;
+  facebook: string;
+  tiktok: string;
+  youtube: string;
+  twitter: string;
   iban: string;
   bizum: string;
   paymentInfo: string;
@@ -67,7 +75,46 @@ export function ConfigForm({ values }: { values: ConfigValues }) {
         <Field name="phone" label="Teléfono" defaultValue={values.phone} required />
         <Field name="whatsapp" label="WhatsApp" defaultValue={values.whatsapp} placeholder="Si difiere del teléfono" />
         <Field name="address" label="Dirección" defaultValue={values.address} />
-        <Field name="primaryColor" label="Color principal (hex)" defaultValue={values.primaryColor} placeholder="#22d3ee" />
+      </div>
+
+      <h2 className="mt-8 mb-1 text-sm font-semibold tracking-wide text-brand-muted uppercase">Marca y tema</h2>
+      <p className="mb-4 text-sm text-brand-muted">Logos por URL e identidad visual (la subida de imágenes llegará más adelante).</p>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field name="logoUrl" label="Logo (URL)" defaultValue={values.logoUrl} placeholder="https://…" />
+        <Field name="faviconUrl" label="Favicon (URL)" defaultValue={values.faviconUrl} placeholder="https://…" />
+        <Field name="ogImageUrl" label="Imagen para redes/OG (URL)" defaultValue={values.ogImageUrl} placeholder="https://…" />
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="primaryColor" className="text-sm font-medium text-brand-text">Color principal</label>
+          <div className="flex items-center gap-2">
+            <input
+              type="color"
+              defaultValue={values.primaryColor || "#22d3ee"}
+              onChange={(e) => {
+                const el = document.getElementById("primaryColor") as HTMLInputElement | null;
+                if (el) el.value = e.target.value;
+              }}
+              className="h-10 w-12 shrink-0 cursor-pointer rounded border border-brand-border bg-brand-bg"
+              aria-label="Selector de color"
+            />
+            <input
+              id="primaryColor"
+              name="primaryColor"
+              defaultValue={values.primaryColor}
+              placeholder="#22d3ee"
+              className="w-full rounded-lg border border-brand-border bg-brand-bg px-3 py-2.5 text-brand-text outline-none transition focus:border-brand-neon focus:ring-2 focus:ring-brand-neon/30"
+            />
+          </div>
+        </div>
+      </div>
+
+      <h2 className="mt-8 mb-1 text-sm font-semibold tracking-wide text-brand-muted uppercase">Redes sociales</h2>
+      <p className="mb-4 text-sm text-brand-muted">Se muestran en el pie de página. Deja vacío las que no uses.</p>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field name="instagram" label="Instagram (URL)" defaultValue={values.instagram} placeholder="https://instagram.com/…" />
+        <Field name="facebook" label="Facebook (URL)" defaultValue={values.facebook} placeholder="https://facebook.com/…" />
+        <Field name="tiktok" label="TikTok (URL)" defaultValue={values.tiktok} placeholder="https://tiktok.com/@…" />
+        <Field name="youtube" label="YouTube (URL)" defaultValue={values.youtube} placeholder="https://youtube.com/@…" />
+        <Field name="twitter" label="X / Twitter (URL)" defaultValue={values.twitter} placeholder="https://x.com/…" />
       </div>
 
       <h2 className="mt-8 mb-1 text-sm font-semibold tracking-wide text-brand-muted uppercase">Datos de pago</h2>
