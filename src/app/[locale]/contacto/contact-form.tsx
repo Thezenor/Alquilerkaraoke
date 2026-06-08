@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { Turnstile } from "@/components/turnstile";
 import { submitContactRequest, type ContactFormState } from "./actions";
 
 const initialState: ContactFormState = { status: "idle" };
@@ -87,6 +88,8 @@ export function ContactForm() {
           <span>{t("marketing")}</span>
         </label>
       </div>
+
+      <Turnstile />
 
       {state.status === "error" && (
         <p role="alert" className="text-sm text-red-400">

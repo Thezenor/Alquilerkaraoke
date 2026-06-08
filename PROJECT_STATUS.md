@@ -67,6 +67,9 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
   - **Pendiente anotado**: rate-limit compartido (Redis/Cloudflare) antes de producción multi-instancia; reforzar valor probatorio de la firma (OTP) si se requiere legalmente.
   - Verificado: typecheck + lint + build + unit 44/44 + E2E 21/21.
 
+## Anti-spam Turnstile — bloque F
+- [x] **Cloudflare Turnstile** (2026-06-08): widget (`src/components/turnstile.tsx`) + verificación servidor (`src/server/turnstile.ts`) integrados en los formularios públicos (presupuesto, contacto, baja de marketing). **No-op si no hay claves** (`NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY`): siguen honeypot + rate-limit; con claves, se exige el captcha. Fail-open ante errores de red (es anti-spam, no auth). Para activar: fijar ambas claves en Railway.
+
 ## Extras condicionados — bloque B (parte 1)
 - [x] **Extras según el pack** (2026-06-08): `Extra.appliesToCategories String[]` (migración `extra_applies_to`). El formulario de presupuesto **filtra los extras** según la categoría del pack seleccionado (vacío = aplica a todos), con defensa en el servidor (`quoteAction` descarta extras incompatibles). Admin de extras: selector de "Aplica a estos packs". Seed de catálogo etiqueta los extras existentes (Holi→Fiesta Holi, Gaming→Gaming/Consolas) de forma guardada (no pisa ediciones). E2E `extras-compat`.
 - [x] **Segunda actividad** (2026-06-08): botón **"Añadir otra actividad"** en el presupuesto: varias actividades (cada una con su pack, horas y extras compatibles). `Booking.activities` (migración `booking_activities`). El presupuesto combina todas las actividades en un único total reutilizando `calculateBudget` (base+horas+extras de cada actividad sumados; suplementos/descuento/IVA una vez). Se incluyen en el mensaje de WhatsApp, en el detalle de reserva del admin y como líneas independientes en la **proforma PDF**. E2E `segunda-actividad`.

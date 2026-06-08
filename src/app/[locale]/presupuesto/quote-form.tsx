@@ -3,6 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { Turnstile } from "@/components/turnstile";
 import { quoteAction, type QuoteState } from "./actions";
 
 const initial: QuoteState = { status: "idle" };
@@ -289,6 +290,8 @@ export function QuoteForm({
           <span>{t("marketing")}</span>
         </label>
       </div>
+
+      <Turnstile />
 
       {state.status === "error" && (
         <p role="alert" className="mt-4 text-sm text-red-400">{state.message ?? t("error")}</p>

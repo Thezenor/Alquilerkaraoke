@@ -8,6 +8,7 @@ import { normalizeCode } from "@/lib/discount";
 import { logAudit } from "@/server/audit";
 import { CONSENT_VERSION } from "@/lib/consent";
 import { rateLimit, isHoneypotFilled } from "@/server/rate-limit";
+import { verifyTurnstile } from "@/server/turnstile";
 import { notifyNewBooking } from "@/server/email";
 
 // El presupuesto NO se muestra en la web: se calcula y guarda en servidor, y se
@@ -30,6 +31,9 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
     const userAgent = h.get("user-agent") ?? null;
     if (!rateLimit(`quote:${ip}`, 30)) {
       return { status: "error", message: "Has enviado demasiadas solicitudes. Inténtalo más tarde." };
+    }
+    if (!(await verifyTurnstile(formData.get("cf-turnstile-response")?.toString(), ip))) {
+      return { status: "error", message: "Verificación anti-spam fallida. Recarga e inténtalo de nuevo." };
     }
 
     const customer = z

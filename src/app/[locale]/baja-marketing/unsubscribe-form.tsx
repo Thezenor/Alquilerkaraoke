@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
+import { Turnstile } from "@/components/turnstile";
 import { unsubscribeAction, type UnsubscribeState } from "./actions";
 
 const initialState: UnsubscribeState = { status: "idle" };
@@ -37,6 +38,8 @@ export function UnsubscribeForm() {
         </label>
         <input id="email" name="email" type="email" required className={inputClass} />
       </div>
+
+      <Turnstile />
 
       {state.status === "error" && (
         <p role="alert" className="text-sm text-red-400">

@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { logAudit } from "@/server/audit";
 import { CONSENT_VERSION } from "@/lib/consent";
 import { rateLimit, isHoneypotFilled } from "@/server/rate-limit";
+import { verifyTurnstile } from "@/server/turnstile";
 import { notifyNewContact } from "@/server/email";
 
 const schema = z.object({
@@ -44,6 +45,9 @@ export async function submitContactRequest(
   const userAgent = h.get("user-agent") ?? null;
 
   if (!rateLimit(`contact:${ip ?? "unknown"}`)) {
+    return { status: "error" };
+  }
+  if (!(await verifyTurnstile(formData.get("cf-turnstile-response")?.toString(), ip))) {
     return { status: "error" };
   }
 

@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { logAudit } from "@/server/audit";
 import { rateLimit, isHoneypotFilled } from "@/server/rate-limit";
+import { verifyTurnstile } from "@/server/turnstile";
 import { optOutMarketing } from "@/server/gdpr";
 
 export type UnsubscribeState = { status: "idle" | "success" | "error" };
@@ -21,6 +22,7 @@ export async function unsubscribeAction(
   const h = await headers();
   const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   if (!rateLimit(`unsubscribe:${ip}`)) return { status: "error" };
+  if (!(await verifyTurnstile(formData.get("cf-turnstile-response")?.toString(), ip))) return { status: "error" };
 
   try {
     const affected = await optOutMarketing(parsed.data.email);
