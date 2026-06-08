@@ -6,6 +6,10 @@ import { getContact } from "@/server/site-config";
 import { getActiveCollaborators } from "@/server/collaborators";
 import { buildMetadata } from "@/lib/seo";
 
+// ISR: la home se regenera periódicamente para reflejar datos de BD (servicios
+// del menú, colaboradores) sin sacrificar el rendimiento de página estática.
+export const revalidate = 300;
+
 type Item = { title: string; text: string };
 
 export async function generateMetadata({
