@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildMetadata } from "@/lib/seo";
 import { CITIES } from "@/lib/cities";
+import { getActiveServices, localizedService } from "@/server/services";
+
+export const dynamic = "force-dynamic";
 
 type Item = { title: string; text: string };
 type Faq = { q: string; a: string };
@@ -31,7 +34,8 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
 
   const t = await getTranslations("ServicesPage");
   const cl = await getTranslations("CityLanding");
-  const services = (await getTranslations("HomeServices")).raw("items") as Item[];
+  const staticServices = (await getTranslations("HomeServices")).raw("items") as Item[];
+  const dbServices = await getActiveServices();
   const faq = t.raw("faq") as Faq[];
 
   const faqSchema = {
@@ -55,15 +59,27 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
 
           <h2 className="mt-12 text-xl font-semibold text-white">{t("servicesTitle")}</h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((s) => (
-              <article
-                key={s.title}
-                className="rounded-2xl border border-brand-border bg-brand-surface p-6"
-              >
-                <h3 className="font-semibold text-white">{s.title}</h3>
-                <p className="mt-2 text-sm text-brand-muted">{s.text}</p>
-              </article>
-            ))}
+            {dbServices.length > 0
+              ? dbServices.map((s) => {
+                  const l = localizedService(s, locale);
+                  return (
+                    <Link
+                      key={s.id}
+                      href={`/${locale}/servicios/${s.slug}`}
+                      className="group rounded-2xl border border-brand-border bg-brand-surface p-6 transition hover:border-brand-neon/50"
+                    >
+                      <h3 className="font-semibold text-white">{l.name}</h3>
+                      {l.shortDescription && <p className="mt-2 text-sm text-brand-muted">{l.shortDescription}</p>}
+                      <span className="mt-3 inline-block text-sm font-medium text-brand-neon">{t("viewService")} →</span>
+                    </Link>
+                  );
+                })
+              : staticServices.map((s) => (
+                  <article key={s.title} className="rounded-2xl border border-brand-border bg-brand-surface p-6">
+                    <h3 className="font-semibold text-white">{s.title}</h3>
+                    <p className="mt-2 text-sm text-brand-muted">{s.text}</p>
+                  </article>
+                ))}
           </div>
 
           {/* FAQ */}

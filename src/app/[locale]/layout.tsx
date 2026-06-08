@@ -10,6 +10,7 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { WhatsappFab } from "@/components/site/whatsapp-fab";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getContact } from "@/server/site-config";
+import { getActiveServices, localizedService } from "@/server/services";
 import { SITE_URL, SITE_NAME, absoluteUrl } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -51,6 +52,7 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   const contact = await getContact();
+  const services = (await getActiveServices()).map((s) => ({ slug: s.slug, name: localizedService(s, locale).name }));
 
   const businessSchema = {
     "@context": "https://schema.org",
@@ -68,7 +70,7 @@ export default async function LocaleLayout({
       <body className="flex min-h-full flex-col">
         <JsonLd data={businessSchema} />
         <NextIntlClientProvider>
-          <SiteHeader />
+          <SiteHeader services={services} />
           <main className="flex flex-1 flex-col pt-16">{children}</main>
           <SiteFooter
             companyName={contact.companyName}

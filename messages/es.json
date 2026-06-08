@@ -116,6 +116,8 @@
     "title": "Servicios de karaoke y eventos",
     "intro": "Todo lo necesario para tu evento, con equipos profesionales y montaje incluido. Elige un servicio o combínalos en un pack a medida.",
     "servicesTitle": "Qué ofrecemos",
+    "viewService": "Ver servicio",
+    "packsInService": "Opciones disponibles",
     "faqTitle": "Preguntas frecuentes",
     "faq": [
       { "q": "¿Trabajáis en toda España?", "a": "Sí. Damos servicio en las principales ciudades y provincias; consúltanos tu localidad." },

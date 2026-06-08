@@ -3,6 +3,7 @@ import { routing } from "@/i18n/routing";
 import { CITIES } from "@/lib/cities";
 import { getActivePacks } from "@/server/packs";
 import { getPublishedPostRefs } from "@/server/blog";
+import { getActiveServices } from "@/server/services";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -10,7 +11,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [packs, posts] = await Promise.all([getActivePacks(), getPublishedPostRefs()]);
+  const [packs, posts, services] = await Promise.all([
+    getActivePacks(),
+    getPublishedPostRefs(),
+    getActiveServices(),
+  ]);
 
   // Rutas públicas comunes a todos los idiomas (sin prefijo).
   const publicPaths = [
@@ -21,6 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/presupuesto",
     "/contacto",
     "/privacidad",
+    ...services.map((s) => `/servicios/${s.slug}`),
     ...packs.map((p) => `/packs/${p.slug}`),
     ...CITIES.map((c) => `/karaoke/${c.slug}`),
   ];

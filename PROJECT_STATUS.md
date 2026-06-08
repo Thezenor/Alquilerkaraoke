@@ -67,6 +67,9 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
   - **Pendiente anotado**: rate-limit compartido (Redis/Cloudflare) antes de producción multi-instancia; reforzar valor probatorio de la firma (OTP) si se requiere legalmente.
   - Verificado: typecheck + lint + build + unit 44/44 + E2E 21/21.
 
+## Servicios (menú desplegable + SEO) — bloque C
+- [x] **Servicios editables** (2026-06-08): modelo `Service` (slug, nombre, categoría de packs asociada, descripción Markdown, imagen, meta SEO, traducciones EN/FR, orden, activo). Migración `services`. **Admin** `/admin/servicios` (CRUD, rol SUPERADMIN/ADMIN, auditoría, `updateTag`). **Público**: `/servicios/[slug]` (hero + contenido SEO en Markdown + **lista de packs de su categoría** + CTAs) y el índice `/servicios` lista los servicios. **Menú "Servicios" desplegable** en la cabecera (desktop hover/focus + submenú móvil) alimentado desde BD. Sitemap incluye los servicios. Seed `npm run db:seed:services` (Karaoke, Gaming, Espuma, Holi, Furor). E2E `servicios.spec` (23/23).
+
 ## Fase 8 — Blog / SEO
 - [x] **Blog de contenidos** (2026-06-07): modelo `Post` (slug único, locale, título, extracto, contenido Markdown, portada, estado DRAFT/PUBLISHED, publishedAt, meta SEO, autor). Migración `blog`. **Renderizador Markdown propio y seguro** (`src/lib/markdown.tsx`: # títulos, **negrita**, listas, [enlaces] — sin `dangerouslySetInnerHTML` ni HTML embebido; neutraliza `javascript:`). **Admin** `/admin/blog` (CRUD, rol SUPERADMIN/ADMIN/SEO_CONTENIDOS, auditoría, `updateTag`, publishedAt al publicar). **Público** `/blog` (listado por idioma) y `/blog/[slug]` (detalle con JSON-LD `BlogPosting` + meta). Enlace "Blog" en la cabecera + entradas publicadas en el `sitemap`. +4 tests unitarios (44/44). E2E `blog.spec` (20/20). La generación IA queda como borrador opcional para más adelante.
 

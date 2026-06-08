@@ -116,6 +116,8 @@
     "title": "Services de karaoké et d'événements",
     "intro": "Tout ce qu'il faut pour votre événement, avec du matériel professionnel et l'installation incluse. Choisissez un service ou combinez-les dans un forfait sur mesure.",
     "servicesTitle": "Ce que nous proposons",
+    "viewService": "Voir le service",
+    "packsInService": "Options disponibles",
     "faqTitle": "Questions fréquentes",
     "faq": [
       { "q": "Travaillez-vous dans toute l'Espagne ?", "a": "Oui. Nous couvrons les principales villes et provinces ; demandez-nous pour votre zone." },

@@ -116,6 +116,8 @@
     "title": "Karaoke & event services",
     "intro": "Everything you need for your event, with professional gear and setup included. Pick a service or combine them into a tailored package.",
     "servicesTitle": "What we offer",
+    "viewService": "View service",
+    "packsInService": "Available options",
     "faqTitle": "Frequently asked questions",
     "faq": [
       { "q": "Do you work across Spain?", "a": "Yes. We cover the main cities and provinces; ask us about your area." },

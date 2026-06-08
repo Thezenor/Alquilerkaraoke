@@ -473,6 +473,26 @@ model Collaborator {
   @@index([isActive, sortOrder])
 }
 
+// ── Servicios (páginas SEO por servicio, con packs asociados) ────
+model Service {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String
+  category         String? // categoría de Pack asociada (lista esos packs)
+  shortDescription String?
+  description      String? // Markdown (subconjunto seguro)
+  heroImageUrl     String?
+  metaTitle        String?
+  metaDescription  String?
+  translations     Json? // { en: {name, shortDescription, description}, fr: {...} }
+  isActive         Boolean  @default(true)
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
 // ── Blog / contenidos SEO ────────────────────────────────────────
 model Post {
   id              String     @id @default(cuid())
