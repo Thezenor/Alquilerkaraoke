@@ -19,6 +19,7 @@
     "db:seed:catalog": "tsx prisma/seed-catalog.ts",
     "db:seed:collaborators": "tsx prisma/seed-collaborators.ts",
     "db:seed:services": "tsx prisma/seed-services.ts",
+    "db:seed:socials": "tsx prisma/seed-demo-socials.ts",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
     "test:e2e": "playwright test",

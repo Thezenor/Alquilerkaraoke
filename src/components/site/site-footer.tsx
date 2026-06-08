@@ -32,17 +32,49 @@ function SocialIcon({ d }: { d: string }) {
   );
 }
 
+function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
+  if (links.length === 0) return null;
+  return (
+    <div>
+      <h3 className="text-xs font-semibold tracking-wider text-white uppercase">{title}</h3>
+      <ul className="mt-3 space-y-2">
+        {links.map((l) => (
+          <li key={l.href + l.label}>
+            <Link href={l.href} className="text-sm text-brand-muted transition hover:text-brand-neon">
+              {l.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function SiteFooter({
   companyName,
+  tagline,
   phone,
   phoneHref,
-  links,
+  email,
+  whatsappUrl,
+  servicesTitle,
+  servicesLinks,
+  infoTitle,
+  infoLinks,
+  contactTitle,
   socials,
 }: {
   companyName: string;
+  tagline: string;
   phone: string;
   phoneHref: string;
-  links: FooterLink[];
+  email: string | null;
+  whatsappUrl: string;
+  servicesTitle: string;
+  servicesLinks: FooterLink[];
+  infoTitle: string;
+  infoLinks: FooterLink[];
+  contactTitle: string;
   socials: FooterSocials;
 }) {
   const year = new Date().getFullYear();
@@ -51,46 +83,65 @@ export function SiteFooter({
     .filter((s): s is { key: keyof FooterSocials; url: string } => Boolean(s.url));
 
   return (
-    <footer className="border-t border-brand-border/60 bg-brand-surface">
-      <Container className="grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr]">
-        <div>
-          <div className="flex items-center gap-2 font-semibold text-white">
-            <span className="h-2.5 w-2.5 rounded-full bg-brand-neon shadow-[0_0_12px_rgba(34,211,238,0.9)]" />
-            {companyName}
-          </div>
-          <a href={phoneHref} className="mt-3 block text-sm text-brand-muted transition hover:text-white">
-            {phone}
-          </a>
-          {socialEntries.length > 0 && (
-            <div className="mt-4 flex gap-3">
-              {socialEntries.map((s) => (
-                <a
-                  key={s.key}
-                  href={s.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.key}
-                  className="text-brand-muted transition hover:text-brand-neon"
-                >
-                  <SocialIcon d={ICONS[s.key]} />
-                </a>
-              ))}
+    <footer className="mt-auto border-t border-brand-border/60 bg-brand-surface">
+      <Container className="py-12">
+        <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
+          {/* Marca */}
+          <div className="max-w-xs">
+            <div className="flex items-center gap-2 text-lg font-bold text-white">
+              <span className="h-2.5 w-2.5 rounded-full bg-brand-neon shadow-[0_0_12px_rgba(34,211,238,0.9)]" />
+              {companyName}
             </div>
-          )}
+            <p className="mt-3 text-sm text-brand-muted">{tagline}</p>
+            {socialEntries.length > 0 && (
+              <div className="mt-5 flex gap-2">
+                {socialEntries.map((s) => (
+                  <a
+                    key={s.key}
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.key}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-brand-border text-brand-muted transition hover:border-brand-neon/60 hover:text-brand-neon"
+                  >
+                    <SocialIcon d={ICONS[s.key]} />
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <FooterCol title={servicesTitle} links={servicesLinks} />
+          <FooterCol title={infoTitle} links={infoLinks} />
+
+          {/* Contacto */}
+          <div>
+            <h3 className="text-xs font-semibold tracking-wider text-white uppercase">{contactTitle}</h3>
+            <ul className="mt-3 space-y-2 text-sm">
+              <li>
+                <a href={phoneHref} className="text-brand-muted transition hover:text-brand-neon">
+                  {phone}
+                </a>
+              </li>
+              {email && (
+                <li>
+                  <a href={`mailto:${email}`} className="break-all text-brand-muted transition hover:text-brand-neon">
+                    {email}
+                  </a>
+                </li>
+              )}
+              <li>
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-brand-muted transition hover:text-brand-neon">
+                  WhatsApp
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <nav className="flex flex-col gap-2 text-sm" aria-label="Enlaces">
-          {links.map((l) => (
-            <Link key={l.href} href={l.href} className="text-brand-muted transition hover:text-white">
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="text-sm text-brand-muted sm:text-right">
-          <span>
-            © {year} {companyName}
-          </span>
+        <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-brand-border/60 pt-6 text-xs text-brand-muted sm:flex-row">
+          <span>© {year} {companyName}</span>
+          <span>{phone} · www.alquilerkaraoke.com</span>
         </div>
       </Container>
     </footer>

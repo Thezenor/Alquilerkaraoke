@@ -55,12 +55,16 @@ export default async function LocaleLayout({
   const services = (await getActiveServices()).map((s) => ({ slug: s.slug, name: localizedService(s, locale).name }));
 
   const nav = await getTranslations({ locale, namespace: "Nav" });
-  const footerLinks = [
-    { href: `/${locale}/servicios`, label: nav("services") },
+  const footer = await getTranslations({ locale, namespace: "Footer" });
+  // Columna de servicios: los servicios activos + "todos" y packs.
+  const servicesLinks = [
+    ...services.map((s) => ({ href: `/${locale}/servicios/${s.slug}`, label: s.name })),
     { href: `/${locale}/packs`, label: nav("packs") },
+  ];
+  const infoLinks = [
     { href: `/${locale}/blog`, label: nav("blog") },
-    { href: `/${locale}/contacto`, label: nav("contact") },
     { href: `/${locale}/faq`, label: (await getTranslations({ locale, namespace: "Faq" }))("title") },
+    { href: `/${locale}/contacto`, label: nav("contact") },
     { href: `/${locale}/privacidad`, label: (await getTranslations({ locale, namespace: "Privacy" }))("title") },
     { href: `/${locale}/baja-marketing`, label: (await getTranslations({ locale, namespace: "Unsubscribe" }))("title") },
   ];
@@ -90,9 +94,16 @@ export default async function LocaleLayout({
           <main className="flex flex-1 flex-col pt-16">{children}</main>
           <SiteFooter
             companyName={contact.companyName}
+            tagline={footer("tagline")}
             phone={contact.phone}
             phoneHref={contact.phoneHref}
-            links={footerLinks}
+            email={contact.email}
+            whatsappUrl={contact.whatsappUrl}
+            servicesTitle={footer("servicesTitle")}
+            servicesLinks={servicesLinks}
+            infoTitle={footer("infoTitle")}
+            infoLinks={infoLinks}
+            contactTitle={footer("contactTitle")}
             socials={contact.socials}
           />
           <WhatsappFab url={contact.whatsappUrl} />

@@ -79,6 +79,12 @@
       "termsRequired": "Vous devez accepter la politique de confidentialité pour continuer."
     }
   },
+  "Footer": {
+    "tagline": "Nous créons des expériences professionnelles de karaoké et d'événements pour particuliers, entreprises, mariages et fêtes dans toute l'Espagne.",
+    "servicesTitle": "Services",
+    "infoTitle": "Informations",
+    "contactTitle": "Contact"
+  },
   "Faq": {
     "title": "Questions fréquentes",
     "intro": "Réponses aux questions les plus courantes sur nos services de karaoké et d'événements. Nous en ajouterons d'autres."

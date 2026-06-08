@@ -79,6 +79,12 @@
       "termsRequired": "You must accept the privacy policy to continue."
     }
   },
+  "Footer": {
+    "tagline": "We build professional karaoke and event experiences for individuals, companies, weddings and parties across Spain.",
+    "servicesTitle": "Services",
+    "infoTitle": "Information",
+    "contactTitle": "Contact"
+  },
   "Faq": {
     "title": "FAQ",
     "intro": "Answers to the most common questions about our karaoke and event services. We'll keep adding more."

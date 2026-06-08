@@ -43,6 +43,7 @@ export async function getContact() {
     companyName,
     phone,
     phoneHref: `tel:+34${phone.replace(/\D/g, "")}`,
+    email: config?.email || null,
     whatsappUrl: `https://wa.me/${toWhatsappNumber(whatsappRaw)}`,
     primaryColor: config?.primaryColor || null,
     socials: {

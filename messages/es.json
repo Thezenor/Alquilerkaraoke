@@ -79,6 +79,12 @@
       "termsRequired": "Debes aceptar la política de privacidad para continuar."
     }
   },
+  "Footer": {
+    "tagline": "Montamos experiencias profesionales de karaoke y eventos para particulares, empresas, bodas y fiestas en toda España.",
+    "servicesTitle": "Servicios",
+    "infoTitle": "Información",
+    "contactTitle": "Contacto"
+  },
   "Faq": {
     "title": "Preguntas frecuentes",
     "intro": "Resolvemos las dudas más habituales sobre nuestros servicios de karaoke y eventos. Iremos ampliándolas con más información."
