@@ -363,6 +363,9 @@ model Booking {
   attendees Int? // nº de asistentes previstos
   night     Boolean  @default(false)
   extras    Json? // snapshot: [{ name, price }]
+  // Actividades del presupuesto (primera + adicionales). Snapshot:
+  // [{ packName, hours, extras: [{name,price}], lineTotal }] (lineTotal en céntimos, sin IVA/suplementos).
+  activities Json?
 
   // Importe (snapshot en céntimos, sin/with IVA según campo)
   subtotal        Int @default(0)

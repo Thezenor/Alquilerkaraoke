@@ -134,14 +134,78 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       }
     }
 
+    // ── Actividades (primera + adicionales) ──
+    const activityBase = (
+      p: { basePrice: number; isPerDay: boolean; includedHours: number; extraHourPrice: number },
+      hrs: number,
+    ) => {
+      const extraHourCount = p.isPerDay ? 0 : Math.max(0, hrs - p.includedHours);
+      return p.basePrice + extraHourCount * p.extraHourPrice;
+    };
+    const isExtraCompatible = (cats: string[], cat: string | null) =>
+      cats.length === 0 || (cat != null && cats.includes(cat));
+
+    type ActivityCalc = { packName: string; hours: number; extras: { name: string; price: number }[]; lineTotal: number };
+    const calcActivities: ActivityCalc[] = [
+      {
+        packName: pack.name,
+        hours,
+        extras: extras.map((e) => ({ name: e.name, price: e.price })),
+        lineTotal: activityBase(pack, hours) + extras.reduce((s, e) => s + e.price, 0),
+      },
+    ];
+
+    // Actividades adicionales (JSON del formulario).
+    let parsedActivities: { packId: string; hours: number; extraIds: string[] }[] = [];
+    try {
+      const raw = JSON.parse(String(formData.get("activities") ?? "[]"));
+      if (Array.isArray(raw)) {
+        parsedActivities = raw
+          .slice(0, 5)
+          .map((a) => ({
+            packId: String(a?.packId ?? ""),
+            hours: Math.min(48, Math.max(1, parseInt(String(a?.hours ?? "4"), 10) || 4)),
+            extraIds: Array.isArray(a?.extraIds) ? a.extraIds.map(String).filter(Boolean).slice(0, 30) : [],
+          }))
+          .filter((a) => a.packId);
+      }
+    } catch {
+      /* sin actividades adicionales */
+    }
+
+    if (parsedActivities.length) {
+      const addPackIds = [...new Set(parsedActivities.map((a) => a.packId))];
+      const addExtraIds = [...new Set(parsedActivities.flatMap((a) => a.extraIds))];
+      const [addPacks, addExtras] = await Promise.all([
+        prisma.pack.findMany({ where: { id: { in: addPackIds }, isActive: true } }),
+        addExtraIds.length
+          ? prisma.extra.findMany({ where: { id: { in: addExtraIds }, isActive: true } })
+          : Promise.resolve([]),
+      ]);
+      for (const a of parsedActivities) {
+        const ap = addPacks.find((p) => p.id === a.packId);
+        if (!ap) continue;
+        const aExtras = addExtras.filter((e) => a.extraIds.includes(e.id) && isExtraCompatible(e.appliesToCategories, ap.category));
+        calcActivities.push({
+          packName: ap.name,
+          hours: a.hours,
+          extras: aExtras.map((e) => ({ name: e.name, price: e.price })),
+          lineTotal: activityBase(ap, a.hours) + aExtras.reduce((s, e) => s + e.price, 0),
+        });
+      }
+    }
+
+    const combinedBase = calcActivities.reduce((s, a) => s + a.lineTotal, 0);
+    const multiActivity = calcActivities.length > 1;
+
     const breakdown = calculateBudget({
-      basePrice: pack.basePrice,
-      isPerDay: pack.isPerDay,
-      includedHours: pack.includedHours,
-      extraHourPrice: pack.extraHourPrice,
-      hours,
+      basePrice: combinedBase, // ya incluye base + horas extra + extras de todas las actividades
+      isPerDay: true,
+      includedHours: 0,
+      extraHourPrice: 0,
+      hours: 0,
       provinceSupplement: prov?.zone && prov.zone.isActive ? prov.zone.supplement : 0,
-      extras: extras.map((e) => e.price),
+      extras: [],
       surchargePercents,
       surchargeFixed,
       vatPercent: config?.vatPercent ?? 21,
@@ -163,6 +227,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
         attendees,
         night,
         extras: extras.map((e) => ({ name: e.name, price: e.price })),
+        activities: multiActivity ? calcActivities : undefined,
         subtotal: breakdown.subtotal,
         discount: breakdown.discount,
         discountCode: appliedCode,

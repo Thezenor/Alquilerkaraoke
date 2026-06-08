@@ -32,11 +32,31 @@ export function QuoteForm({
   const formRef = useRef<HTMLFormElement>(null);
   const [packId, setPackId] = useState(defaultPackId ?? options.packs[0]?.id ?? "");
 
-  // Extras compatibles con el pack seleccionado (vacío appliesTo = compatible con todo).
-  const selectedCategory = options.packs.find((p) => p.id === packId)?.category ?? null;
-  const visibleExtras = options.extras.filter(
-    (e) => e.appliesTo.length === 0 || (selectedCategory != null && e.appliesTo.includes(selectedCategory)),
-  );
+  // Extras compatibles con la categoría de un pack (vacío appliesTo = compatible con todo).
+  const extrasFor = (id: string) => {
+    const cat = options.packs.find((p) => p.id === id)?.category ?? null;
+    return options.extras.filter((e) => e.appliesTo.length === 0 || (cat != null && e.appliesTo.includes(cat)));
+  };
+  const visibleExtras = extrasFor(packId);
+
+  // Actividades adicionales (segunda, tercera…). La primera es el bloque principal.
+  type Activity = { packId: string; hours: string; extraIds: string[] };
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const addActivity = () =>
+    setActivities((a) => [...a, { packId: options.packs[0]?.id ?? "", hours: "4", extraIds: [] }]);
+  const removeActivity = (i: number) => setActivities((a) => a.filter((_, idx) => idx !== i));
+  const patchActivity = (i: number, patch: Partial<Activity>) =>
+    setActivities((a) => a.map((act, idx) => (idx === i ? { ...act, ...patch } : act)));
+  const toggleActivityExtra = (i: number, extraId: string) =>
+    setActivities((a) =>
+      a.map((act, idx) =>
+        idx === i
+          ? { ...act, extraIds: act.extraIds.includes(extraId) ? act.extraIds.filter((x) => x !== extraId) : [...act.extraIds, extraId] }
+          : act,
+      ),
+    );
+  const packName = (id: string) => options.packs.find((p) => p.id === id)?.name ?? "";
+  const extraName = (id: string) => options.extras.find((e) => e.id === id)?.name ?? "";
 
   if (state.status === "booked") {
     return (
@@ -53,13 +73,13 @@ export function QuoteForm({
     if (!f || !whatsappUrl) return whatsappUrl ?? "#";
     const fd = new FormData(f);
     const packSel = f.querySelector<HTMLSelectElement>('select[name="packId"]');
-    const packName = packSel?.selectedOptions[0]?.textContent?.trim() || "";
+    const primaryName = packSel?.selectedOptions[0]?.textContent?.trim() || "";
     const extras = Array.from(f.querySelectorAll<HTMLInputElement>('input[name="extras"]:checked')).map(
       (el) => el.closest("label")?.textContent?.trim() || "",
     );
     const lines = [
       t("waIntro"),
-      packName ? `• ${t("pack")}: ${packName}` : "",
+      primaryName ? `• ${t("pack")}: ${primaryName}` : "",
       fd.get("date") ? `• ${t("date")}: ${fd.get("date")}` : "",
       fd.get("eventTime") ? `• ${t("eventTime")}: ${fd.get("eventTime")}` : "",
       fd.get("attendees") ? `• ${t("attendees")}: ${fd.get("attendees")}` : "",
@@ -67,6 +87,10 @@ export function QuoteForm({
       fd.get("hours") ? `• ${t("hours")}: ${fd.get("hours")} h` : "",
       f.querySelector<HTMLInputElement>('input[name="night"]')?.checked ? `• ${t("night")}` : "",
       extras.length ? `• ${t("extras")}: ${extras.join(", ")}` : "",
+      ...activities.map((a, i) => {
+        const ex = a.extraIds.map(extraName).filter(Boolean);
+        return `• ${t("activity")} ${i + 2}: ${packName(a.packId)} (${a.hours} h)${ex.length ? ` — ${ex.join(", ")}` : ""}`;
+      }),
       fd.get("name") ? `\n${fd.get("name")}${fd.get("phone") ? ` · ${fd.get("phone")}` : ""}` : "",
     ].filter(Boolean);
     return `${whatsappUrl}?text=${encodeURIComponent(lines.join("\n"))}`;
@@ -159,6 +183,72 @@ export function QuoteForm({
           </div>
         </fieldset>
       )}
+
+      {/* Actividades adicionales */}
+      <input type="hidden" name="activities" value={JSON.stringify(activities)} />
+      {activities.map((act, i) => {
+        const acExtras = extrasFor(act.packId);
+        return (
+          <div key={i} className="mt-5 rounded-xl border border-brand-border bg-brand-bg p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-white">
+                {t("activity")} {i + 2}
+              </span>
+              <button
+                type="button"
+                onClick={() => removeActivity(i)}
+                className="text-sm text-brand-muted transition hover:text-red-400"
+              >
+                {t("removeActivity")}
+              </button>
+            </div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <select
+                value={act.packId}
+                onChange={(e) => patchActivity(i, { packId: e.target.value, extraIds: [] })}
+                className={inputClass}
+                aria-label={t("pack")}
+              >
+                {options.packs.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+              <input
+                type="number"
+                min={1}
+                max={48}
+                value={act.hours}
+                onChange={(e) => patchActivity(i, { hours: e.target.value })}
+                className={inputClass}
+                aria-label={t("hours")}
+              />
+            </div>
+            {acExtras.length > 0 && (
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {acExtras.map((e) => (
+                  <label key={e.id} className="flex items-center gap-2 text-sm text-brand-muted">
+                    <input
+                      type="checkbox"
+                      checked={act.extraIds.includes(e.id)}
+                      onChange={() => toggleActivityExtra(i, e.id)}
+                      className="h-4 w-4 accent-brand-neon"
+                    />
+                    {e.name}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      <button
+        type="button"
+        onClick={addActivity}
+        className="mt-4 inline-flex items-center gap-2 rounded-full border border-brand-border px-4 py-2 text-sm text-brand-text transition hover:border-brand-neon/60"
+      >
+        + {t("addActivity")}
+      </button>
 
       {/* Datos del cliente */}
       <div className="mt-8 border-t border-brand-border pt-6">

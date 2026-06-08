@@ -29,6 +29,7 @@ function waLink(phone: string | null): string | null {
 }
 
 type ExtraSnap = { name: string; price: number };
+type ActivitySnap = { packName: string; hours: number; extras: ExtraSnap[]; lineTotal: number };
 
 export default async function ReservaDetailPage({ params }: { params: Promise<{ id: string }> }) {
   await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
@@ -41,6 +42,7 @@ export default async function ReservaDetailPage({ params }: { params: Promise<{ 
 
   const wa = waLink(b.phone);
   const extras = (b.extras ?? []) as ExtraSnap[];
+  const activities = (b.activities ?? []) as ActivitySnap[];
   const pay = PAYMENT_STATUS[b.paymentStatus] ?? { tone: "neutral" as const, label: b.paymentStatus };
   const due = amountDue(b.amountPaid, b.total);
   const contract = b.contract;
@@ -93,15 +95,36 @@ export default async function ReservaDetailPage({ params }: { params: Promise<{ 
             </div>
           </dl>
 
-          {extras.length > 0 && (
+          {activities.length > 1 ? (
             <div className="mt-6">
-              <dt className="text-xs uppercase tracking-wide text-brand-muted">Extras</dt>
-              <ul className="mt-1 text-sm text-brand-text">
-                {extras.map((e, i) => (
-                  <li key={i}>{e.name} — {formatCents(e.price)}</li>
+              <dt className="text-xs uppercase tracking-wide text-brand-muted">Actividades</dt>
+              <ul className="mt-2 space-y-2">
+                {activities.map((a, i) => (
+                  <li key={i} className="rounded-lg border border-brand-border bg-brand-bg p-3 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-white">{a.packName}</span>
+                      <span className="text-brand-muted">{a.hours} h</span>
+                    </div>
+                    {a.extras.length > 0 && (
+                      <p className="mt-1 text-xs text-brand-muted">
+                        {a.extras.map((e) => e.name).join(", ")}
+                      </p>
+                    )}
+                  </li>
                 ))}
               </ul>
             </div>
+          ) : (
+            extras.length > 0 && (
+              <div className="mt-6">
+                <dt className="text-xs uppercase tracking-wide text-brand-muted">Extras</dt>
+                <ul className="mt-1 text-sm text-brand-text">
+                  {extras.map((e, i) => (
+                    <li key={i}>{e.name} — {formatCents(e.price)}</li>
+                  ))}
+                </ul>
+              </div>
+            )
           )}
 
           {b.message && (

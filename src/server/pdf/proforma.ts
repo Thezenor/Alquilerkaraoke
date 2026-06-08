@@ -28,6 +28,8 @@ export type ProformaData = {
   };
   payment?: { iban?: string | null; bizum?: string | null; info?: string | null };
   paymentStatusLabel: string;
+  // Si hay varias actividades, se listan como líneas independientes.
+  activities?: { packName: string; hours: number; lineTotal: number }[];
 };
 
 const A4 = { w: 595.28, h: 841.89 };
@@ -126,15 +128,24 @@ export async function buildProformaPdf(data: ProformaData): Promise<Uint8Array> 
   right("IMPORTE", amountX - 8, y + 2, 9, bold, MUTED);
   y -= 22;
 
-  const extrasTotal = data.extras.reduce((s, e) => s + e.price, 0);
-  const serviceAmount = data.amounts.subtotal - extrasTotal;
-  const items: { concept: string; amount: number }[] = [
-    {
-      concept: `${data.event.packName} — servicio (${data.event.hours} h${data.event.night ? ", nocturno" : ""})`,
-      amount: serviceAmount,
-    },
-    ...data.extras.map((e) => ({ concept: `Extra: ${e.name}`, amount: e.price })),
-  ];
+  let items: { concept: string; amount: number }[];
+  if (data.activities && data.activities.length > 1) {
+    // Varias actividades: una línea por actividad + el resto (provincia/suplementos).
+    const sumLines = data.activities.reduce((s, a) => s + a.lineTotal, 0);
+    items = data.activities.map((a) => ({ concept: `${a.packName} (${a.hours} h)`, amount: a.lineTotal }));
+    const remainder = data.amounts.subtotal - sumLines;
+    if (remainder > 0) items.push({ concept: "Provincia y suplementos", amount: remainder });
+  } else {
+    const extrasTotal = data.extras.reduce((s, e) => s + e.price, 0);
+    const serviceAmount = data.amounts.subtotal - extrasTotal;
+    items = [
+      {
+        concept: `${data.event.packName} — servicio (${data.event.hours} h${data.event.night ? ", nocturno" : ""})`,
+        amount: serviceAmount,
+      },
+      ...data.extras.map((e) => ({ concept: `Extra: ${e.name}`, amount: e.price })),
+    ];
+  }
 
   for (const it of items) {
     drawConcept(page, font, it.concept, M + 8, y, A4.w - 2 * M - 90);
