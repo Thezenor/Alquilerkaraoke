@@ -343,6 +343,8 @@
     "intro": "We create professional karaoke experiences across Spain. Choose your city to see our coverage and request a free quote.",
     "ctaTitle": "Don't see your city?",
     "ctaText": "We cover many more towns. Tell us where your event is and we'll confirm.",
-    "ctaButton": "Request a quote"
+    "ctaButton": "Request a quote",
+    "lead": "Professional service with sound system, screens, microphones and lighting, with or without a technician. We set up karaoke and events for individuals, companies, weddings and celebrations across Spain.",
+    "coverageNote": "Coverage in {cities} cities, {regions} regions and more than {towns} towns."
   }
 }

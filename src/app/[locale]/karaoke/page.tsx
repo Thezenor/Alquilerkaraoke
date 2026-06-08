@@ -37,6 +37,7 @@ export default async function CitiesHubPage({
   const t = await getTranslations("CitiesHub");
   const cities = await getActiveCities();
   const groups = citiesByRegion(cities);
+  const townsCount = cities.reduce((n, c) => n + c.nearby.length, 0) + cities.length;
 
   const schema = [
     {
@@ -67,6 +68,10 @@ export default async function CitiesHubPage({
         <Container>
           <h1 className="text-3xl font-bold text-white sm:text-4xl">{t("title")}</h1>
           <p className="mt-4 max-w-2xl text-brand-muted">{t("intro")}</p>
+          <p className="mt-3 max-w-2xl text-brand-muted">{t("lead")}</p>
+          <p className="mt-4 text-sm font-medium text-brand-neon">
+            {t("coverageNote", { cities: cities.length, regions: groups.length, towns: townsCount })}
+          </p>
 
           <div className="mt-10 space-y-10">
             {groups.map((g) => (

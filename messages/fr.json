@@ -343,6 +343,8 @@
     "intro": "Nous créons des expériences de karaoké professionnel dans toute l'Espagne. Choisissez votre ville pour voir notre couverture et demander un devis gratuit.",
     "ctaTitle": "Votre ville n'apparaît pas ?",
     "ctaText": "Nous couvrons bien d'autres localités. Dites-nous où se déroule votre événement et nous confirmons.",
-    "ctaButton": "Demander un devis"
+    "ctaButton": "Demander un devis",
+    "lead": "Service professionnel avec sonorisation, écrans, micros et éclairage, avec ou sans technicien. Nous installons karaoké et événements pour particuliers, entreprises, mariages et célébrations dans toute l'Espagne.",
+    "coverageNote": "Couverture dans {cities} villes, {regions} communautés et plus de {towns} localités."
   }
 }

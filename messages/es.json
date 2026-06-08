@@ -343,6 +343,8 @@
     "intro": "Montamos experiencias de karaoke profesional en toda España. Elige tu ciudad para ver la cobertura y pedir presupuesto sin compromiso.",
     "ctaTitle": "¿No ves tu ciudad?",
     "ctaText": "Cubrimos muchas más localidades. Cuéntanos dónde es tu evento y te lo confirmamos.",
-    "ctaButton": "Pedir presupuesto"
+    "ctaButton": "Pedir presupuesto",
+    "lead": "Servicio profesional con equipo de sonido, pantallas, microfonía e iluminación, con o sin técnico. Montamos karaoke y eventos para particulares, empresas, bodas y celebraciones en toda España.",
+    "coverageNote": "Cobertura en {cities} ciudades, {regions} comunidades autónomas y más de {towns} poblaciones."
   }
 }
