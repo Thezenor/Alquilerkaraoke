@@ -79,6 +79,24 @@
       "termsRequired": "You must accept the privacy policy to continue."
     }
   },
+  "SongsMeta": {
+    "title": "Karaoke song catalogue | Alquiler Karaoke",
+    "description": "Search thousands of karaoke songs by title, performer and language."
+  },
+  "Songs": {
+    "title": "Song catalogue",
+    "intro": "Search our repertoire by title, performer or language.",
+    "searchPlaceholder": "Title or performer",
+    "language": "Language",
+    "allLanguages": "All languages",
+    "search": "Search",
+    "total": "{count} songs available",
+    "byLanguage": "By language",
+    "results": "{count} results",
+    "empty": "No songs match your search.",
+    "emptyCatalog": "The song catalogue will be published very soon.",
+    "performer": "Performer"
+  },
   "Footer": {
     "tagline": "We build professional karaoke and event experiences for individuals, companies, weddings and parties across Spain.",
     "servicesTitle": "Services",

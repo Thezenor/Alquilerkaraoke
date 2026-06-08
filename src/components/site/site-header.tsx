@@ -15,6 +15,7 @@ export type HeaderService = { slug: string; name: string };
 const NAV_ITEMS = [
   { key: "services", href: "/servicios" },
   { key: "packs", href: "/packs" },
+  { key: "songs", href: "/canciones" },
   { key: "blog", href: "/blog" },
   { key: "contact", href: "/contacto" },
 ] as const;

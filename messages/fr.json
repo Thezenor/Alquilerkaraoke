@@ -79,6 +79,24 @@
       "termsRequired": "Vous devez accepter la politique de confidentialité pour continuer."
     }
   },
+  "SongsMeta": {
+    "title": "Catalogue de chansons karaoké | Alquiler Karaoke",
+    "description": "Cherchez parmi des milliers de chansons karaoké par titre, interprète et langue."
+  },
+  "Songs": {
+    "title": "Catalogue de chansons",
+    "intro": "Cherchez dans notre répertoire par titre, interprète ou langue.",
+    "searchPlaceholder": "Titre ou interprète",
+    "language": "Langue",
+    "allLanguages": "Toutes les langues",
+    "search": "Chercher",
+    "total": "{count} chansons disponibles",
+    "byLanguage": "Par langue",
+    "results": "{count} résultats",
+    "empty": "Aucune chanson ne correspond à votre recherche.",
+    "emptyCatalog": "Le catalogue de chansons sera publié très bientôt.",
+    "performer": "Interprète"
+  },
   "Footer": {
     "tagline": "Nous créons des expériences professionnelles de karaoké et d'événements pour particuliers, entreprises, mariages et fêtes dans toute l'Espagne.",
     "servicesTitle": "Services",

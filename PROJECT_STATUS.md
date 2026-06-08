@@ -67,6 +67,9 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
   - **Pendiente anotado**: rate-limit compartido (Redis/Cloudflare) antes de producción multi-instancia; reforzar valor probatorio de la firma (OTP) si se requiere legalmente.
   - Verificado: typecheck + lint + build + unit 44/44 + E2E 21/21.
 
+## Fase 6 — Catálogo de canciones
+- [x] **Base del catálogo** (2026-06-08): leyenda de idiomas (`src/lib/song-languages.ts`, abreviaturas del cliente no-ISO). Modelos `SongBrand` (nombre + **calidad** + activo) y `Song` (idioma, código, título, intérprete, marca, `dedupKey`, `isPrimary`); migraciones `songs_catalog` + `songs_search_trgm` (extensión **pg_trgm** + índices GIN para búsqueda rápida a 180k+). Deduplicación pura (`song-dedup.ts`) y `optimizeCatalog()` en SQL (elige la versión de la marca de mayor calidad). **Importador CSV por streaming** (`npm run db:import:songs -- archivo.csv`, reemplaza catálogo y optimiza; detecta delimitador y cabeceras). **Web** `/canciones`: buscador (título/intérprete) + filtro por idioma + nº por idioma + total no repetidas + paginación. **Admin** `/admin/canciones`: estadísticas, gestión de marcas/calidad y botón **Reoptimizar**. +4 tests unitarios (49/49). E2E `canciones`. **Pendiente**: importar el Excel real (lo dejará el cliente), subida/reimport desde admin (requiere almacenamiento) y PDF del repertorio.
+
 ## Pie de página rediseñado (2026-06-08)
 - [x] **Footer rediseñado**: 4 columnas (marca + tagline + iconos de redes · Servicios con enlaces a cada servicio + packs · Información: blog/FAQ/contacto/privacidad/baja · Contacto: teléfono/email/WhatsApp) + barra inferior con copyright. Datos desde `SiteConfig` (editables en admin). Redes sociales **ficticias** sembradas en producción (`db:seed:socials`, guardado) para que se vean ya; se cambian en `/admin/configuracion`.
 

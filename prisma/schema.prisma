@@ -484,6 +484,36 @@ model Collaborator {
   @@index([isActive, sortOrder])
 }
 
+// ── Catálogo de canciones (Fase 6) ──────────────────────────────
+// Marca/proveedor de la canción. "quality" decide qué versión se muestra
+// cuando un mismo Título+Intérprete aparece en varias marcas (mayor = mejor).
+model SongBrand {
+  id       String  @id @default(cuid())
+  name     String  @unique
+  quality  Int     @default(0)
+  isActive Boolean @default(true)
+  songs    Song[]
+}
+
+// Canción del catálogo. Se importan todas; "isPrimary" marca la versión visible
+// tras la optimización (deduplicación por dedupKey según la calidad de la marca).
+model Song {
+  id           String     @id @default(cuid())
+  languageCode String // abreviatura del Excel (AL, IN, ES…)
+  code         String? // código interno del Excel
+  title        String
+  performer    String
+  brandId      String?
+  brand        SongBrand? @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  dedupKey     String // normalizado: title|performer (agrupa duplicados)
+  isPrimary    Boolean    @default(true) // versión visible tras optimizar
+  createdAt    DateTime   @default(now())
+
+  @@index([languageCode, isPrimary])
+  @@index([dedupKey])
+  @@index([isPrimary])
+}
+
 // ── Servicios (páginas SEO por servicio, con packs asociados) ────
 model Service {
   id               String   @id @default(cuid())

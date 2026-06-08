@@ -33,7 +33,10 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: "Contenido",
-    items: [{ href: "/admin/blog", label: "Blog", icon: "file-text" }],
+    items: [
+      { href: "/admin/blog", label: "Blog", icon: "file-text" },
+      { href: "/admin/canciones", label: "Canciones", icon: "music" },
+    ],
   },
   {
     label: "Precios",

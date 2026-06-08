@@ -122,6 +122,13 @@ const PATHS: Record<string, React.ReactNode> = {
       <path d="M14 2v6h6M8 13h8M8 17h8M8 9h2" />
     </>
   ),
+  music: (
+    <>
+      <path d="M9 18V5l12-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="18" cy="16" r="3" />
+    </>
+  ),
   ban: (
     <>
       <circle cx="12" cy="12" r="9" />
