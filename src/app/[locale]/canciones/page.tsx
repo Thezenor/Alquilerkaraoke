@@ -218,14 +218,14 @@ export default async function SongsPage({
                 {result.items.map((s, i) => (
                   <li
                     key={s.id}
-                    className="grid grid-cols-[1fr_5rem] items-center gap-x-4 gap-y-0.5 px-4 py-3 transition hover:bg-brand-surface-2/40 sm:grid-cols-[2.5rem_1fr_1fr_7rem]"
+                    className="grid grid-cols-[1fr_5rem] items-start gap-x-4 gap-y-0.5 px-4 py-3 transition hover:bg-brand-surface-2/40 sm:grid-cols-[2.5rem_1fr_1fr_7rem]"
                   >
-                    <span className="hidden text-center text-xs tabular-nums text-brand-muted/60 sm:block">
+                    <span className="hidden pt-0.5 text-center text-xs tabular-nums text-brand-muted/60 sm:block">
                       {(page - 1) * 40 + i + 1}
                     </span>
-                    <p className="truncate font-medium text-white">{s.title}</p>
-                    <p className="truncate text-sm text-brand-muted">{s.performer}</p>
-                    <span className="flex items-center justify-end gap-1.5 sm:justify-end">
+                    <p className="line-clamp-2 min-w-0 font-medium break-words text-white">{s.title}</p>
+                    <p className="line-clamp-2 min-w-0 text-sm break-words text-brand-muted">{s.performer}</p>
+                    <span className="flex items-center justify-end gap-1.5 pt-0.5 sm:justify-end">
                       <LanguageFlag code={s.languageCode} className="text-base leading-none" />
                       <span className="hidden text-xs text-brand-muted lg:inline">{languageName(s.languageCode, loc)}</span>
                     </span>
