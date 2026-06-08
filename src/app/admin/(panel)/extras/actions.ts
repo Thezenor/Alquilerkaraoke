@@ -52,6 +52,7 @@ export async function saveExtra(_prev: ExtraFormState, formData: FormData): Prom
     return { status: "error", message: parsed.error.issues[0]?.message ?? "Datos no válidos." };
   }
   const d = parsed.data;
+  const appliesToCategories = [...new Set(formData.getAll("appliesToCategories").map(String).filter(Boolean))];
 
   const translations: Record<string, Record<string, string>> = {};
   if (d.name_en || d.desc_en) translations.en = { ...(d.name_en && { name: d.name_en }), ...(d.desc_en && { description: d.desc_en }) };
@@ -63,6 +64,7 @@ export async function saveExtra(_prev: ExtraFormState, formData: FormData): Prom
     description: d.description || null,
     category: d.category || null,
     price: eurosToCents(d.price),
+    appliesToCategories,
     isActive: d.isActive === "on",
     sortOrder: int(d.sortOrder),
     translations: Object.keys(translations).length ? translations : undefined,

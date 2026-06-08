@@ -12,10 +12,16 @@ export const metadata: Metadata = {
 
 type Tr = { name?: string; description?: string };
 
+export const dynamic = "force-dynamic";
+
 export default async function EditExtraPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const extra = await prisma.extra.findUnique({ where: { id } });
+  const [extra, packs] = await Promise.all([
+    prisma.extra.findUnique({ where: { id } }),
+    prisma.pack.findMany({ where: { category: { not: null } }, select: { category: true } }),
+  ]);
   if (!extra) notFound();
+  const categories = [...new Set(packs.map((p) => p.category!).filter(Boolean))].sort();
 
   const tr = (extra.translations ?? {}) as Record<string, Tr>;
   const en = tr.en ?? {};
@@ -28,6 +34,7 @@ export default async function EditExtraPage({ params }: { params: Promise<{ id: 
     description: extra.description ?? "",
     category: extra.category ?? "",
     price: centsToInput(extra.price),
+    appliesToCategories: extra.appliesToCategories,
     isActive: extra.isActive,
     sortOrder: String(extra.sortOrder),
     name_en: en.name ?? "",
@@ -43,7 +50,7 @@ export default async function EditExtraPage({ params }: { params: Promise<{ id: 
       </Link>
       <h1 className="mt-4 text-2xl font-semibold text-white">Editar: {extra.name}</h1>
       <div className="mt-8">
-        <ExtraForm values={values} />
+        <ExtraForm values={values} categories={categories} />
       </div>
     </div>
   );

@@ -63,7 +63,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
     const night = formData.get("night") === "on";
     const extraIds = formData.getAll("extras").map(String).filter(Boolean);
 
-    const [prov, extras, surcharges, config] = await Promise.all([
+    const [prov, extrasRaw, surcharges, config] = await Promise.all([
       province
         ? prisma.province.findFirst({ where: { name: province, isActive: true }, include: { zone: true } })
         : Promise.resolve(null),
@@ -73,6 +73,12 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       prisma.surcharge.findMany({ where: { isActive: true } }),
       prisma.pricingConfig.findUnique({ where: { id: "default" } }),
     ]);
+
+    // Defensa servidor: descarta extras no compatibles con la categoría del pack
+    // (appliesToCategories vacío = compatible con cualquier pack).
+    const extras = extrasRaw.filter(
+      (e) => e.appliesToCategories.length === 0 || (pack.category != null && e.appliesToCategories.includes(pack.category)),
+    );
 
     // Aplica los suplementos que correspondan a la fecha/nocturnidad del evento.
     // Solo uno por tipo (evita duplicados si hay varias filas activas del mismo tipo).

@@ -14,6 +14,7 @@ export type ExtraFormValues = {
   description: string;
   category: string;
   price: string;
+  appliesToCategories: string[];
   isActive: boolean;
   sortOrder: string;
   name_en: string;
@@ -51,7 +52,7 @@ function Field({
   );
 }
 
-export function ExtraForm({ values }: { values: ExtraFormValues }) {
+export function ExtraForm({ values, categories }: { values: ExtraFormValues; categories: string[] }) {
   const [state, action, pending] = useActionState(saveExtra, initial);
 
   return (
@@ -71,6 +72,28 @@ export function ExtraForm({ values }: { values: ExtraFormValues }) {
         <label htmlFor="description" className="text-sm font-medium text-brand-text">Descripción</label>
         <textarea id="description" name="description" rows={3} defaultValue={values.description} className={inputClass} />
       </div>
+
+      <fieldset className="mt-5">
+        <legend className="text-sm font-medium text-brand-text">Aplica a estos packs</legend>
+        <p className="mt-1 mb-2 text-xs text-brand-muted">
+          Marca las categorías de pack en las que se puede ofrecer este extra. Si no marcas ninguna, aplica a todos.
+        </p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {categories.map((c) => (
+            <label key={c} className="flex items-center gap-2 text-sm text-brand-muted">
+              <input
+                type="checkbox"
+                name="appliesToCategories"
+                value={c}
+                defaultChecked={values.appliesToCategories.includes(c)}
+                className="h-4 w-4 accent-brand-neon"
+              />
+              {c}
+            </label>
+          ))}
+          {categories.length === 0 && <p className="text-sm text-brand-muted">No hay categorías de pack todavía.</p>}
+        </div>
+      </fieldset>
       <label className="mt-5 flex items-center gap-2 text-sm text-brand-text">
         <input type="checkbox" name="isActive" defaultChecked={values.isActive} className="h-4 w-4 accent-brand-neon" />
         Activo

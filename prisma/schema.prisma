@@ -282,6 +282,8 @@ model Extra {
   description  String?
   category     String?
   price        Int // céntimos, sin IVA
+  // Categorías de pack a las que aplica este extra. Vacío = aplica a todos.
+  appliesToCategories String[] @default([])
   translations Json?
   isActive     Boolean @default(true)
   sortOrder    Int     @default(0)

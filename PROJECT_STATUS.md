@@ -67,6 +67,9 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
   - **Pendiente anotado**: rate-limit compartido (Redis/Cloudflare) antes de producción multi-instancia; reforzar valor probatorio de la firma (OTP) si se requiere legalmente.
   - Verificado: typecheck + lint + build + unit 44/44 + E2E 21/21.
 
+## Extras condicionados — bloque B (parte 1)
+- [x] **Extras según el pack** (2026-06-08): `Extra.appliesToCategories String[]` (migración `extra_applies_to`). El formulario de presupuesto **filtra los extras** según la categoría del pack seleccionado (vacío = aplica a todos), con defensa en el servidor (`quoteAction` descarta extras incompatibles). Admin de extras: selector de "Aplica a estos packs". Seed de catálogo etiqueta los extras existentes (Holi→Fiesta Holi, Gaming→Gaming/Consolas) de forma guardada (no pisa ediciones). E2E `extras-compat`. **Pendiente parte 2**: botón "añadir 2ª actividad".
+
 ## Marca, redes y pie — bloque D+E
 - [x] **Pie + marca/tema en admin** (2026-06-08): `SiteConfig` amplía con **redes sociales** (instagram, facebook, tiktok, youtube, twitter) — migración `site_social`. Formulario de **Configuración** reorganizado en secciones (Empresa · **Marca y tema** con logos/favicon/OG por URL y **selector de color** principal · **Redes sociales** · Pago · Contrato). **Pie de página** rediseñado: enlaces (servicios, packs, blog, contacto, **FAQ**, privacidad, baja) + **iconos de redes** desde `SiteConfig`. **Color principal** configurable aplicado en runtime (variable CSS de tema en el `<body>`). Nueva página **`/faq`** (SSG, JSON-LD `FAQPage`) movida fuera de `/servicios` y enlazada en el pie; en sitemap. E2E de redes en el pie + FAQ. La subida de imágenes (logos) queda para más adelante (por ahora por URL).
 

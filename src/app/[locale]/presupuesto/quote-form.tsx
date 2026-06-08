@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef } from "react";
+import { useActionState, useRef, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { quoteAction, type QuoteState } from "./actions";
@@ -11,7 +11,7 @@ const inputClass =
 
 export type QuoteOptions = {
   packs: { id: string; name: string; category?: string | null }[];
-  extras: { id: string; name: string; category?: string | null }[];
+  extras: { id: string; name: string; category?: string | null; appliesTo: string[] }[];
   provinces: string[];
 };
 
@@ -30,6 +30,13 @@ export function QuoteForm({
   const locale = useLocale();
   const [state, action, pending] = useActionState(quoteAction, initial);
   const formRef = useRef<HTMLFormElement>(null);
+  const [packId, setPackId] = useState(defaultPackId ?? options.packs[0]?.id ?? "");
+
+  // Extras compatibles con el pack seleccionado (vacío appliesTo = compatible con todo).
+  const selectedCategory = options.packs.find((p) => p.id === packId)?.category ?? null;
+  const visibleExtras = options.extras.filter(
+    (e) => e.appliesTo.length === 0 || (selectedCategory != null && e.appliesTo.includes(selectedCategory)),
+  );
 
   if (state.status === "booked") {
     return (
@@ -89,7 +96,14 @@ export function QuoteForm({
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5 sm:col-span-2">
           <label htmlFor="packId" className="text-sm font-medium text-brand-text">{t("pack")}</label>
-          <select id="packId" name="packId" required defaultValue={defaultPackId ?? undefined} className={inputClass}>
+          <select
+            id="packId"
+            name="packId"
+            required
+            value={packId}
+            onChange={(e) => setPackId(e.target.value)}
+            className={inputClass}
+          >
             {options.packs.map((p) => (
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
@@ -132,11 +146,11 @@ export function QuoteForm({
         <input id="code" name="code" maxLength={40} placeholder={t("discountCodePlaceholder")} className={inputClass} />
       </div>
 
-      {options.extras.length > 0 && (
+      {visibleExtras.length > 0 && (
         <fieldset className="mt-5">
           <legend className="text-sm font-medium text-brand-text">{t("extras")}</legend>
           <div className="mt-2 grid gap-2 sm:grid-cols-2">
-            {options.extras.map((e) => (
+            {visibleExtras.map((e) => (
               <label key={e.id} className="flex items-center gap-2 text-sm text-brand-muted">
                 <input type="checkbox" name="extras" value={e.id} className="h-4 w-4 accent-brand-neon" />
                 {e.name}

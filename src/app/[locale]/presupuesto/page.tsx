@@ -45,7 +45,7 @@ export default async function PresupuestoPage({
     packs: packs.map((p) => ({ id: p.id, name: localizedPack(p, locale).name, category: p.category })),
     extras: extras.map((e) => {
       const tr = (e.translations ?? {}) as Record<string, ExtraTr>;
-      return { id: e.id, name: tr[locale]?.name ?? e.name, category: e.category };
+      return { id: e.id, name: tr[locale]?.name ?? e.name, category: e.category, appliesTo: e.appliesToCategories };
     }),
     provinces: provinces.map((p) => p.name),
   };

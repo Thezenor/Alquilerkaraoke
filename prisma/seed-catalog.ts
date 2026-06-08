@@ -63,16 +63,19 @@ const PRODUCTS = [
 ];
 
 // ── Extras reales (precio en €) ──
+// applies = categorías de pack a las que aplica el extra (vacío = todos).
+const HOLI = ["Fiesta Holi"];
+const GAMING = ["Gaming / Consolas"];
 const EXTRAS = [
-  { slug: "grabacion-video-resumen", name: "Grabación en vídeo resumen", price: 150, category: "Holi" },
-  { slug: "emision-directo-red-social", name: "Emisión en directo en redes", price: 150, category: "Holi" },
-  { slug: "100-bolsas-holi", name: "100 bolsas de color Holi", price: 150, category: "Holi" },
-  { slug: "500-bolsas-holi", name: "500 bolsas de color Holi", price: 520, category: "Holi" },
-  { slug: "extintor-holi-6kg", name: "Extintor Holi 6 kg", price: 120, category: "Holi" },
-  { slug: "consola-adicional", name: "Consola adicional", price: 50, category: "Gaming / Consolas" },
-  { slug: "tv-43-soporte", name: 'TV 43" + soporte', price: 50, category: "Gaming / Consolas" },
-  { slug: "mando-consola", name: "Mando de consola", price: 25, category: "Gaming / Consolas" },
-  { slug: "gafas-vr-camara", name: "Gafas VR + cámara", price: 150, category: "Gaming / Consolas" },
+  { slug: "grabacion-video-resumen", name: "Grabación en vídeo resumen", price: 150, category: "Holi", applies: HOLI },
+  { slug: "emision-directo-red-social", name: "Emisión en directo en redes", price: 150, category: "Holi", applies: HOLI },
+  { slug: "100-bolsas-holi", name: "100 bolsas de color Holi", price: 150, category: "Holi", applies: HOLI },
+  { slug: "500-bolsas-holi", name: "500 bolsas de color Holi", price: 520, category: "Holi", applies: HOLI },
+  { slug: "extintor-holi-6kg", name: "Extintor Holi 6 kg", price: 120, category: "Holi", applies: HOLI },
+  { slug: "consola-adicional", name: "Consola adicional", price: 50, category: "Gaming / Consolas", applies: GAMING },
+  { slug: "tv-43-soporte", name: 'TV 43" + soporte', price: 50, category: "Gaming / Consolas", applies: GAMING },
+  { slug: "mando-consola", name: "Mando de consola", price: 25, category: "Gaming / Consolas", applies: GAMING },
+  { slug: "gafas-vr-camara", name: "Gafas VR + cámara", price: 150, category: "Gaming / Consolas", applies: GAMING },
 ];
 
 // Placeholders de la Fase 3 a desactivar (no eran datos reales)
@@ -124,11 +127,15 @@ async function main() {
   // Extras
   for (let i = 0; i < EXTRAS.length; i++) {
     const e = EXTRAS[i];
-    await prisma.extra.upsert({
-      where: { slug: e.slug },
-      update: {},
-      create: { slug: e.slug, name: e.name, category: e.category, price: eur(e.price), sortOrder: i + 1 },
-    });
+    const existing = await prisma.extra.findUnique({ where: { slug: e.slug }, select: { appliesToCategories: true } });
+    if (!existing) {
+      await prisma.extra.create({
+        data: { slug: e.slug, name: e.name, category: e.category, price: eur(e.price), appliesToCategories: e.applies, sortOrder: i + 1 },
+      });
+    } else if (existing.appliesToCategories.length === 0 && e.applies.length > 0) {
+      // Solo rellena la compatibilidad si está vacía (no pisa ediciones del admin).
+      await prisma.extra.update({ where: { slug: e.slug }, data: { appliesToCategories: e.applies } });
+    }
   }
   console.log(`✔ ${EXTRAS.length} extras asegurados.`);
 
