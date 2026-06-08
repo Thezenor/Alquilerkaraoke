@@ -241,7 +241,8 @@
     "coverageText": "Nous intervenons à {city} et dans les communes de la province de {province}, notamment :",
     "introB": "Vous cherchez une location de karaoké à {city} ? Nous installons tout l'équipement —écrans, micros, son et éclairage— à {city} et dans sa province ({region}). Avec ou sans technicien, pour fêtes privées, mariages et événements d'entreprise.",
     "introC": "Karaoké professionnel à domicile ou dans votre salle à {city}. Nous apportons l'installation et des milliers de chansons pour que vos invités chantent sans souci, à {city} et dans les communes voisines ({region}).",
-    "otherCitiesRegionTitle": "Autres villes de {region}"
+    "otherCitiesRegionTitle": "Autres villes de {region}",
+    "populationNote": "Avec environ {population, number} habitants, {city} est un cadre idéal pour fêtes et événements."
   },
   "PacksMeta": {
     "title": "Forfaits karaoké et événements | Alquiler Karaoke",

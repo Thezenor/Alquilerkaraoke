@@ -550,6 +550,12 @@ model City {
   nearby    String[] // poblaciones cercanas que cubrimos (contenido local)
   isActive  Boolean  @default(true)
   sortOrder Int      @default(0)
+  // Contenido único opcional (anti-duplicado). Si se rellena, prevalece sobre la plantilla.
+  population      Int? // nº de habitantes (se incorpora al texto si está)
+  intro           String? // intro propia (sustituye a la plantilla rotada)
+  body            String? // bloque de contenido en Markdown, único por ciudad
+  metaTitle       String? // override del <title>
+  metaDescription String? // override de la meta description
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

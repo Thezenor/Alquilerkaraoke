@@ -28,6 +28,11 @@ export default async function EditCityPage({ params }: { params: Promise<{ id: s
     nearby: c.nearby.join("\n"),
     sortOrder: String(c.sortOrder),
     isActive: c.isActive,
+    population: c.population != null ? String(c.population) : "",
+    intro: c.intro ?? "",
+    body: c.body ?? "",
+    metaTitle: c.metaTitle ?? "",
+    metaDescription: c.metaDescription ?? "",
   };
 
   return (

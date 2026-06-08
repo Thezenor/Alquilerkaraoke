@@ -241,7 +241,8 @@
     "coverageText": "We operate in {city} and towns across the province of {province}, including:",
     "introB": "Looking for karaoke rental in {city}? We set up the full rig —screens, microphones, sound and lighting— across {city} and its province ({region}). With or without a technician, for private parties, weddings and company events.",
     "introC": "Professional karaoke at your home or venue in {city}. We bring the setup and thousands of songs so your guests just sing, across {city} and nearby towns ({region}).",
-    "otherCitiesRegionTitle": "Other cities in {region}"
+    "otherCitiesRegionTitle": "Other cities in {region}",
+    "populationNote": "With around {population, number} inhabitants, {city} is an ideal setting for parties and events."
   },
   "PacksMeta": {
     "title": "Karaoke & event packages | Alquiler Karaoke",

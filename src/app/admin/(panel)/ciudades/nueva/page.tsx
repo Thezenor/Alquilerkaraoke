@@ -17,6 +17,11 @@ const empty: CityFormValues = {
   nearby: "",
   sortOrder: "",
   isActive: true,
+  population: "",
+  intro: "",
+  body: "",
+  metaTitle: "",
+  metaDescription: "",
 };
 
 export default async function NewCityPage() {

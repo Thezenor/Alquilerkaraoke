@@ -17,6 +17,9 @@ test("ciudades admin: crear una ciudad la publica en la web y se puede borrar", 
   await page.fill('input[name="province"]', "Granada");
   await page.fill('input[name="region"]', "Andalucía");
   await page.fill('textarea[name="nearby"]', "Motril\nBaza\nLoja");
+  await page.fill('input[name="population"]', "232000");
+  await page.fill('textarea[name="intro"]', "Intro personalizada E2E para Granada.");
+  await page.fill('textarea[name="body"]', "## Karaoke en Granada\n\nContenido unico editorial E2E.");
   await page.getByRole("button", { name: /Guardar ciudad/ }).click();
 
   // Vuelve al listado con la ciudad creada.
@@ -30,6 +33,9 @@ test("ciudades admin: crear una ciudad la publica en la web y se puede borrar", 
   await page.goto("/es/karaoke/granada");
   await expect(page.getByRole("heading", { level: 1, name: /Alquiler de karaoke en Granada/ })).toBeVisible();
   await expect(page.getByText("Motril").first()).toBeVisible();
+  // El contenido propio sustituye a la plantilla y aparece el bloque editorial único.
+  await expect(page.getByText("Intro personalizada E2E para Granada.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Karaoke en Granada", exact: true })).toBeVisible();
 
   // Limpieza: borrar la ciudad creada.
   await page.goto("/admin/ciudades");

@@ -20,7 +20,18 @@ const schema = z.object({
   nearby: z.string().optional(),
   sortOrder: z.string().optional(),
   isActive: z.string().optional(),
+  population: z.string().optional(),
+  intro: z.string().max(2000).optional(),
+  body: z.string().max(20000).optional(),
+  metaTitle: z.string().max(140).optional(),
+  metaDescription: z.string().max(300).optional(),
 });
+
+/** Texto opcional: trim y null si queda vacío. */
+const optText = (s: string | undefined) => {
+  const v = (s ?? "").trim();
+  return v ? v : null;
+};
 
 export type CityFormState = { status: "idle" | "error"; message?: string };
 
@@ -54,6 +65,7 @@ export async function saveCity(_prev: CityFormState, formData: FormData): Promis
   const slug = slugifyCity(d.slug && d.slug.trim() ? d.slug : d.name);
   if (!slug) return { status: "error", message: "No se pudo generar un slug válido." };
 
+  const population = d.population && d.population.trim() ? Math.max(0, parseInt(d.population, 10) || 0) : null;
   const data = {
     name: d.name,
     slug,
@@ -62,6 +74,11 @@ export async function saveCity(_prev: CityFormState, formData: FormData): Promis
     nearby: parseNearby(d.nearby),
     sortOrder: d.sortOrder && d.sortOrder.trim() ? Math.max(0, parseInt(d.sortOrder, 10) || 0) : 0,
     isActive: d.isActive === "on",
+    population: population && population > 0 ? population : null,
+    intro: optText(d.intro),
+    body: optText(d.body),
+    metaTitle: optText(d.metaTitle),
+    metaDescription: optText(d.metaDescription),
   };
 
   try {

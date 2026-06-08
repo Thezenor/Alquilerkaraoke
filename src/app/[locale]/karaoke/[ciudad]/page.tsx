@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
+import { Markdown } from "@/lib/markdown";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { getActiveCities, getCityBySlug } from "@/server/cities";
 import { regionLabel, variantIndex } from "@/lib/cities";
@@ -26,8 +27,10 @@ export async function generateMetadata({
   return buildMetadata({
     locale,
     pathname: `/karaoke/${ciudad}`,
-    title: t("title", { city: city.name }),
-    description: t("description", { city: city.name, province: city.province, region: regionLabel(city.region, locale) }),
+    title: city.metaTitle?.trim() || t("title", { city: city.name }),
+    description:
+      city.metaDescription?.trim() ||
+      t("description", { city: city.name, province: city.province, region: regionLabel(city.region, locale) }),
   });
 }
 
@@ -111,13 +114,25 @@ export default async function CityLandingPage({
           <h1 className="mt-2 text-3xl font-bold text-white sm:text-4xl">
             {t("title", { city: city.name })}
           </h1>
-          <p className="mt-4 max-w-2xl text-brand-muted">{t(introKey, tp)}</p>
+          <p className="mt-4 max-w-2xl text-brand-muted">{city.intro?.trim() || t(introKey, tp)}</p>
+          {city.population != null && city.population > 0 && (
+            <p className="mt-2 max-w-2xl text-sm text-brand-muted/80">
+              {t("populationNote", { city: city.name, population: city.population })}
+            </p>
+          )}
 
           <div className="mt-8">
             <Button href={`/${locale}/contacto`} size="lg">
               {t("ctaTitle", { city: city.name })}
             </Button>
           </div>
+
+          {/* Contenido único editorial por ciudad (Markdown, opcional desde admin) */}
+          {city.body?.trim() && (
+            <div className="mt-12 max-w-2xl">
+              <Markdown source={city.body} />
+            </div>
+          )}
 
           {/* Servicios */}
           <h2 className="mt-14 text-xl font-semibold text-white">
