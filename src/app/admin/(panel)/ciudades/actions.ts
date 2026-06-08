@@ -9,6 +9,7 @@ import { requireRole } from "@/server/auth/guards";
 import { logAudit } from "@/server/audit";
 import { slugifyCity } from "@/lib/cities";
 import { CITIES_TAG } from "@/server/cities";
+import { generateContent, isAIConfigured } from "@/server/ai";
 import { Role } from "@/generated/prisma/enums";
 
 const schema = z.object({
@@ -99,6 +100,49 @@ export async function saveCity(_prev: CityFormState, formData: FormData): Promis
   updateTag(CITIES_TAG);
   revalidatePath("/admin/ciudades");
   redirect("/admin/ciudades");
+}
+
+export type AiDraftResult = { ok: boolean; text?: string; error?: string };
+
+/**
+ * Genera con IA un BORRADOR de contenido (Markdown) para la landing de una ciudad.
+ * No guarda nada: devuelve el texto para que un humano lo revise y guarde.
+ */
+export async function generateCityBody(cityId: string): Promise<AiDraftResult> {
+  let userId: string | undefined;
+  try {
+    userId = (await ensureRole()).user.id;
+  } catch {
+    return { ok: false, error: "No tienes permisos." };
+  }
+  if (!isAIConfigured()) {
+    return { ok: false, error: "IA no configurada. Define ANTHROPIC_API_KEY en el servidor." };
+  }
+
+  const city = await prisma.city.findUnique({ where: { id: cityId } });
+  if (!city) return { ok: false, error: "Ciudad no encontrada." };
+
+  const nearby = city.nearby.slice(0, 8).join(", ");
+  const system =
+    "Eres redactor SEO profesional de 'Alquiler Karaoke', empresa española de alquiler de karaoke y eventos. " +
+    "Escribes en español, tono profesional y cercano, sin exagerar ni inventar datos concretos (no inventes precios, teléfonos ni direcciones). " +
+    "Devuelves SOLO Markdown: 2-3 párrafos y 2 subtítulos de nivel 2 (##). Nada de H1.";
+  const prompt =
+    `Redacta un texto único y original para la página de alquiler de karaoke en ${city.name} ` +
+    `(provincia de ${city.province}, ${city.region}). ` +
+    (nearby ? `Menciona de forma natural algunas poblaciones cercanas: ${nearby}. ` : "") +
+    (city.population ? `La ciudad tiene unos ${city.population} habitantes. ` : "") +
+    "Habla de tipos de evento (bodas, cumpleaños, empresas, fiestas), del montaje profesional (equipo, sonido, iluminación, miles de canciones) " +
+    "y de la cobertura local. Evita repetir frases hechas; que suene específico de la ciudad.";
+
+  try {
+    const text = await generateContent({ system, prompt, maxTokens: 900 });
+    await logAudit({ userId, action: "ai.generate", entity: "City", entityId: cityId, metadata: { field: "body" } });
+    return { ok: true, text };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "AI_ERROR";
+    return { ok: false, error: `No se pudo generar (${msg}).` };
+  }
 }
 
 export async function deleteCity(formData: FormData): Promise<void> {

@@ -8,8 +8,20 @@ async function login(page: Page) {
   await page.waitForURL("**/admin");
 }
 
+async function deleteCityIfExists(page: Page, name: RegExp) {
+  await page.goto("/admin/ciudades");
+  const link = page.getByRole("link", { name });
+  if (await link.count()) {
+    await link.first().click();
+    page.once("dialog", (d) => d.accept());
+    await page.getByRole("button", { name: "Eliminar", exact: true }).click();
+    await page.waitForURL("**/admin/ciudades");
+  }
+}
+
 test("ciudades admin: crear una ciudad la publica en la web y se puede borrar", async ({ page }) => {
   await login(page);
+  await deleteCityIfExists(page, /Granada/);
 
   // Crear ciudad nueva.
   await page.goto("/admin/ciudades/nueva");
@@ -37,9 +49,13 @@ test("ciudades admin: crear una ciudad la publica en la web y se puede borrar", 
   await expect(page.getByText("Intro personalizada E2E para Granada.")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Karaoke en Granada", exact: true })).toBeVisible();
 
-  // Limpieza: borrar la ciudad creada.
+  // En la edición, el botón de IA existe y, sin clave, informa de que no está configurada.
   await page.goto("/admin/ciudades");
   await page.getByRole("link", { name: /Granada/ }).first().click();
+  await page.getByRole("button", { name: /Generar con IA/ }).click();
+  await expect(page.getByText(/IA no configurada/)).toBeVisible();
+
+  // Limpieza: borrar la ciudad creada.
   page.once("dialog", (d) => d.accept());
   await page.getByRole("button", { name: "Eliminar", exact: true }).click();
   await page.waitForURL("**/admin/ciudades");

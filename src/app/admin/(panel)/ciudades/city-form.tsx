@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
-import { saveCity, type CityFormState } from "./actions";
+import { useActionState, useState, useTransition } from "react";
+import { saveCity, generateCityBody, type CityFormState } from "./actions";
 
 const initial: CityFormState = { status: "idle" };
 
@@ -26,6 +26,19 @@ export type CityFormValues = {
 
 export function CityForm({ values }: { values: CityFormValues }) {
   const [state, formAction, pending] = useActionState(saveCity, initial);
+  const [body, setBody] = useState(values.body);
+  const [aiPending, startAi] = useTransition();
+  const [aiError, setAiError] = useState<string | null>(null);
+
+  function handleGenerate() {
+    if (!values.id) return;
+    setAiError(null);
+    startAi(async () => {
+      const res = await generateCityBody(values.id!);
+      if (res.ok && res.text) setBody(res.text);
+      else setAiError(res.error ?? "No se pudo generar.");
+    });
+  }
 
   return (
     <form action={formAction} className="max-w-2xl">
@@ -79,16 +92,32 @@ export function CityForm({ values }: { values: CityFormValues }) {
           <span className="text-sm font-medium text-brand-text">Introducción propia</span>
           <textarea name="intro" rows={3} defaultValue={values.intro} placeholder="Sustituye a la intro automática" className={`${inputClass} resize-y`} />
         </label>
-        <label className="mt-4 flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-brand-text">Contenido (Markdown)</span>
+        <div className="mt-4">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-sm font-medium text-brand-text">Contenido (Markdown)</span>
+            {values.id && (
+              <button
+                type="button"
+                onClick={handleGenerate}
+                disabled={aiPending}
+                className="rounded-full border border-brand-neon/50 px-3 py-1 text-xs font-medium text-brand-neon transition hover:bg-brand-neon/10 disabled:opacity-50"
+              >
+                {aiPending ? "Generando…" : "✨ Generar con IA"}
+              </button>
+            )}
+          </div>
           <textarea
             name="body"
             rows={8}
-            defaultValue={values.body}
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
             placeholder={"Bloque de texto único de la ciudad. Admite Markdown:\n## Karaoke en {ciudad}\n\nDescribe recintos, barrios, tipos de evento..."}
-            className={`${inputClass} resize-y font-mono text-sm`}
+            aria-label="Contenido (Markdown)"
+            className={`${inputClass} mt-1.5 w-full resize-y font-mono text-sm`}
           />
-        </label>
+          {aiError && <p className="mt-1 text-xs text-red-400">{aiError}</p>}
+          {values.id && <p className="mt-1 text-xs text-brand-muted">La IA genera un borrador; revísalo y pulsa «Guardar ciudad».</p>}
+        </div>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-medium text-brand-text">Meta title (SEO)</span>
