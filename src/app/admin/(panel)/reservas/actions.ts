@@ -91,8 +91,16 @@ export async function addPayment(_prev: PaymentState, formData: FormData): Promi
   if (cents <= 0) return { status: "error", message: "El importe debe ser mayor que 0." };
   const amount = d.kind === "refund" ? -cents : cents;
 
-  const booking = await prisma.booking.findUnique({ where: { id: d.bookingId }, select: { id: true } });
+  const booking = await prisma.booking.findUnique({
+    where: { id: d.bookingId },
+    select: { id: true, amountPaid: true },
+  });
   if (!booking) return { status: "error", message: "Reserva no encontrada." };
+
+  // Un reembolso no puede superar lo cobrado hasta ahora.
+  if (d.kind === "refund" && cents > booking.amountPaid) {
+    return { status: "error", message: `El reembolso no puede superar lo cobrado (${booking.amountPaid / 100} €).` };
+  }
 
   const paidAt = d.paidAt && /^\d{4}-\d{2}-\d{2}$/.test(d.paidAt) ? new Date(`${d.paidAt}T12:00:00`) : new Date();
 

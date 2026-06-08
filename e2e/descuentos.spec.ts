@@ -43,3 +43,35 @@ test("descuentos: crear código y aplicarlo en un presupuesto", async ({ page })
   await page.getByText(code).click();
   await expect(page.getByText(/Usado 1 vez/)).toBeVisible();
 });
+
+test("descuentos: un código con usos máximos no se aplica una vez agotado", async ({ page }) => {
+  const code = `MAX${Date.now()}`.toUpperCase();
+
+  // Código del 50% con un único uso.
+  await login(page);
+  await page.goto("/admin/descuentos/nuevo");
+  await page.fill('input[name="code"]', code);
+  await page.fill('input[name="value"]', "50");
+  await page.fill('input[name="maxUses"]', "1");
+  await page.getByRole("button", { name: "Guardar código" }).click();
+  await page.waitForURL("**/admin/descuentos");
+
+  const makeBooking = async (suffix: string) => {
+    await page.goto("/es/presupuesto");
+    await page.fill("#hours", "4");
+    await page.fill("#code", code);
+    await page.fill("#name", `Max ${suffix} ${Date.now()}`);
+    await page.fill("#email", `max_${suffix}_${Date.now()}@example.com`);
+    await page.check('input[name="acceptedTerms"]');
+    await page.getByRole("button", { name: "Solicitar presupuesto" }).click();
+    await expect(page.getByRole("heading", { name: "¡Solicitud enviada!" })).toBeVisible();
+  };
+
+  await makeBooking("a"); // consume el único uso
+  await makeBooking("b"); // ya agotado → se ignora
+
+  // El contador no supera el máximo (sigue en 1 uso).
+  await page.goto("/admin/descuentos");
+  await page.getByText(code).click();
+  await expect(page.getByText(/Usado 1 vez/)).toBeVisible();
+});

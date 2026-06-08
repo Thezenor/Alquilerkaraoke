@@ -107,8 +107,12 @@ export async function deleteDiscountCode(formData: FormData): Promise<void> {
   }
   const id = String(formData.get("id") ?? "");
   if (!id) return;
-  await prisma.discountCode.delete({ where: { id } });
-  await logAudit({ userId, action: "discount.delete", entity: "DiscountCode", entityId: id });
+  try {
+    await prisma.discountCode.delete({ where: { id } });
+    await logAudit({ userId, action: "discount.delete", entity: "DiscountCode", entityId: id });
+  } catch {
+    // si no se puede borrar, no rompemos la navegación
+  }
   revalidatePath("/admin/descuentos");
   redirect("/admin/descuentos");
 }

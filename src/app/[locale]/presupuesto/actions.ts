@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { calculateBudget, matchSurcharge } from "@/lib/budget";
-import { evaluateDiscountCode, normalizeCode } from "@/lib/discount";
+import { normalizeCode } from "@/lib/discount";
 import { logAudit } from "@/server/audit";
 import { CONSENT_VERSION } from "@/lib/consent";
 import { rateLimit, isHoneypotFilled } from "@/server/rate-limit";
@@ -28,7 +28,7 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
     const h = await headers();
     const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
     const userAgent = h.get("user-agent") ?? null;
-    if (!rateLimit(`quote:${ip}`)) {
+    if (!rateLimit(`quote:${ip}`, 30)) {
       return { status: "error", message: "Has enviado demasiadas solicitudes. Inténtalo más tarde." };
     }
 
@@ -91,31 +91,35 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
       update: {},
       create: { email: c.email, name: c.name, phone: orNull(c.phone ?? "") },
     });
-    let discountPercent = dbCustomer.isProfessional ? dbCustomer.discountPercent : 0;
+    const professionalPercent = dbCustomer.isProfessional ? dbCustomer.discountPercent : 0;
+    let discountPercent = professionalPercent;
     let discountFixed = 0;
     let appliedCode: string | null = null;
 
     // Código de descuento promocional (opcional). Códigos no válidos se ignoran.
+    // Reserva un uso de forma ATÓMICA (respeta maxUses/fechas/activo) para evitar
+    // condiciones de carrera; solo si reclama el uso se aplica el descuento.
     const rawCode = String(formData.get("code") ?? "").trim();
     if (rawCode) {
       const code = normalizeCode(rawCode);
-      const rec = await prisma.discountCode.findUnique({ where: { code } });
-      if (rec) {
-        const ev = evaluateDiscountCode(
-          {
-            valueType: rec.valueType,
-            value: rec.value,
-            isActive: rec.isActive,
-            maxUses: rec.maxUses,
-            usedCount: rec.usedCount,
-            validFromMs: rec.validFrom ? rec.validFrom.getTime() : null,
-            validUntilMs: rec.validUntil ? rec.validUntil.getTime() : null,
-          },
-          { nowMs: Date.now() },
-        );
-        if (ev.valid) {
-          discountPercent += ev.percent;
-          discountFixed += ev.fixed;
+      const claimed = await prisma.$executeRaw`
+        UPDATE "DiscountCode"
+        SET "usedCount" = "usedCount" + 1, "updatedAt" = now()
+        WHERE "code" = ${code}
+          AND "isActive" = true
+          AND ("validFrom" IS NULL OR "validFrom" <= now())
+          AND ("validUntil" IS NULL OR "validUntil" >= now())
+          AND ("maxUses" IS NULL OR "usedCount" < "maxUses")`;
+      if (claimed === 1) {
+        const rec = await prisma.discountCode.findUnique({ where: { code } });
+        if (rec && rec.value > 0) {
+          // El descuento del código NO se acumula con el porcentaje profesional:
+          // se aplica el mayor de los dos (más el descuento fijo si lo hubiera).
+          if (rec.valueType === "PERCENT") {
+            discountPercent = Math.max(professionalPercent, Math.min(100, rec.value));
+          } else {
+            discountFixed += rec.value;
+          }
           appliedCode = code;
         }
       }
@@ -169,15 +173,6 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
         userAgent,
       },
     });
-
-    // Incrementa el uso del código aplicado (best-effort).
-    if (appliedCode) {
-      try {
-        await prisma.discountCode.update({ where: { code: appliedCode }, data: { usedCount: { increment: 1 } } });
-      } catch {
-        // no bloquea la reserva
-      }
-    }
 
     await logAudit({
       action: "booking.create",

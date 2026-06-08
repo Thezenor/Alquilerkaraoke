@@ -84,8 +84,12 @@ export async function deleteCollaborator(formData: FormData): Promise<void> {
   }
   const id = String(formData.get("id") ?? "");
   if (!id) return;
-  await prisma.collaborator.delete({ where: { id } });
-  await logAudit({ userId, action: "collaborator.delete", entity: "Collaborator", entityId: id });
+  try {
+    await prisma.collaborator.delete({ where: { id } });
+    await logAudit({ userId, action: "collaborator.delete", entity: "Collaborator", entityId: id });
+  } catch {
+    // si no se puede borrar, no rompemos la navegación
+  }
   updateTag(COLLABORATORS_TAG);
   revalidatePath("/admin/colaboradores");
   redirect("/admin/colaboradores");

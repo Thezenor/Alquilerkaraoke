@@ -97,8 +97,12 @@ export async function deletePost(formData: FormData): Promise<void> {
   }
   const id = String(formData.get("id") ?? "");
   if (!id) return;
-  await prisma.post.delete({ where: { id } });
-  await logAudit({ userId, action: "post.delete", entity: "Post", entityId: id });
+  try {
+    await prisma.post.delete({ where: { id } });
+    await logAudit({ userId, action: "post.delete", entity: "Post", entityId: id });
+  } catch {
+    // si no se puede borrar, no rompemos la navegación
+  }
   updateTag(BLOG_TAG);
   revalidatePath("/admin/blog");
   redirect("/admin/blog");

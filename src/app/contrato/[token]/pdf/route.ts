@@ -1,11 +1,18 @@
+import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { buildContractPdf, type ContractPdfData } from "@/server/pdf/contract";
+import { rateLimit } from "@/server/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 // PDF del contrato accesible con el token (secreto del enlace). Sin auth de admin.
 export async function GET(_req: Request, { params }: { params: Promise<{ token: string }> }) {
+  const h = await headers();
+  const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (!rateLimit(`contract-pdf:${ip}`, 30)) {
+    return new Response("Demasiadas solicitudes", { status: 429 });
+  }
   const { token } = await params;
   const [contract, config] = await Promise.all([
     prisma.contract.findUnique({ where: { token }, include: { booking: true } }),
@@ -53,6 +60,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ token: 
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="${contract.number}.pdf"`,
       "Cache-Control": "no-store",
+      "X-Robots-Tag": "noindex, nofollow",
     },
   });
 }

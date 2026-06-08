@@ -74,6 +74,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="${number}.pdf"`,
       "Cache-Control": "no-store",
+      "X-Robots-Tag": "noindex, nofollow",
     },
   });
 }

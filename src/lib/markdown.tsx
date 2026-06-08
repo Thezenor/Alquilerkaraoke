@@ -129,9 +129,10 @@ export function Markdown({ source }: { source: string }) {
 export function markdownToPlain(md: string, max = 160): string {
   const plain = md
     .replace(/\r\n/g, "\n")
-    .replace(/^#{1,6}\s+/gm, "")
-    .replace(/[*_`>#-]/g, "")
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
+    .replace(/^\s*#{1,6}\s+/gm, "") // encabezados
+    .replace(/^\s*[-*]\s+/gm, "") // viñetas de lista (solo al inicio de línea)
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1") // enlaces → texto
+    .replace(/[*_`>#]/g, "") // marcas inline (no toca los guiones internos)
     .replace(/\s+/g, " ")
     .trim();
   return plain.length > max ? `${plain.slice(0, max - 1).trimEnd()}…` : plain;

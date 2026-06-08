@@ -19,6 +19,7 @@ export default async function ContractSignPage({ params }: { params: Promise<{ t
   const b = contract.booking;
   const pdfHref = `/contrato/${token}/pdf`;
   const signed = contract.status === "SIGNED";
+  const loc = b.locale || "es";
 
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-10 sm:py-14">
@@ -30,15 +31,15 @@ export default async function ContractSignPage({ params }: { params: Promise<{ t
       <h1 className="mt-6 text-2xl font-bold text-white sm:text-3xl">Contrato de servicio</h1>
       <p className="mt-1 text-sm text-brand-muted">
         Nº {contract.number} · {b.packName}
-        {b.eventDate ? ` · ${b.eventDate.toLocaleDateString("es-ES")}` : ""}
+        {b.eventDate ? ` · ${b.eventDate.toLocaleDateString(loc)}` : ""}
       </p>
 
       {/* Resumen */}
       <dl className="mt-6 grid gap-3 rounded-xl border border-brand-border bg-brand-surface p-5 text-sm sm:grid-cols-2">
         <div><dt className="text-brand-muted">Cliente</dt><dd className="text-white">{b.name}</dd></div>
         <div><dt className="text-brand-muted">Servicio</dt><dd className="text-white">{b.packName} · {b.hours} h</dd></div>
-        <div><dt className="text-brand-muted">Total</dt><dd className="text-white">{formatCents(b.total)}</dd></div>
-        <div><dt className="text-brand-muted">Reserva</dt><dd className="text-white">{formatCents(b.deposit)}</dd></div>
+        <div><dt className="text-brand-muted">Total</dt><dd className="text-white">{formatCents(b.total, loc)}</dd></div>
+        <div><dt className="text-brand-muted">Reserva</dt><dd className="text-white">{formatCents(b.deposit, loc)}</dd></div>
       </dl>
 
       {/* Condiciones */}
@@ -56,7 +57,7 @@ export default async function ContractSignPage({ params }: { params: Promise<{ t
             <p className="font-semibold">Este contrato ya está firmado.</p>
             <p className="mt-1 text-sm">
               Firmado por {contract.signedName}
-              {contract.signedAt ? ` el ${contract.signedAt.toLocaleString("es-ES")}` : ""}.
+              {contract.signedAt ? ` el ${contract.signedAt.toLocaleString(loc)}` : ""}.
             </p>
             <a href={pdfHref} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm text-emerald-300 underline">
               Descargar copia en PDF

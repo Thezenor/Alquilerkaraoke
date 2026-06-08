@@ -54,6 +54,19 @@ Web pública ES/EN/FR, health, BD migrada+sembrada y login admin verificados en 
 - [x] **Pagos manuales + estado de pago** (2026-06-07): modelo `Payment` (cobros/reembolsos en céntimos, método TRANSFER/BIZUM/CASH/CARD/OTHER) + `Booking.paymentStatus` (PENDING/PARTIAL/PAID) y `amountPaid` cacheado, recalculados al añadir/borrar pagos. Migración `payments`. Admin: sección **Pagos** en el detalle de reserva (resumen total/cobrado/pendiente, alta de cobro o reembolso, borrado con confirmación) + badge de pago en el listado. Datos de pago del cliente (**IBAN/Bizum/instrucciones**) en `SiteConfig` + formulario de configuración, incluidos en el email del presupuesto. Helper puro `derivePaymentStatus` + 6 tests unitarios (24/24). E2E `pagos.spec` (13/13).
 - [x] **Proforma/presupuesto en PDF** (2026-06-07): generación con `pdf-lib` (JS puro, sin navegador headless) en `src/server/pdf/proforma.ts` — documento A4 con datos de empresa, cliente, evento, conceptos (servicio + extras), totales, estado de pago e instrucciones de pago. Ruta `GET /admin/reservas/[id]/proforma` (guard de sesión + auditoría `proforma.download`) y botón "Proforma (PDF)" en el detalle. Importes y texto saneados a WinAnsi (sin fallos con emojis/€). +2 tests unitarios (26/26). E2E `proforma.spec` (15/15). **Pendiente Fase 4**: pago online con Stripe (requiere claves) — aparcado.
 
+## Fase 10 — Endurecimiento (revisión con agentes)
+- [x] **Pase de seguridad y calidad** (2026-06-08): revisión con agentes (security-specialist + code-reviewer) de pagos/proforma/contratos/blog/descuentos/RGPD y corrección de los hallazgos accionables:
+  - **Códigos de descuento**: reserva del uso **atómica** (`$executeRaw` condicional con `usedCount < maxUses` + fechas/activo) → sin condición de carrera ni rebasar `maxUses`. El descuento del código **no se acumula** con el profesional (se aplica el mayor de los dos % + fijo) → evita "servicio gratis" por stacking. E2E de tope de usos.
+  - **PDFs con PII**: `X-Robots-Tag: noindex,nofollow` en proforma y contrato; **rate-limit** en `/contrato/[token]/pdf`; `/contrato` añadido a `robots.txt`.
+  - **Pagos**: el reembolso no puede superar lo cobrado; `recomputeBookingPayment` ahora **transaccional** (lectura+escritura).
+  - **RGPD**: `anonymizeCustomer` también anonimiza la PII de los **contratos** (incl. imagen de firma) y limpia `Booking.locale`.
+  - **Robustez admin**: `delete*` (blog/descuentos/colaboradores) en try/catch (no rompen la navegación ante FK).
+  - **i18n**: la página pública de firma usa el `locale` de la reserva para importes/fechas.
+  - **Anti-spam**: límite de presupuestos subido a 30/10 min por IP (mejor UX, sigue bloqueando abuso).
+  - Confirmado correcto por los agentes (sin acción): XSS del Markdown del blog, inyección en PDF, guards de rol admin, exclusión de `/contrato` en el proxy.
+  - **Pendiente anotado**: rate-limit compartido (Redis/Cloudflare) antes de producción multi-instancia; reforzar valor probatorio de la firma (OTP) si se requiere legalmente.
+  - Verificado: typecheck + lint + build + unit 44/44 + E2E 21/21.
+
 ## Fase 8 — Blog / SEO
 - [x] **Blog de contenidos** (2026-06-07): modelo `Post` (slug único, locale, título, extracto, contenido Markdown, portada, estado DRAFT/PUBLISHED, publishedAt, meta SEO, autor). Migración `blog`. **Renderizador Markdown propio y seguro** (`src/lib/markdown.tsx`: # títulos, **negrita**, listas, [enlaces] — sin `dangerouslySetInnerHTML` ni HTML embebido; neutraliza `javascript:`). **Admin** `/admin/blog` (CRUD, rol SUPERADMIN/ADMIN/SEO_CONTENIDOS, auditoría, `updateTag`, publishedAt al publicar). **Público** `/blog` (listado por idioma) y `/blog/[slug]` (detalle con JSON-LD `BlogPosting` + meta). Enlace "Blog" en la cabecera + entradas publicadas en el `sitemap`. +4 tests unitarios (44/44). E2E `blog.spec` (20/20). La generación IA queda como borrador opcional para más adelante.
 

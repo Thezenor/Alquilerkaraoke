@@ -24,9 +24,19 @@ export async function optOutMarketing(email: string): Promise<number> {
   return contacts.count + bookings.count;
 }
 
-/** Anonimiza un cliente y la PII de sus reservas (conserva importes). */
+/** Anonimiza un cliente y la PII de sus reservas y contratos (conserva importes). */
 export async function anonymizeCustomer(customerId: string): Promise<void> {
   await prisma.$transaction([
+    // Contratos de las reservas del cliente: borra la PII de la firma.
+    prisma.contract.updateMany({
+      where: { booking: { customerId } },
+      data: {
+        signedName: null,
+        signerIp: null,
+        signerUserAgent: null,
+        signatureImage: null,
+      },
+    }),
     prisma.booking.updateMany({
       where: { customerId },
       data: {
@@ -35,6 +45,7 @@ export async function anonymizeCustomer(customerId: string): Promise<void> {
         phone: null,
         message: null,
         marketingConsent: false,
+        locale: null,
         ip: null,
         userAgent: null,
       },
