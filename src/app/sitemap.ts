@@ -28,6 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/presupuesto",
     "/contacto",
     "/privacidad",
+    "/karaoke",
     ...services.map((s) => `/servicios/${s.slug}`),
     ...packs.map((p) => `/packs/${p.slug}`),
     ...CITIES.map((c) => `/karaoke/${c.slug}`),

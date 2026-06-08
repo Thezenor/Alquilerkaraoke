@@ -11,7 +11,8 @@
     "contact": "Contacto",
     "quote": "Pedir presupuesto",
     "access": "Acceso",
-    "menu": "Menú"
+    "menu": "Menú",
+    "cities": "Ciudades"
   },
   "Home": {
     "heroKicker": "Karaoke y eventos premium",
@@ -29,28 +30,70 @@
   },
   "HomeServices": {
     "items": [
-      { "title": "Karaoke profesional", "text": "Equipos, pantallas y miles de canciones con o sin técnico." },
-      { "title": "OkeBox", "text": "Karaoke autónomo para tenerlo todo el día en tu evento." },
-      { "title": "DJ y discomóvil", "text": "Música y ambiente para que la fiesta no pare." },
-      { "title": "Sonido e iluminación", "text": "Equipos profesionales adaptados a cada espacio." },
-      { "title": "Fotomatón y 360", "text": "Recuerdos divertidos para tus invitados." },
-      { "title": "Eventos y concursos", "text": "Formato tipo Furor y dinámicas musicales para empresas y fiestas." }
+      {
+        "title": "Karaoke profesional",
+        "text": "Equipos, pantallas y miles de canciones con o sin técnico."
+      },
+      {
+        "title": "OkeBox",
+        "text": "Karaoke autónomo para tenerlo todo el día en tu evento."
+      },
+      {
+        "title": "DJ y discomóvil",
+        "text": "Música y ambiente para que la fiesta no pare."
+      },
+      {
+        "title": "Sonido e iluminación",
+        "text": "Equipos profesionales adaptados a cada espacio."
+      },
+      {
+        "title": "Fotomatón y 360",
+        "text": "Recuerdos divertidos para tus invitados."
+      },
+      {
+        "title": "Eventos y concursos",
+        "text": "Formato tipo Furor y dinámicas musicales para empresas y fiestas."
+      }
     ]
   },
   "HomeSegments": {
     "items": [
-      { "title": "Particulares", "text": "Cumpleaños, despedidas y fiestas en casa o local." },
-      { "title": "Empresas", "text": "Eventos de equipo, fiestas y activaciones de marca." },
-      { "title": "Bodas", "text": "El toque final para que tu boda sea inolvidable." },
-      { "title": "Fiestas populares", "text": "Ayuntamientos y peñas con producción profesional." }
+      {
+        "title": "Particulares",
+        "text": "Cumpleaños, despedidas y fiestas en casa o local."
+      },
+      {
+        "title": "Empresas",
+        "text": "Eventos de equipo, fiestas y activaciones de marca."
+      },
+      {
+        "title": "Bodas",
+        "text": "El toque final para que tu boda sea inolvidable."
+      },
+      {
+        "title": "Fiestas populares",
+        "text": "Ayuntamientos y peñas con producción profesional."
+      }
     ]
   },
   "HomeProcess": {
     "steps": [
-      { "title": "Cuéntanos tu evento", "text": "Fecha, lugar y qué te imaginas." },
-      { "title": "Presupuesto a medida", "text": "Te proponemos la mejor opción sin compromiso." },
-      { "title": "Montaje profesional", "text": "Llevamos y montamos todo el equipo." },
-      { "title": "Disfruta", "text": "Tú a cantar; del resto nos encargamos nosotros." }
+      {
+        "title": "Cuéntanos tu evento",
+        "text": "Fecha, lugar y qué te imaginas."
+      },
+      {
+        "title": "Presupuesto a medida",
+        "text": "Te proponemos la mejor opción sin compromiso."
+      },
+      {
+        "title": "Montaje profesional",
+        "text": "Llevamos y montamos todo el equipo."
+      },
+      {
+        "title": "Disfruta",
+        "text": "Tú a cantar; del resto nos encargamos nosotros."
+      }
     ]
   },
   "ContactMeta": {
@@ -152,20 +195,29 @@
     "packsInService": "Opciones disponibles",
     "faqTitle": "Preguntas frecuentes",
     "faq": [
-      { "q": "¿Trabajáis en toda España?", "a": "Sí. Damos servicio en las principales ciudades y provincias; consúltanos tu localidad." },
-      { "q": "¿El karaoke incluye técnico?", "a": "Puedes contratarlo con o sin técnico, según el servicio y el pack." },
-      { "q": "¿Cuánto cuesta?", "a": "Depende del servicio, la fecha y la ubicación. Pídenos un presupuesto sin compromiso." }
+      {
+        "q": "¿Trabajáis en toda España?",
+        "a": "Sí. Damos servicio en las principales ciudades y provincias; consúltanos tu localidad."
+      },
+      {
+        "q": "¿El karaoke incluye técnico?",
+        "a": "Puedes contratarlo con o sin técnico, según el servicio y el pack."
+      },
+      {
+        "q": "¿Cuánto cuesta?",
+        "a": "Depende del servicio, la fecha y la ubicación. Pídenos un presupuesto sin compromiso."
+      }
     ],
     "ctaTitle": "¿Montamos tu evento?",
     "ctaText": "Cuéntanos qué necesitas y te preparamos un presupuesto a medida."
   },
   "CityLandingMeta": {
     "title": "Alquiler de karaoke en {city} | Alquiler Karaoke",
-    "description": "Alquiler de karaoke profesional en {city}: equipos, pantallas, sonido e iluminación con montaje. Pide presupuesto sin compromiso."
+    "description": "Alquiler de karaoke profesional en {city} y provincia: equipos, pantallas, sonido e iluminación con montaje. Servicio en toda {region}. Pide presupuesto sin compromiso."
   },
   "CityLanding": {
     "title": "Alquiler de karaoke en {city}",
-    "intro": "Llevamos el karaoke profesional a {city}: equipos, miles de canciones, sonido e iluminación, con o sin técnico. Ideal para fiestas, bodas, cumpleaños y eventos de empresa.",
+    "intro": "Llevamos el karaoke profesional a {city} y toda su provincia ({region}): equipos, miles de canciones, sonido e iluminación, con o sin técnico. Ideal para fiestas, bodas, cumpleaños y eventos de empresa.",
     "servicesTitle": "Servicios en {city}",
     "faqTitle": "Preguntas frecuentes",
     "faqQ1": "¿Hacéis alquiler de karaoke en {city}?",
@@ -176,7 +228,11 @@
     "faqA3": "Cuanto antes mejor, sobre todo en fines de semana y fechas señaladas. Escríbenos y confirmamos disponibilidad en {city}.",
     "ctaTitle": "Tu karaoke en {city}",
     "ctaText": "Pídenos presupuesto para tu evento en {city}, sin compromiso.",
-    "otherCitiesTitle": "Otras ciudades"
+    "otherCitiesTitle": "Otras ciudades",
+    "breadcrumb": "Ciudades",
+    "allServices": "Ver todos nuestros servicios",
+    "coverageTitle": "Zonas que cubrimos cerca de {city}",
+    "coverageText": "Damos servicio en {city} y poblaciones de alrededor, entre otras:"
   },
   "PacksMeta": {
     "title": "Packs de karaoke y eventos | Alquiler Karaoke",
@@ -267,5 +323,16 @@
     "es": "Español",
     "en": "Inglés",
     "fr": "Francés"
+  },
+  "CitiesHubMeta": {
+    "title": "Alquiler de karaoke por ciudades | Alquiler Karaoke",
+    "description": "Alquiler de karaoke y eventos en las principales ciudades de España. Elige tu ciudad para ver la cobertura y pedir presupuesto sin compromiso."
+  },
+  "CitiesHub": {
+    "title": "Alquiler de karaoke por ciudades",
+    "intro": "Montamos experiencias de karaoke profesional en toda España. Elige tu ciudad para ver la cobertura y pedir presupuesto sin compromiso.",
+    "ctaTitle": "¿No ves tu ciudad?",
+    "ctaText": "Cubrimos muchas más localidades. Cuéntanos dónde es tu evento y te lo confirmamos.",
+    "ctaButton": "Pedir presupuesto"
   }
 }

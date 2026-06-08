@@ -27,7 +27,7 @@ export async function generateMetadata({
     locale,
     pathname: `/karaoke/${ciudad}`,
     title: t("title", { city: city.name }),
-    description: t("description", { city: city.name }),
+    description: t("description", { city: city.name, region: city.region }),
   });
 }
 
@@ -54,7 +54,7 @@ export default async function CityLandingPage({
       "@context": "https://schema.org",
       "@type": "Service",
       serviceType: "Alquiler de karaoke",
-      areaServed: { "@type": "City", name: city.name },
+      areaServed: { "@type": "City", name: city.name, containedInPlace: { "@type": "AdministrativeArea", name: city.region } },
       provider: { "@type": "LocalBusiness", name: "Alquiler Karaoke" },
       url: absoluteUrl(`/${locale}/karaoke/${ciudad}`),
     },
@@ -67,6 +67,15 @@ export default async function CityLandingPage({
         acceptedAnswer: { "@type": "Answer", text: f.a },
       })),
     },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Alquiler Karaoke", item: absoluteUrl(`/${locale}`) },
+        { "@type": "ListItem", position: 2, name: t("breadcrumb"), item: absoluteUrl(`/${locale}/karaoke`) },
+        { "@type": "ListItem", position: 3, name: city.name, item: absoluteUrl(`/${locale}/karaoke/${ciudad}`) },
+      ],
+    },
   ];
 
   const otherCities = CITIES.filter((c) => c.slug !== ciudad);
@@ -77,10 +86,20 @@ export default async function CityLandingPage({
 
       <section className="py-16 sm:py-20">
         <Container>
-          <h1 className="text-3xl font-bold text-white sm:text-4xl">
+          {/* Breadcrumb */}
+          <nav className="mb-6 text-sm text-brand-muted" aria-label="Breadcrumb">
+            <Link href={`/${locale}/karaoke`} className="transition hover:text-brand-neon">
+              {t("breadcrumb")}
+            </Link>
+            <span className="mx-2 text-brand-muted/50">/</span>
+            <span className="text-white">{city.name}</span>
+          </nav>
+
+          <p className="text-sm font-medium tracking-wide text-brand-neon uppercase">{city.region}</p>
+          <h1 className="mt-2 text-3xl font-bold text-white sm:text-4xl">
             {t("title", { city: city.name })}
           </h1>
-          <p className="mt-4 max-w-2xl text-brand-muted">{t("intro", { city: city.name })}</p>
+          <p className="mt-4 max-w-2xl text-brand-muted">{t("intro", { city: city.name, region: city.region })}</p>
 
           <div className="mt-8">
             <Button href={`/${locale}/contacto`} size="lg">
@@ -103,6 +122,25 @@ export default async function CityLandingPage({
               </article>
             ))}
           </div>
+          <p className="mt-4 text-sm text-brand-muted">
+            <Link href={`/${locale}/servicios`} className="text-brand-neon underline-offset-2 hover:underline">
+              {t("allServices")}
+            </Link>
+          </p>
+
+          {/* Cobertura: poblaciones cercanas (contenido local único) */}
+          <h2 className="mt-14 text-xl font-semibold text-white">{t("coverageTitle", { city: city.name })}</h2>
+          <p className="mt-2 max-w-2xl text-sm text-brand-muted">{t("coverageText", { city: city.name })}</p>
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {city.nearby.map((town) => (
+              <li
+                key={town}
+                className="inline-block rounded-full border border-brand-border bg-brand-surface px-3 py-1.5 text-sm text-brand-muted"
+              >
+                {town}
+              </li>
+            ))}
+          </ul>
 
           {/* FAQ */}
           <h2 className="mt-14 text-xl font-semibold text-white">{t("faqTitle")}</h2>
