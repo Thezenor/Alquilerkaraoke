@@ -566,6 +566,45 @@ model City {
   @@index([isActive, sortOrder])
 }
 
+// ── Galerías (Fase 7): fotos/vídeos, privadas por clave, con caducidad ──
+enum GalleryItemType {
+  IMAGE
+  VIDEO
+}
+
+model Gallery {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  title         String
+  description   String?
+  coverImageUrl String?
+  isListed      Boolean       @default(false) // se muestra en /galerias
+  passwordHash  String? // si está definido, requiere clave para verla
+  expiresAt     DateTime? // a partir de esta fecha deja de ser accesible
+  allowDownload Boolean       @default(true)
+  isActive      Boolean       @default(true)
+  sortOrder     Int           @default(0)
+  items         GalleryItem[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([isListed, isActive, sortOrder])
+}
+
+model GalleryItem {
+  id           String          @id @default(cuid())
+  galleryId    String
+  gallery      Gallery         @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+  type         GalleryItemType @default(IMAGE)
+  url          String
+  thumbnailUrl String?
+  caption      String?
+  sortOrder    Int             @default(0)
+  createdAt    DateTime        @default(now())
+
+  @@index([galleryId, sortOrder])
+}
+
 // ── Servicios (páginas SEO por servicio, con packs asociados) ────
 model Service {
   id               String   @id @default(cuid())

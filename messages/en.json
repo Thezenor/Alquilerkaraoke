@@ -12,7 +12,8 @@
     "quote": "Get a quote",
     "access": "Admin",
     "menu": "Menu",
-    "cities": "Cities"
+    "cities": "Cities",
+    "galleries": "Galleries"
   },
   "Home": {
     "heroKicker": "Premium karaoke & events",
@@ -346,5 +347,25 @@
     "ctaButton": "Request a quote",
     "lead": "Professional service with sound system, screens, microphones and lighting, with or without a technician. We set up karaoke and events for individuals, companies, weddings and celebrations across Spain.",
     "coverageNote": "Coverage in {cities} cities, {regions} regions and more than {towns} towns."
+  },
+  "GalleriesMeta": {
+    "title": "Event galleries | Alquiler Karaoke",
+    "description": "Photos and videos of our karaoke events, parties and celebrations across Spain."
+  },
+  "Galleries": {
+    "title": "Galleries",
+    "intro": "A glimpse of the events we put together: karaoke, parties, weddings and celebrations.",
+    "empty": "We'll publish our event galleries soon.",
+    "photoCount": "{count, plural, =0 {No items} one {# item} other {# items}}",
+    "locked": "Private"
+  },
+  "Gallery": {
+    "breadcrumb": "Galleries",
+    "expired": "This gallery is no longer available.",
+    "empty": "This gallery has no content yet.",
+    "unlockPrompt": "This gallery is private. Enter the password to view it.",
+    "unlockPlaceholder": "Access password",
+    "unlockButton": "Enter",
+    "download": "Download"
   }
 }

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { getActiveCities } from "@/server/cities";
+import { getListedGalleries } from "@/server/galleries";
 import { getActivePacks } from "@/server/packs";
 import { getPublishedPostRefs } from "@/server/blog";
 import { getActiveServices } from "@/server/services";
@@ -11,11 +12,12 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [packs, posts, services, cities] = await Promise.all([
+  const [packs, posts, services, cities, galleries] = await Promise.all([
     getActivePacks(),
     getPublishedPostRefs(),
     getActiveServices(),
     getActiveCities(),
+    getListedGalleries(),
   ]);
 
   // Rutas públicas comunes a todos los idiomas (sin prefijo).
@@ -30,9 +32,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/contacto",
     "/privacidad",
     "/karaoke",
+    "/galerias",
     ...services.map((s) => `/servicios/${s.slug}`),
     ...packs.map((p) => `/packs/${p.slug}`),
     ...cities.map((c) => `/karaoke/${c.slug}`),
+    // Solo galerías listadas (las protegidas/no listadas van noindex y fuera del sitemap).
+    ...galleries.filter((g) => !g.locked).map((g) => `/galerias/${g.slug}`),
   ];
 
   const common = publicPaths.flatMap((path) =>

@@ -12,7 +12,8 @@
     "quote": "Demander un devis",
     "access": "Accès",
     "menu": "Menu",
-    "cities": "Villes"
+    "cities": "Villes",
+    "galleries": "Galeries"
   },
   "Home": {
     "heroKicker": "Karaoké et événements premium",
@@ -346,5 +347,25 @@
     "ctaButton": "Demander un devis",
     "lead": "Service professionnel avec sonorisation, écrans, micros et éclairage, avec ou sans technicien. Nous installons karaoké et événements pour particuliers, entreprises, mariages et célébrations dans toute l'Espagne.",
     "coverageNote": "Couverture dans {cities} villes, {regions} communautés et plus de {towns} localités."
+  },
+  "GalleriesMeta": {
+    "title": "Galeries d'événements | Alquiler Karaoke",
+    "description": "Photos et vidéos de nos événements karaoké, fêtes et célébrations partout en Espagne."
+  },
+  "Galleries": {
+    "title": "Galeries",
+    "intro": "Un aperçu des événements que nous organisons : karaoké, fêtes, mariages et célébrations.",
+    "empty": "Nous publierons bientôt nos galeries d'événements.",
+    "photoCount": "{count, plural, =0 {Aucun élément} one {# élément} other {# éléments}}",
+    "locked": "Privée"
+  },
+  "Gallery": {
+    "breadcrumb": "Galeries",
+    "expired": "Cette galerie n'est plus disponible.",
+    "empty": "Cette galerie n'a pas encore de contenu.",
+    "unlockPrompt": "Cette galerie est privée. Saisissez le mot de passe pour la voir.",
+    "unlockPlaceholder": "Mot de passe d'accès",
+    "unlockButton": "Accéder",
+    "download": "Télécharger"
   }
 }

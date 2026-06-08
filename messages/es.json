@@ -12,7 +12,8 @@
     "quote": "Pedir presupuesto",
     "access": "Acceso",
     "menu": "Menú",
-    "cities": "Ciudades"
+    "cities": "Ciudades",
+    "galleries": "Galerías"
   },
   "Home": {
     "heroKicker": "Karaoke y eventos premium",
@@ -346,5 +347,25 @@
     "ctaButton": "Pedir presupuesto",
     "lead": "Servicio profesional con equipo de sonido, pantallas, microfonía e iluminación, con o sin técnico. Montamos karaoke y eventos para particulares, empresas, bodas y celebraciones en toda España.",
     "coverageNote": "Cobertura en {cities} ciudades, {regions} comunidades autónomas y más de {towns} poblaciones."
+  },
+  "GalleriesMeta": {
+    "title": "Galerías de eventos | Alquiler Karaoke",
+    "description": "Fotos y vídeos de nuestros eventos de karaoke, fiestas y celebraciones por toda España."
+  },
+  "Galleries": {
+    "title": "Galerías",
+    "intro": "Una muestra de los eventos que montamos: karaoke, fiestas, bodas y celebraciones.",
+    "empty": "Pronto publicaremos nuestras galerías de eventos.",
+    "photoCount": "{count, plural, =0 {Sin elementos} one {# elemento} other {# elementos}}",
+    "locked": "Privada"
+  },
+  "Gallery": {
+    "breadcrumb": "Galerías",
+    "expired": "Esta galería ya no está disponible.",
+    "empty": "Esta galería aún no tiene contenido.",
+    "unlockPrompt": "Esta galería es privada. Introduce la clave para verla.",
+    "unlockPlaceholder": "Clave de acceso",
+    "unlockButton": "Acceder",
+    "download": "Descargar"
   }
 }

@@ -72,6 +72,7 @@ export default async function LocaleLayout({
   ];
   const infoLinks = [
     { href: `/${locale}/karaoke`, label: nav("cities") },
+    { href: `/${locale}/galerias`, label: nav("galleries") },
     { href: `/${locale}/blog`, label: nav("blog") },
     { href: `/${locale}/faq`, label: (await getTranslations({ locale, namespace: "Faq" }))("title") },
     { href: `/${locale}/contacto`, label: nav("contact") },
