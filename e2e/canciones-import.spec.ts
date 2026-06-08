@@ -9,9 +9,13 @@ async function login(page: Page) {
 }
 
 async function importFile(page: Page, path: string) {
+  const name = path.split("/").pop()!;
   await page.goto("/admin/canciones");
   await page.setInputFiles('input[type="file"]', path);
   await page.getByRole("button", { name: "Subir e importar" }).click();
+  // Espera a que el panel muestre el trabajo de ESTE fichero y que termine
+  // (evita confundirse con un "Completada" de un trabajo anterior).
+  await expect(page.getByText(name)).toBeVisible({ timeout: 30000 });
   await expect(page.getByText("Completada")).toBeVisible({ timeout: 30000 });
 }
 

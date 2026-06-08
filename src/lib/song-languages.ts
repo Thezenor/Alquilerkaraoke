@@ -109,6 +109,28 @@ export const LANGUAGE_BY_CODE: Record<string, SongLanguage> = Object.fromEntries
   SONG_LANGUAGES.map((l) => [l.code, l]),
 );
 
+// Bandera (emoji) representativa por idioma. Las abreviaturas son las del cliente.
+const LANGUAGE_FLAG: Record<string, string> = {
+  AF: "🇿🇦", SQ: "🇦🇱", AL: "🇩🇪", AR: "🇸🇦", AN: "🇪🇸", HY: "🇦🇲", AU: "🇦🇹", BN: "🇧🇩",
+  BE: "🇧🇾", MY: "🇲🇲", BS: "🇧🇦", BR: "🇧🇷", BG: "🇧🇬", KS: "🇮🇳", KM: "🇰🇭", CA: "🇪🇸",
+  CE: "🇷🇺", CS: "🇨🇿", CH: "🇨🇳", ZA: "🇨🇳", KO: "🇰🇷", HR: "🇭🇷", DA: "🇩🇰", SK: "🇸🇰",
+  SL: "🇸🇮", ES: "🇪🇸", ET: "🇪🇪", EU: "🇪🇸", FO: "🇫🇴", FL: "🇵🇭", FR: "🇫🇷", GD: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+  CY: "🏴󠁧󠁢󠁷󠁬󠁳󠁿", GL: "🇪🇸", KA: "🇬🇪", EL: "🇬🇷", KL: "🇬🇱", GN: "🇵🇾", GU: "🇮🇳", HT: "🇭🇹",
+  HE: "🇮🇱", HI: "🇮🇳", NL: "🇳🇱", HU: "🇭🇺", ID: "🇮🇩", IN: "🇬🇧", GA: "🇮🇪", IS: "🇮🇸",
+  IT: "🇮🇹", JA: "🇯🇵", KK: "🇰🇿", KG: "🇨🇩", KU: "🌐", LA: "🇻🇦", LV: "🇱🇻", LT: "🇱🇹",
+  LG: "🇺🇬", LB: "🇱🇺", MK: "🇲🇰", ML: "🇮🇳", MS: "🇲🇾", DV: "🇲🇻", MT: "🇲🇹", MI: "🇳🇿",
+  MN: "🇲🇳", NV: "🇺🇸", NE: "🇳🇵", NG: "🇳🇬", NI: "🌐", NO: "🇳🇴", OP: "🎭", FA: "🇮🇷",
+  PL: "🇵🇱", PO: "🇵🇹", PU: "🇵🇪", RW: "🇷🇼", RO: "🇷🇴", RU: "🇷🇺", SM: "🇼🇸", SR: "🇷🇸",
+  SO: "🇸🇴", SW: "🇰🇪", SV: "🇸🇪", SU: "🇫🇮", TL: "🇵🇭", TY: "🇵🇫", TA: "🇹🇭", TT: "🇷🇺",
+  BO: "🇨🇳", TO: "🇹🇴", TR: "🇹🇷", TK: "🇹🇲", UK: "🇺🇦", UZ: "🇺🇿", VL: "🇪🇸", VI: "🇻🇳", ZU: "🇿🇦",
+};
+
+/** Bandera (emoji) del idioma a partir de su abreviatura. 🌐 si no hay una clara. */
+export function flagFor(code: string | null | undefined): string {
+  if (!code) return "🌐";
+  return LANGUAGE_FLAG[code.trim().toUpperCase()] ?? "🌐";
+}
+
 /** Nombre del idioma a partir de su abreviatura del Excel (con fallback al propio código). */
 export function languageName(code: string | null | undefined, locale: "es" | "en" = "es"): string {
   if (!code) return locale === "en" ? "Unknown" : "Desconocido";

@@ -5,7 +5,8 @@ import { Container } from "@/components/ui/container";
 import { buildMetadata } from "@/lib/seo";
 import { prisma } from "@/lib/prisma";
 import { searchSongs, getLanguageCounts } from "@/server/songs";
-import { languageName } from "@/lib/song-languages";
+import { languageName, flagFor } from "@/lib/song-languages";
+import { cn } from "@/lib/cn";
 
 async function uniqueCount(): Promise<number> {
   try {
@@ -75,8 +76,9 @@ export default async function SongsPage({
           </p>
         ) : (
           <>
-            {/* Buscador (GET, sin JS) */}
+            {/* Buscador (GET, sin JS) — conserva el idioma activo */}
             <form method="get" action={`/${locale}/canciones`} className="mt-8 flex flex-col gap-3 sm:flex-row">
+              {lang && <input type="hidden" name="lang" value={lang} />}
               <input
                 type="search"
                 name="q"
@@ -84,22 +86,45 @@ export default async function SongsPage({
                 placeholder={t("searchPlaceholder")}
                 className="flex-1 rounded-lg border border-brand-border bg-brand-surface px-4 py-2.5 text-white placeholder:text-brand-muted/60 focus:border-brand-neon focus:outline-none"
               />
-              <select
-                name="lang"
-                defaultValue={lang}
-                className="rounded-lg border border-brand-border bg-brand-surface px-4 py-2.5 text-white focus:border-brand-neon focus:outline-none"
-              >
-                <option value="">{t("allLanguages")}</option>
-                {langCounts.map((l) => (
-                  <option key={l.code} value={l.code}>
-                    {languageName(l.code, loc)} ({l.count})
-                  </option>
-                ))}
-              </select>
               <button type="submit" className="rounded-lg bg-brand-neon px-6 py-2.5 font-semibold text-brand-bg transition hover:bg-brand-neon-strong">
                 {t("search")}
               </button>
             </form>
+
+            {/* Filtro por idioma con banderas */}
+            <h2 className="mt-8 text-sm font-semibold tracking-wide text-brand-muted uppercase">{t("byLanguage")}</h2>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link
+                href={q ? `/${locale}/canciones?q=${encodeURIComponent(q)}` : `/${locale}/canciones`}
+                className={cn(
+                  "flex w-24 flex-col items-center gap-1 rounded-xl border px-2 py-3 text-center transition",
+                  !lang ? "border-brand-neon bg-brand-neon/10" : "border-brand-border bg-brand-surface hover:border-brand-neon/50",
+                )}
+              >
+                <span className="text-2xl">🌐</span>
+                <span className="text-xs font-medium text-white">{t("allLanguages")}</span>
+                <span className="text-sm font-bold text-brand-neon">{stats.unique.toLocaleString("es-ES")}</span>
+              </Link>
+              {langCounts.map((l) => {
+                const active = lang === l.code;
+                const params = new URLSearchParams({ lang: l.code, ...(q ? { q } : {}) });
+                return (
+                  <Link
+                    key={l.code}
+                    href={`/${locale}/canciones?${params.toString()}`}
+                    title={languageName(l.code, loc)}
+                    className={cn(
+                      "flex w-24 flex-col items-center gap-1 rounded-xl border px-2 py-3 text-center transition",
+                      active ? "border-brand-neon bg-brand-neon/10" : "border-brand-border bg-brand-surface hover:border-brand-neon/50",
+                    )}
+                  >
+                    <span className="text-2xl leading-none">{flagFor(l.code)}</span>
+                    <span className="line-clamp-1 text-xs font-medium text-white">{languageName(l.code, loc)}</span>
+                    <span className="text-sm font-bold text-brand-neon">{l.count.toLocaleString("es-ES")}</span>
+                  </Link>
+                );
+              })}
+            </div>
 
             <div className="mt-6 flex flex-wrap items-center justify-between gap-2">
               <p className="text-sm text-brand-muted">{t("results", { count: result.total })}</p>
