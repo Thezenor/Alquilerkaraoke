@@ -29,7 +29,7 @@ test("ciudades admin: crear una ciudad la publica en la web y se puede borrar", 
 
   await page.goto("/es/karaoke/granada");
   await expect(page.getByRole("heading", { level: 1, name: /Alquiler de karaoke en Granada/ })).toBeVisible();
-  await expect(page.getByText("Motril")).toBeVisible();
+  await expect(page.getByText("Motril").first()).toBeVisible();
 
   // Limpieza: borrar la ciudad creada.
   await page.goto("/admin/ciudades");

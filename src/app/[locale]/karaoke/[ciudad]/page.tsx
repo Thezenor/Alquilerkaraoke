@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { getActiveCities, getCityBySlug } from "@/server/cities";
+import { regionLabel, variantIndex } from "@/lib/cities";
 
 // Ciudades en BD (gestionables desde el admin): render dinámico, consulta cacheada por tag.
 export const dynamic = "force-dynamic";
@@ -26,7 +27,7 @@ export async function generateMetadata({
     locale,
     pathname: `/karaoke/${ciudad}`,
     title: t("title", { city: city.name }),
-    description: t("description", { city: city.name, region: city.region }),
+    description: t("description", { city: city.name, province: city.province, region: regionLabel(city.region, locale) }),
   });
 }
 
@@ -44,9 +45,18 @@ export default async function CityLandingPage({
   const services = (await getTranslations("HomeServices")).raw("items") as Item[];
   const allCities = await getActiveCities();
 
+  // Diferenciación por ciudad: región traducida, poblaciones reales en el texto e
+  // intro rotada de forma determinista → cada landing tiene contenido único (anti-duplicado).
+  const region = regionLabel(city.region, locale);
+  const nearby1 = city.nearby[0] ?? city.name;
+  const nearby2 = city.nearby[1] ?? nearby1;
+  const tp = { city: city.name, province: city.province, region, nearby1, nearby2 } as const;
+  const introKeys = ["intro", "introB", "introC"] as const;
+  const introKey = introKeys[variantIndex(city.slug, introKeys.length)];
+
   const faq = [1, 2, 3].map((i) => ({
-    q: t(`faqQ${i}`, { city: city.name }),
-    a: t(`faqA${i}`, { city: city.name }),
+    q: t(`faqQ${i}`, tp),
+    a: t(`faqA${i}`, tp),
   }));
 
   const schema = [
@@ -55,7 +65,7 @@ export default async function CityLandingPage({
       "@type": "Service",
       serviceType: "Alquiler de karaoke",
       areaServed: { "@type": "City", name: city.name, containedInPlace: { "@type": "AdministrativeArea", name: city.region } },
-      provider: { "@type": "LocalBusiness", name: "Alquiler Karaoke" },
+      provider: { "@type": "LocalBusiness", name: "Alquiler Karaoke", url: absoluteUrl(`/${locale}`), telephone: "+34607724965" },
       url: absoluteUrl(`/${locale}/karaoke/${ciudad}`),
     },
     {
@@ -78,7 +88,9 @@ export default async function CityLandingPage({
     },
   ];
 
-  const otherCities = allCities.filter((c) => c.slug !== ciudad);
+  const others = allCities.filter((c) => c.slug !== ciudad);
+  const sameRegion = others.filter((c) => c.region === city.region);
+  const restCities = others.filter((c) => c.region !== city.region);
 
   return (
     <>
@@ -95,11 +107,11 @@ export default async function CityLandingPage({
             <span className="text-white">{city.name}</span>
           </nav>
 
-          <p className="text-sm font-medium tracking-wide text-brand-neon uppercase">{city.region}</p>
+          <p className="text-sm font-medium tracking-wide text-brand-neon uppercase">{region}</p>
           <h1 className="mt-2 text-3xl font-bold text-white sm:text-4xl">
             {t("title", { city: city.name })}
           </h1>
-          <p className="mt-4 max-w-2xl text-brand-muted">{t("intro", { city: city.name, region: city.region })}</p>
+          <p className="mt-4 max-w-2xl text-brand-muted">{t(introKey, tp)}</p>
 
           <div className="mt-8">
             <Button href={`/${locale}/contacto`} size="lg">
@@ -130,7 +142,7 @@ export default async function CityLandingPage({
 
           {/* Cobertura: poblaciones cercanas (contenido local único) */}
           <h2 className="mt-14 text-xl font-semibold text-white">{t("coverageTitle", { city: city.name })}</h2>
-          <p className="mt-2 max-w-2xl text-sm text-brand-muted">{t("coverageText", { city: city.name })}</p>
+          <p className="mt-2 max-w-2xl text-sm text-brand-muted">{t("coverageText", { city: city.name, province: city.province })}</p>
           <ul className="mt-4 flex flex-wrap gap-2">
             {city.nearby.map((town) => (
               <li
@@ -166,10 +178,27 @@ export default async function CityLandingPage({
             </div>
           </div>
 
-          {/* Otras ciudades */}
+          {/* Otras ciudades: primero las de la misma comunidad (clúster semántico) */}
+          {sameRegion.length > 0 && (
+            <>
+              <h2 className="mt-14 text-xl font-semibold text-white">{t("otherCitiesRegionTitle", { region })}</h2>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {sameRegion.map((c) => (
+                  <li key={c.slug}>
+                    <Link
+                      href={`/${locale}/karaoke/${c.slug}`}
+                      className="inline-block rounded-full border border-brand-border px-3 py-1.5 text-sm text-brand-muted transition hover:border-brand-neon/60 hover:text-white"
+                    >
+                      {c.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
           <h2 className="mt-14 text-xl font-semibold text-white">{t("otherCitiesTitle")}</h2>
           <ul className="mt-4 flex flex-wrap gap-2">
-            {otherCities.map((c) => (
+            {restCities.map((c) => (
               <li key={c.slug}>
                 <Link
                   href={`/${locale}/karaoke/${c.slug}`}

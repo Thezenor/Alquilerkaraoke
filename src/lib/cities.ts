@@ -117,6 +117,32 @@ export function citiesByRegion<T extends { region: string }>(cities: T[]): { reg
   return order.map((region) => ({ region, cities: map.get(region)! }));
 }
 
+// Traducción de las comunidades autónomas (conjunto cerrado) para no mostrar
+// el nombre en español dentro de las versiones EN/FR de las landings.
+const REGION_I18N: Record<string, { en: string; fr: string }> = {
+  "Comunidad de Madrid": { en: "Madrid region", fr: "Communauté de Madrid" },
+  Cataluña: { en: "Catalonia", fr: "Catalogne" },
+  "Comunidad Valenciana": { en: "Valencian Community", fr: "Communauté valencienne" },
+  Andalucía: { en: "Andalusia", fr: "Andalousie" },
+  Aragón: { en: "Aragon", fr: "Aragon" },
+  "Región de Murcia": { en: "Region of Murcia", fr: "Région de Murcie" },
+  "Castilla-La Mancha": { en: "Castilla-La Mancha", fr: "Castille-La Manche" },
+};
+
+/** Nombre de la comunidad autónoma en el idioma dado (fallback al original en ES). */
+export function regionLabel(region: string, locale: string): string {
+  if (locale === "en") return REGION_I18N[region]?.en ?? region;
+  if (locale === "fr") return REGION_I18N[region]?.fr ?? region;
+  return region;
+}
+
+/** Índice de variante determinista por slug (para rotar textos sin repetir entre ciudades). */
+export function variantIndex(slug: string, count: number): number {
+  let h = 0;
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) >>> 0;
+  return count > 0 ? h % count : 0;
+}
+
 /** Convierte un nombre en slug ASCII (para crear ciudades desde el admin). */
 export function slugifyCity(input: string): string {
   return input

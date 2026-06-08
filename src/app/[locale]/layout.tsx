@@ -75,16 +75,41 @@ export default async function LocaleLayout({
     ? ({ "--color-brand-neon": contact.primaryColor, "--color-brand-neon-strong": contact.primaryColor } as React.CSSProperties)
     : undefined;
 
-  const businessSchema = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: contact.companyName,
-    url: absoluteUrl(`/${locale}`),
-    telephone: `+34${contact.phone.replace(/\D/g, "")}`,
-    image: absoluteUrl("/opengraph-image"),
-    areaServed: "ES",
-    priceRange: "€€",
-  };
+  const sameAs = Object.values(contact.socials).filter((u): u is string => Boolean(u));
+  const orgId = `${SITE_URL}/#organization`;
+  const businessSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": ["Organization", "LocalBusiness"],
+      "@id": orgId,
+      name: contact.companyName,
+      url: absoluteUrl(`/${locale}`),
+      telephone: `+34${contact.phone.replace(/\D/g, "")}`,
+      ...(contact.email ? { email: contact.email } : {}),
+      logo: absoluteUrl("/logo-badge.svg"),
+      image: absoluteUrl("/opengraph-image"),
+      areaServed: { "@type": "Country", name: "España" },
+      priceRange: "€€",
+      ...(sameAs.length ? { sameAs } : {}),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: absoluteUrl(`/${locale}`),
+      name: contact.companyName,
+      inLanguage: locale,
+      publisher: { "@id": orgId },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${absoluteUrl(`/${locale}/canciones`)}?q={search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    },
+  ];
 
   return (
     <html lang={locale} className={`${fontVariables} h-full antialiased`}>

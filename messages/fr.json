@@ -16,7 +16,7 @@
   },
   "Home": {
     "heroKicker": "Karaoké et événements premium",
-    "heroTitle": "Nous ne louons pas une machine : nous créons une expérience",
+    "heroTitle": "Location de karaoké et d'événements pour une expérience professionnelle",
     "heroSubtitle": "Karaoké professionnel, son, éclairage et événements pour particuliers, entreprises, mariages et fêtes dans toute l'Espagne.",
     "ctaQuote": "Demander un devis",
     "ctaWhatsapp": "Discuter sur WhatsApp",
@@ -26,7 +26,13 @@
     "processTitle": "Comment nous travaillons",
     "ctaBandTitle": "Prêt pour votre prochain événement ?",
     "ctaBandText": "Dites-nous ce dont vous avez besoin et nous préparons un devis sur mesure, sans engagement.",
-    "collaboratorsTitle": "Partenaires"
+    "collaboratorsTitle": "Partenaires",
+    "exploreTitle": "Explorer",
+    "linkServices": "Services",
+    "linkPacks": "Packs",
+    "linkCities": "Villes",
+    "linkSongs": "Chansons",
+    "linkBlog": "Blog"
   },
   "HomeServices": {
     "items": [
@@ -213,7 +219,7 @@
   },
   "CityLandingMeta": {
     "title": "Location de karaoké à {city} | Alquiler Karaoke",
-    "description": "Location de karaoké professionnel à {city} et sa province : matériel, écrans, son et éclairage avec installation. Service dans toute la région {region}. Devis gratuit."
+    "description": "Location de karaoké professionnel à {city} et sa province ({region}) : matériel, écrans, son et éclairage avec installation. Devis gratuit."
   },
   "CityLanding": {
     "title": "Location de karaoké à {city}",
@@ -221,18 +227,21 @@
     "servicesTitle": "Services à {city}",
     "faqTitle": "Questions fréquentes",
     "faqQ1": "Proposez-vous la location de karaoké à {city} ?",
-    "faqA1": "Oui, nous proposons la location de karaoké et d'événements à {city} et ses environs, installation incluse.",
+    "faqA1": "Oui. Nous proposons la location de karaoké et d'événements à {city}, {nearby1}, {nearby2} et dans le reste de la province de {province}, installation comprise.",
     "faqQ2": "Pouvez-vous installer dans ma salle ou à domicile à {city} ?",
-    "faqA2": "Oui. Nous nous adaptons aux salles, locaux et domiciles de {city} ; parlez-nous de l'espace.",
+    "faqA2": "Oui. Nous nous adaptons aux salles, locaux et domiciles de {city}, {nearby1} et alentours ; décrivez-nous l'espace et nous préparons tout.",
     "faqQ3": "Combien de temps à l'avance dois-je réserver ?",
-    "faqA3": "Le plus tôt sera le mieux, surtout les week-ends et dates clés. Écrivez-nous et nous confirmons la disponibilité à {city}.",
+    "faqA3": "Le plus tôt possible, surtout les week-ends et dates spéciales. Écrivez-nous et nous confirmons la disponibilité à {city} et {nearby1}.",
     "ctaTitle": "Votre karaoké à {city}",
     "ctaText": "Demandez un devis pour votre événement à {city}, sans engagement.",
     "otherCitiesTitle": "Autres villes",
     "breadcrumb": "Villes",
     "allServices": "Voir tous nos services",
     "coverageTitle": "Zones couvertes près de {city}",
-    "coverageText": "Nous intervenons à {city} et dans les communes voisines, notamment :"
+    "coverageText": "Nous intervenons à {city} et dans les communes de la province de {province}, notamment :",
+    "introB": "Vous cherchez une location de karaoké à {city} ? Nous installons tout l'équipement —écrans, micros, son et éclairage— à {city} et dans sa province ({region}). Avec ou sans technicien, pour fêtes privées, mariages et événements d'entreprise.",
+    "introC": "Karaoké professionnel à domicile ou dans votre salle à {city}. Nous apportons l'installation et des milliers de chansons pour que vos invités chantent sans souci, à {city} et dans les communes voisines ({region}).",
+    "otherCitiesRegionTitle": "Autres villes de {region}"
   },
   "PacksMeta": {
     "title": "Forfaits karaoké et événements | Alquiler Karaoke",

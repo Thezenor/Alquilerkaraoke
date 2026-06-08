@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
+import { JsonLd } from "@/components/seo/json-ld";
 import { getContact } from "@/server/site-config";
 import { getActiveCollaborators } from "@/server/collaborators";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, absoluteUrl } from "@/lib/seo";
 
 // ISR: la home se regenera periódicamente para reflejar datos de BD (servicios
 // del menú, colaboradores) sin sacrificar el rendimiento de página estática.
@@ -38,8 +40,26 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const contact = await getContact();
   const collaborators = await getActiveCollaborators();
 
+  // Service / OfferCatalog: ayuda a Google a entender la oferta de la home.
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    serviceType: "Alquiler de karaoke y eventos",
+    provider: { "@type": "Organization", name: contact.companyName, url: absoluteUrl(`/${locale}`) },
+    areaServed: { "@type": "Country", name: "España" },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: t("servicesTitle"),
+      itemListElement: services.map((s) => ({
+        "@type": "Offer",
+        itemOffered: { "@type": "Service", name: s.title, description: s.text },
+      })),
+    },
+  };
+
   return (
     <>
+      <JsonLd data={serviceSchema} />
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div
@@ -94,6 +114,20 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </article>
             ))}
           </div>
+          {/* Enlazado interno hacia las secciones clave (SEO) */}
+          <nav className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm" aria-label={t("exploreTitle")}>
+            {[
+              { href: `/${locale}/servicios`, label: t("linkServices") },
+              { href: `/${locale}/packs`, label: t("linkPacks") },
+              { href: `/${locale}/karaoke`, label: t("linkCities") },
+              { href: `/${locale}/canciones`, label: t("linkSongs") },
+              { href: `/${locale}/blog`, label: t("linkBlog") },
+            ].map((l) => (
+              <Link key={l.href} href={l.href} className="text-brand-neon underline-offset-4 transition hover:underline">
+                {l.label} →
+              </Link>
+            ))}
+          </nav>
         </Container>
       </section>
 
@@ -173,7 +207,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("ctaBandTitle")}</h2>
             <p className="mx-auto mt-3 max-w-xl text-brand-muted">{t("ctaBandText")}</p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button href="#" size="lg" className="w-full sm:w-auto">
+              <Button href={`/${locale}/presupuesto`} size="lg" className="w-full sm:w-auto">
                 {t("ctaQuote")}
               </Button>
               <Button

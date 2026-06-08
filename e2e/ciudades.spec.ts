@@ -11,8 +11,8 @@ test("ciudades: el hub lista ciudades y la landing muestra cobertura local", asy
   await expect(page).toHaveURL(/\/es\/karaoke\/madrid/);
   await expect(page.getByRole("heading", { level: 1, name: /Alquiler de karaoke en Madrid/ })).toBeVisible();
 
-  // Contenido local único: región + una población cercana real.
-  await expect(page.getByText("Getafe")).toBeVisible();
+  // Contenido local único: una población cercana real (aparece en chips y FAQ).
+  await expect(page.getByText("Getafe").first()).toBeVisible();
 
   // Breadcrumb vuelve al hub.
   await page.getByRole("link", { name: "Ciudades", exact: true }).first().click();
