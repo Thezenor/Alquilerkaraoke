@@ -14,6 +14,11 @@ test("ciudades: el hub lista ciudades y la landing muestra cobertura local", asy
   // Contenido local único: una población cercana real (aparece en chips y FAQ).
   await expect(page.getByText("Getafe").first()).toBeVisible();
 
+  // Imagen OpenGraph propia de la ciudad (CTR social).
+  const og = await page.request.get("/es/karaoke/madrid/opengraph-image");
+  expect(og.status()).toBe(200);
+  expect(og.headers()["content-type"]).toContain("image/png");
+
   // Breadcrumb vuelve al hub.
   await page.getByRole("link", { name: "Ciudades", exact: true }).first().click();
   await expect(page).toHaveURL(/\/es\/karaoke$/);
