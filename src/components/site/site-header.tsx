@@ -20,7 +20,7 @@ const NAV_ITEMS = [
   { key: "contact", href: "/contacto" },
 ] as const;
 
-export function SiteHeader({ services = [] }: { services?: HeaderService[] }) {
+export function SiteHeader({ services = [], logoUrl }: { services?: HeaderService[]; logoUrl?: string | null }) {
   const t = useTranslations("Nav");
   const locale = useLocale();
   const quoteHref = `/${locale}/presupuesto`;
@@ -31,7 +31,7 @@ export function SiteHeader({ services = [] }: { services?: HeaderService[] }) {
       <Container className="flex h-16 items-center justify-between gap-4">
         <Link href="/" className="flex items-center" aria-label="Alquiler Karaoke">
           {/* eslint-disable-next-line @next/next/no-img-element -- logo SVG estático, sin optimización necesaria */}
-          <img src="/logo.svg" alt="Alquiler Karaoke" className="h-9 w-auto sm:h-10" width={120} height={41} />
+          <img src={logoUrl || "/logo.svg"} alt="Alquiler Karaoke" className="h-9 w-auto sm:h-10" width={120} height={41} />
         </Link>
 
         {/* Navegación desktop */}

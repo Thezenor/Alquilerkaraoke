@@ -46,6 +46,9 @@ export async function getContact() {
     email: config?.email || null,
     whatsappUrl: `https://wa.me/${toWhatsappNumber(whatsappRaw)}`,
     primaryColor: config?.primaryColor || null,
+    logoUrl: config?.logoUrl || null,
+    faviconUrl: config?.faviconUrl || null,
+    ogImageUrl: config?.ogImageUrl || null,
     socials: {
       instagram: config?.instagram || null,
       facebook: config?.facebook || null,

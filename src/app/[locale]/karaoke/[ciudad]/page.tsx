@@ -10,8 +10,14 @@ import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { getActiveCities, getCityBySlug } from "@/server/cities";
 import { regionLabel, variantIndex } from "@/lib/cities";
 
-// Ciudades en BD (gestionables desde el admin): render dinámico, consulta cacheada por tag.
-export const dynamic = "force-dynamic";
+// ISR: no se prerenderiza en build (el build de Railway no accede a BD), pero cada
+// landing se genera bajo demanda y se cachea (HTML estático rápido para SEO/CWV).
+// La consulta va cacheada por tag CITIES_TAG y el admin la invalida con updateTag.
+export const revalidate = 3600;
+export const dynamicParams = true;
+export function generateStaticParams() {
+  return [];
+}
 
 type Item = { title: string; text: string };
 

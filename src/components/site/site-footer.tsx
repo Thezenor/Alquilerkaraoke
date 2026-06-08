@@ -52,6 +52,7 @@ function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
 
 export function SiteFooter({
   companyName,
+  logoUrl,
   tagline,
   phone,
   phoneHref,
@@ -65,6 +66,7 @@ export function SiteFooter({
   socials,
 }: {
   companyName: string;
+  logoUrl?: string | null;
   tagline: string;
   phone: string;
   phoneHref: string;
@@ -89,7 +91,7 @@ export function SiteFooter({
           {/* Marca */}
           <div className="max-w-xs">
             {/* eslint-disable-next-line @next/next/no-img-element -- logo SVG estático */}
-            <img src="/logo.svg" alt={companyName} className="h-10 w-auto" width={134} height={45} />
+            <img src={logoUrl || "/logo.svg"} alt={companyName} className="h-10 w-auto" width={134} height={45} />
             <p className="mt-4 text-sm text-brand-muted">{tagline}</p>
             {socialEntries.length > 0 && (
               <div className="mt-5 flex gap-2">

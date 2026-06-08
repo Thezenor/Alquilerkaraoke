@@ -26,12 +26,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
+  const config = await getContact();
 
   return {
     metadataBase: new URL(SITE_URL),
     title: t("homeTitle"),
     description: t("homeDescription"),
-    openGraph: { siteName: SITE_NAME, type: "website", locale },
+    openGraph: {
+      siteName: SITE_NAME,
+      type: "website",
+      locale,
+      ...(config.ogImageUrl ? { images: [config.ogImageUrl] } : {}),
+    },
+    ...(config.faviconUrl ? { icons: { icon: config.faviconUrl } } : {}),
     robots: { index: true, follow: true },
   };
 }
@@ -116,10 +123,11 @@ export default async function LocaleLayout({
       <body className="flex min-h-full flex-col" style={themeStyle}>
         <JsonLd data={businessSchema} />
         <NextIntlClientProvider>
-          <SiteHeader services={services} />
+          <SiteHeader services={services} logoUrl={contact.logoUrl} />
           <main className="flex flex-1 flex-col pt-16">{children}</main>
           <SiteFooter
             companyName={contact.companyName}
+            logoUrl={contact.logoUrl}
             tagline={footer("tagline")}
             phone={contact.phone}
             phoneHref={contact.phoneHref}
