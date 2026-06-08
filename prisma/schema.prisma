@@ -484,7 +484,33 @@ model Collaborator {
   @@index([isActive, sortOrder])
 }
 
+// Estado de un trabajo de importación de canciones.
+enum ImportStatus {
+  PENDING
+  RUNNING
+  DONE
+  ERROR
+}
+
 // ── Catálogo de canciones (Fase 6) ──────────────────────────────
+// Trabajo de importación (subida del Excel/CSV desde el admin, procesado en
+// segundo plano por lotes). El admin consulta el progreso por su estado.
+model SongImportJob {
+  id          String       @id @default(cuid())
+  filename    String
+  format      String // "xlsx" | "csv"
+  status      ImportStatus @default(PENDING)
+  processed   Int          @default(0) // filas leídas
+  imported    Int          @default(0) // canciones insertadas
+  uniqueCount Int          @default(0) // no repetidas tras optimizar
+  message     String?
+  createdById String?
+  createdAt   DateTime     @default(now())
+  finishedAt  DateTime?
+
+  @@index([createdAt])
+}
+
 // Marca/proveedor de la canción. "quality" decide qué versión se muestra
 // cuando un mismo Título+Intérprete aparece en varias marcas (mayor = mejor).
 model SongBrand {

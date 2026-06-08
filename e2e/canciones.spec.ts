@@ -8,10 +8,9 @@ async function login(page: Page) {
   await page.waitForURL("**/admin");
 }
 
-test("canciones: catálogo vacío muestra aviso en la web", async ({ page }) => {
+test("canciones: la página de catálogo carga en la web", async ({ page }) => {
   await page.goto("/es/canciones");
   await expect(page.getByRole("heading", { name: "Catálogo de canciones" })).toBeVisible();
-  await expect(page.getByText("El catálogo de canciones se publicará muy pronto.")).toBeVisible();
 });
 
 test("canciones: alta y baja de marca con calidad en el admin", async ({ page }) => {

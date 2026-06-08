@@ -3,8 +3,17 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { buildMetadata } from "@/lib/seo";
-import { searchSongs, getLanguageCounts, getCatalogStats } from "@/server/songs";
+import { prisma } from "@/lib/prisma";
+import { searchSongs, getLanguageCounts } from "@/server/songs";
 import { languageName } from "@/lib/song-languages";
+
+async function uniqueCount(): Promise<number> {
+  try {
+    return await prisma.song.count({ where: { isPrimary: true } });
+  } catch {
+    return 0;
+  }
+}
 
 export const dynamic = "force-dynamic";
 
@@ -34,11 +43,12 @@ export default async function SongsPage({
   const lang = (sp.lang ?? "").trim().toUpperCase();
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
 
-  const [stats, langCounts, result] = await Promise.all([
-    getCatalogStats(),
+  const [unique, langCounts, result] = await Promise.all([
+    uniqueCount(),
     getLanguageCounts(),
     searchSongs({ q, lang: lang || undefined, page, pageSize: 40 }),
   ]);
+  const stats = { unique };
   const loc: "es" | "en" = locale === "en" ? "en" : "es";
 
   const makeHref = (p: number) => {
@@ -91,7 +101,19 @@ export default async function SongsPage({
               </button>
             </form>
 
-            <p className="mt-6 text-sm text-brand-muted">{t("results", { count: result.total })}</p>
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm text-brand-muted">{t("results", { count: result.total })}</p>
+              {result.total > 0 && (
+                <a
+                  href={`/${locale}/canciones/pdf?${new URLSearchParams({ ...(lang ? { lang } : {}), ...(q ? { q } : {}) }).toString()}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-brand-border px-3 py-1.5 text-sm text-brand-text transition hover:border-brand-neon/60"
+                >
+                  ↓ {t("downloadPdf")}
+                </a>
+              )}
+            </div>
 
             {result.items.length === 0 ? (
               <p className="mt-4 rounded-xl border border-dashed border-brand-border p-8 text-center text-brand-muted">

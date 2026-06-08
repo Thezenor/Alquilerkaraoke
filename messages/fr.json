@@ -95,7 +95,8 @@
     "results": "{count} résultats",
     "empty": "Aucune chanson ne correspond à votre recherche.",
     "emptyCatalog": "Le catalogue de chansons sera publié très bientôt.",
-    "performer": "Interprète"
+    "performer": "Interprète",
+    "downloadPdf": "Télécharger le PDF"
   },
   "Footer": {
     "tagline": "Nous créons des expériences professionnelles de karaoké et d'événements pour particuliers, entreprises, mariages et fêtes dans toute l'Espagne.",

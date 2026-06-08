@@ -95,7 +95,8 @@
     "results": "{count} results",
     "empty": "No songs match your search.",
     "emptyCatalog": "The song catalogue will be published very soon.",
-    "performer": "Performer"
+    "performer": "Performer",
+    "downloadPdf": "Download PDF"
   },
   "Footer": {
     "tagline": "We build professional karaoke and event experiences for individuals, companies, weddings and parties across Spain.",

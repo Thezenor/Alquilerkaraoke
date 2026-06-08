@@ -5,6 +5,7 @@ import { Role } from "@/generated/prisma/enums";
 import { Icon } from "@/components/admin/icons";
 import { ConfirmButton } from "@/components/admin/confirm-button";
 import { saveSongBrand, deleteSongBrand, reoptimizeCatalog } from "./actions";
+import { ImportPanel } from "./import-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -46,16 +47,14 @@ export default async function AdminSongsPage() {
         </div>
       </div>
 
-      {/* Importar / reoptimizar */}
-      <div className="mt-6 rounded-xl border border-brand-border bg-brand-surface p-5">
-        <h2 className="text-sm font-semibold text-white">Importar y optimizar</h2>
-        <p className="mt-1 text-sm text-brand-muted">
-          La importación del Excel/CSV se ejecuta por línea de comandos:
-          <code className="mx-1 rounded bg-brand-bg px-1.5 py-0.5 text-xs">npm run db:import:songs -- archivo.csv</code>
-          (reemplaza el catálogo y optimiza). Tras cambiar la calidad de las marcas, pulsa Reoptimizar para
-          recalcular qué versión se muestra.
-        </p>
-        <form action={reoptimizeCatalog} className="mt-3">
+      {/* Importar (subida desde el admin, en segundo plano) */}
+      <div className="mt-6">
+        <ImportPanel />
+      </div>
+
+      {/* Reoptimizar + exportar */}
+      <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-brand-border bg-brand-surface p-5">
+        <form action={reoptimizeCatalog}>
           <button
             type="submit"
             className="inline-flex items-center gap-2 rounded-lg bg-brand-neon px-4 py-2 text-sm font-semibold text-brand-bg transition hover:bg-brand-neon-strong"
@@ -64,6 +63,26 @@ export default async function AdminSongsPage() {
             Reoptimizar catálogo
           </button>
         </form>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- es un route handler de descarga, no una página */}
+        <a
+          href="/admin/canciones/export?format=csv"
+          className="inline-flex items-center gap-2 rounded-lg border border-brand-border px-4 py-2 text-sm text-brand-text transition hover:border-brand-neon/60"
+        >
+          <Icon name="file-text" className="h-4 w-4" />
+          Exportar CSV
+        </a>
+        <a
+          href="/canciones"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-brand-neon underline"
+        >
+          Ver catálogo en la web ↗
+        </a>
+        <p className="w-full text-xs text-brand-muted">
+          Tras cambiar la calidad de las marcas, pulsa <strong>Reoptimizar</strong> para recalcular qué versión se muestra.
+          El PDF del repertorio se descarga por idioma desde la página pública de canciones.
+        </p>
       </div>
 
       {/* Marcas */}
