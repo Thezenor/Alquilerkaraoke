@@ -1,4 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
+import { LOGO_DARK_PNG_BASE64, LOGO_DARK_RATIO } from "./logo";
 
 // Contrato de servicio en PDF (A4, multipágina) con pdf-lib. Importes en céntimos.
 
@@ -85,10 +86,12 @@ export async function buildContractPdf(data: ContractPdfData): Promise<Uint8Arra
   };
 
   // ── Cabecera ──
-  text(data.company.name, M, y, 16, bold);
+  const logo = await pdf.embedPng(LOGO_DARK_PNG_BASE64);
+  const logoH = 30;
+  page.drawImage(logo, { x: M, y: y - logoH, width: logoH * LOGO_DARK_RATIO, height: logoH });
   const titleW = bold.widthOfTextAtSize("CONTRATO DE SERVICIO", 13);
-  page.drawText("CONTRATO DE SERVICIO", { x: A4.w - M - titleW, y, size: 13, font: bold, color: ACCENT });
-  y -= 16;
+  page.drawText("CONTRATO DE SERVICIO", { x: A4.w - M - titleW, y: y - 4, size: 13, font: bold, color: ACCENT });
+  y -= 18;
   const sub = `Nº ${data.number} · ${data.date}`;
   const subW = font.widthOfTextAtSize(sub, 10);
   page.drawText(sub, { x: A4.w - M - subW, y, size: 10, font, color: MUTED });

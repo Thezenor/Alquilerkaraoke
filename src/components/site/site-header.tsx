@@ -29,9 +29,9 @@ export function SiteHeader({ services = [] }: { services?: HeaderService[] }) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-brand-border/60 bg-brand-bg/80 backdrop-blur-md">
       <Container className="flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-white">
-          <span className="h-2.5 w-2.5 rounded-full bg-brand-neon shadow-[0_0_12px_rgba(34,211,238,0.9)]" />
-          Alquiler Karaoke
+        <Link href="/" className="flex items-center" aria-label="Alquiler Karaoke">
+          {/* eslint-disable-next-line @next/next/no-img-element -- logo SVG estático, sin optimización necesaria */}
+          <img src="/logo.svg" alt="Alquiler Karaoke" className="h-9 w-auto sm:h-10" width={120} height={41} />
         </Link>
 
         {/* Navegación desktop */}

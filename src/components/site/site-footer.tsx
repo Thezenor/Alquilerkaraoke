@@ -88,11 +88,9 @@ export function SiteFooter({
         <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
           {/* Marca */}
           <div className="max-w-xs">
-            <div className="flex items-center gap-2 text-lg font-bold text-white">
-              <span className="h-2.5 w-2.5 rounded-full bg-brand-neon shadow-[0_0_12px_rgba(34,211,238,0.9)]" />
-              {companyName}
-            </div>
-            <p className="mt-3 text-sm text-brand-muted">{tagline}</p>
+            {/* eslint-disable-next-line @next/next/no-img-element -- logo SVG estático */}
+            <img src="/logo.svg" alt={companyName} className="h-10 w-auto" width={134} height={45} />
+            <p className="mt-4 text-sm text-brand-muted">{tagline}</p>
             {socialEntries.length > 0 && (
               <div className="mt-5 flex gap-2">
                 {socialEntries.map((s) => (

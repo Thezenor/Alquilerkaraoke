@@ -1,4 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
+import { LOGO_DARK_PNG_BASE64, LOGO_DARK_RATIO } from "./logo";
 
 // Genera una proforma/presupuesto en PDF (A4) con pdf-lib (JS puro, sin navegador).
 // Importes en céntimos. Devuelve los bytes del PDF.
@@ -73,16 +74,19 @@ export async function buildProformaPdf(data: ProformaData): Promise<Uint8Array> 
 
   let y = A4.h - M;
 
-  // ── Cabecera: empresa (izq) + documento (der) ──
-  text(data.company.name, M, y, 18, bold);
-  right("PRESUPUESTO", A4.w - M, y, 16, bold, ACCENT);
-  y -= 18;
+  // ── Cabecera: logo (izq) + documento (der) ──
+  const logo = await pdf.embedPng(LOGO_DARK_PNG_BASE64);
+  const logoH = 34;
+  const logoW = logoH * LOGO_DARK_RATIO;
+  page.drawImage(logo, { x: M, y: y - logoH, width: logoW, height: logoH });
+  right("PRESUPUESTO", A4.w - M, y - 4, 16, bold, ACCENT);
+  y -= 22;
   right(`Nº ${data.number}`, A4.w - M, y, 10, font, MUTED);
   y -= 13;
   right(`Fecha: ${data.date}`, A4.w - M, y, 10, font, MUTED);
 
-  // Datos fiscales empresa (bajo el nombre)
-  let cy = A4.h - M - 16;
+  // Datos fiscales empresa (bajo el logo)
+  let cy = A4.h - M - logoH - 12;
   const companyLines = [
     data.company.legalName,
     data.company.taxId ? `CIF/NIF: ${data.company.taxId}` : null,
