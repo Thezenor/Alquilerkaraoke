@@ -97,7 +97,9 @@
     "empty": "No hay canciones que coincidan con tu búsqueda.",
     "emptyCatalog": "El catálogo de canciones se publicará muy pronto.",
     "performer": "Intérprete",
-    "downloadPdf": "Descargar PDF"
+    "downloadPdf": "Descargar PDF",
+    "sortBy": "Ordenar",
+    "colTitle": "Título"
   },
   "Footer": {
     "tagline": "Montamos experiencias profesionales de karaoke y eventos para particulares, empresas, bodas y fiestas en toda España.",

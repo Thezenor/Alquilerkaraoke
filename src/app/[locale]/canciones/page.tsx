@@ -34,7 +34,7 @@ export default async function SongsPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ q?: string; lang?: string; page?: string }>;
+  searchParams: Promise<{ q?: string; lang?: string; page?: string; sort?: string }>;
 }) {
   const { locale } = await params;
   const sp = await searchParams;
@@ -44,9 +44,12 @@ export default async function SongsPage({
   const q = (sp.q ?? "").trim();
   const rawLang = (sp.lang ?? "").trim();
   const langParam = rawLang.toUpperCase();
+  const sort: "title" | "performer" = sp.sort === "performer" ? "performer" : "title";
   const page = Math.max(1, parseInt(sp.page ?? "1", 10) || 1);
   const OTHER = "_OTHER";
   const THRESHOLD = 10;
+  // Parámetros a conservar al cambiar de filtro/orden/página.
+  const keep: Record<string, string> = { ...(q ? { q } : {}), ...(sort !== "title" ? { sort } : {}) };
 
   const [unique, langCounts] = await Promise.all([uniqueCount(), getLanguageCounts()]);
   // Idiomas con ≥10 canciones (ya ordenados de más a menos); el resto + "Ninguno"
@@ -60,6 +63,7 @@ export default async function SongsPage({
 
   const result = await searchSongs({
     q,
+    sort,
     page,
     pageSize: 40,
     ...(isOther ? { langIn: minorCodes.length ? minorCodes : ["__none__"] } : { lang: lang || undefined }),
@@ -68,10 +72,14 @@ export default async function SongsPage({
   const loc: "es" | "en" = locale === "en" ? "en" : "es";
 
   const makeHref = (p: number) => {
-    const u = new URLSearchParams();
-    if (q) u.set("q", q);
-    if (rawLang) u.set("lang", rawLang);
+    const u = new URLSearchParams({ ...keep, ...(rawLang ? { lang: rawLang } : {}) });
     if (p > 1) u.set("page", String(p));
+    const qs = u.toString();
+    return qs ? `/${locale}/canciones?${qs}` : `/${locale}/canciones`;
+  };
+  // Enlace conservando filtro y búsqueda, cambiando el orden.
+  const sortHref = (s: "title" | "performer") => {
+    const u = new URLSearchParams({ ...(q ? { q } : {}), ...(rawLang ? { lang: rawLang } : {}), ...(s !== "title" ? { sort: s } : {}) });
     const qs = u.toString();
     return qs ? `/${locale}/canciones?${qs}` : `/${locale}/canciones`;
   };
@@ -94,6 +102,7 @@ export default async function SongsPage({
             {/* Buscador (GET, sin JS) — conserva el idioma activo */}
             <form method="get" action={`/${locale}/canciones`} className="mt-8 flex flex-col gap-3 sm:flex-row">
               {rawLang && <input type="hidden" name="lang" value={rawLang} />}
+              {sort !== "title" && <input type="hidden" name="sort" value={sort} />}
               <input
                 type="search"
                 name="q"
@@ -110,7 +119,7 @@ export default async function SongsPage({
             <h2 className="mt-8 text-sm font-semibold tracking-wide text-brand-muted uppercase">{t("byLanguage")}</h2>
             <div className="mt-3 flex flex-wrap gap-2">
               <Link
-                href={q ? `/${locale}/canciones?q=${encodeURIComponent(q)}` : `/${locale}/canciones`}
+                href={`/${locale}/canciones${new URLSearchParams(keep).toString() ? `?${new URLSearchParams(keep).toString()}` : ""}`}
                 className={cn(
                   "flex w-24 flex-col items-center gap-1 rounded-xl border px-2 py-3 text-center transition",
                   !langParam ? "border-brand-neon bg-brand-neon/10" : "border-brand-border bg-brand-surface hover:border-brand-neon/50",
@@ -122,7 +131,7 @@ export default async function SongsPage({
               </Link>
               {major.map((l) => {
                 const active = langParam === l.code;
-                const params = new URLSearchParams({ lang: l.code, ...(q ? { q } : {}) });
+                const params = new URLSearchParams({ lang: l.code, ...keep });
                 return (
                   <Link
                     key={l.code}
@@ -141,7 +150,7 @@ export default async function SongsPage({
               })}
               {minorTotal > 0 && (
                 <Link
-                  href={`/${locale}/canciones?${new URLSearchParams({ lang: "_other", ...(q ? { q } : {}) }).toString()}`}
+                  href={`/${locale}/canciones?${new URLSearchParams({ lang: "_other", ...keep }).toString()}`}
                   className={cn(
                     "flex w-24 flex-col items-center gap-1 rounded-xl border px-2 py-3 text-center transition",
                     isOther ? "border-brand-neon bg-brand-neon/10" : "border-brand-border bg-brand-surface hover:border-brand-neon/50",
@@ -154,18 +163,42 @@ export default async function SongsPage({
               )}
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center justify-between gap-2">
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm text-brand-muted">{t("results", { count: result.total })}</p>
-              {result.total > 0 && !isOther && (
-                <a
-                  href={`/${locale}/canciones/pdf?${new URLSearchParams({ ...(lang ? { lang } : {}), ...(q ? { q } : {}) }).toString()}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg border border-brand-border px-3 py-1.5 text-sm text-brand-text transition hover:border-brand-neon/60"
-                >
-                  ↓ {t("downloadPdf")}
-                </a>
-              )}
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Ordenar por título / intérprete */}
+                <div className="inline-flex items-center gap-1 rounded-lg border border-brand-border p-0.5 text-sm">
+                  <span className="px-2 text-xs text-brand-muted">{t("sortBy")}:</span>
+                  <Link
+                    href={sortHref("title")}
+                    className={cn(
+                      "rounded-md px-2.5 py-1 transition",
+                      sort === "title" ? "bg-brand-neon font-medium text-brand-bg" : "text-brand-muted hover:text-white",
+                    )}
+                  >
+                    {t("colTitle")}
+                  </Link>
+                  <Link
+                    href={sortHref("performer")}
+                    className={cn(
+                      "rounded-md px-2.5 py-1 transition",
+                      sort === "performer" ? "bg-brand-neon font-medium text-brand-bg" : "text-brand-muted hover:text-white",
+                    )}
+                  >
+                    {t("performer")}
+                  </Link>
+                </div>
+                {result.total > 0 && !isOther && (
+                  <a
+                    href={`/${locale}/canciones/pdf?${new URLSearchParams({ ...(lang ? { lang } : {}), ...keep }).toString()}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg border border-brand-border px-3 py-1.5 text-sm text-brand-text transition hover:border-brand-neon/60"
+                  >
+                    ↓ {t("downloadPdf")}
+                  </a>
+                )}
+              </div>
             </div>
 
             {result.items.length === 0 ? (
@@ -173,19 +206,33 @@ export default async function SongsPage({
                 {t("empty")}
               </p>
             ) : (
-              <ul className="mt-4 divide-y divide-brand-border overflow-hidden rounded-xl border border-brand-border bg-brand-surface">
-                {result.items.map((s) => (
-                  <li key={s.id} className="flex items-center justify-between gap-4 px-4 py-3">
-                    <div className="min-w-0">
-                      <p className="truncate font-medium text-white">{s.title}</p>
-                      <p className="truncate text-sm text-brand-muted">{s.performer}</p>
-                    </div>
-                    <span className="shrink-0 rounded-full bg-brand-surface-2 px-2.5 py-0.5 text-xs text-brand-muted">
-                      {languageName(s.languageCode, loc)}
+              <div className="mt-4 overflow-hidden rounded-2xl border border-brand-border bg-brand-surface">
+                {/* Cabecera tipo tabla (desktop) */}
+                <div className="hidden grid-cols-[2.5rem_1fr_1fr_7rem] gap-4 border-b border-brand-border bg-brand-surface-2/50 px-4 py-2.5 text-xs font-semibold tracking-wide text-brand-muted uppercase sm:grid">
+                  <span className="text-center">#</span>
+                  <span>{t("colTitle")}</span>
+                  <span>{t("performer")}</span>
+                  <span className="text-right">{t("language")}</span>
+                </div>
+                <ul className="divide-y divide-brand-border/70">
+                {result.items.map((s, i) => (
+                  <li
+                    key={s.id}
+                    className="grid grid-cols-[1fr_5rem] items-center gap-x-4 gap-y-0.5 px-4 py-3 transition hover:bg-brand-surface-2/40 sm:grid-cols-[2.5rem_1fr_1fr_7rem]"
+                  >
+                    <span className="hidden text-center text-xs tabular-nums text-brand-muted/60 sm:block">
+                      {(page - 1) * 40 + i + 1}
+                    </span>
+                    <p className="truncate font-medium text-white">{s.title}</p>
+                    <p className="truncate text-sm text-brand-muted">{s.performer}</p>
+                    <span className="flex items-center justify-end gap-1.5 sm:justify-end">
+                      <LanguageFlag code={s.languageCode} className="text-base leading-none" />
+                      <span className="hidden text-xs text-brand-muted lg:inline">{languageName(s.languageCode, loc)}</span>
                     </span>
                   </li>
                 ))}
-              </ul>
+                </ul>
+              </div>
             )}
 
             {result.totalPages > 1 && (

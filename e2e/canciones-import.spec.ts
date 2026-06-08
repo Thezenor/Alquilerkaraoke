@@ -27,6 +27,11 @@ test("canciones: subir CSV importa, publica y genera PDF", async ({ page }) => {
   await page.goto("/es/canciones");
   await expect(page.getByText("Cancion Prueba E2E")).toBeVisible();
 
+  // Ordenar por intérprete (conserva resultados).
+  await page.getByRole("link", { name: "Intérprete", exact: true }).click();
+  await expect(page).toHaveURL(/sort=performer/);
+  await expect(page.getByText("Cancion Prueba E2E")).toBeVisible();
+
   // Filtro por banderas: Español (10) sale como bandera; el inglés (1, <10) va a
   // "Sin clasificar". Al filtrar por "Sin clasificar" solo aparece la canción inglesa.
   await expect(page.getByRole("link", { name: /Español/ })).toBeVisible();

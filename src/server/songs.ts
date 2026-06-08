@@ -77,12 +77,17 @@ export async function searchSongs(opts: {
   q?: string;
   lang?: string;
   langIn?: string[];
+  sort?: "title" | "performer";
   page?: number;
   pageSize?: number;
 }): Promise<SongSearchResult> {
   const pageSize = Math.min(100, opts.pageSize ?? 30);
   const page = Math.max(1, opts.page ?? 1);
   const q = (opts.q ?? "").trim();
+  const orderBy =
+    opts.sort === "performer"
+      ? ([{ performer: "asc" }, { title: "asc" }] as const)
+      : ([{ title: "asc" }, { performer: "asc" }] as const);
   const where = {
     isPrimary: true,
     ...(opts.langIn ? { languageCode: { in: opts.langIn } } : opts.lang ? { languageCode: opts.lang } : {}),
@@ -99,7 +104,7 @@ export async function searchSongs(opts: {
     const [items, total] = await Promise.all([
       prisma.song.findMany({
         where,
-        orderBy: [{ title: "asc" }],
+        orderBy: [...orderBy],
         skip: (page - 1) * pageSize,
         take: pageSize,
         select: {
