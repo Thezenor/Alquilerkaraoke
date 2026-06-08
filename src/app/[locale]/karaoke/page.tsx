@@ -8,6 +8,10 @@ import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { citiesByRegion } from "@/lib/cities";
 import { getActiveCities } from "@/server/cities";
 
+// Lee las ciudades de BD (gestionables desde el admin): renderizado dinámico para
+// reflejar altas/bajas sin esperar a un rebuild. La consulta va cacheada por tag.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {

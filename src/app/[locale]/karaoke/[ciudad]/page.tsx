@@ -8,6 +8,9 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { getActiveCities, getCityBySlug } from "@/server/cities";
 
+// Ciudades en BD (gestionables desde el admin): render dinámico, consulta cacheada por tag.
+export const dynamic = "force-dynamic";
+
 type Item = { title: string; text: string };
 
 export async function generateMetadata({
