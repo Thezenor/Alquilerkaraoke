@@ -201,6 +201,10 @@ model SiteConfig {
   paymentInfo  String? // instrucciones libres mostradas al cliente
   // Cláusulas por defecto para los contratos (snapshot al generar cada contrato)
   contractTerms String?
+  // Analítica y verificación (se inyectan en el <head> público si están definidos)
+  gaMeasurementId  String? // Google Analytics 4: "G-XXXXXXXXXX"
+  gscVerification  String? // Google Search Console: token de etiqueta meta
+  metaPixelId      String? // Meta (Facebook) Pixel ID
   // Campos extra flexibles (redes, horarios, etc.) sin tocar el esquema.
   extra        Json?
 

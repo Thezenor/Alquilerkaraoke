@@ -8,6 +8,7 @@ import { fontVariables } from "../fonts";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { WhatsappFab } from "@/components/site/whatsapp-fab";
+import { Analytics } from "@/components/site/analytics";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getContact } from "@/server/site-config";
 import { getActiveServices, localizedService } from "@/server/services";
@@ -39,6 +40,7 @@ export async function generateMetadata({
       ...(config.ogImageUrl ? { images: [config.ogImageUrl] } : {}),
     },
     ...(config.faviconUrl ? { icons: { icon: config.faviconUrl } } : {}),
+    ...(config.gscVerification ? { verification: { google: config.gscVerification } } : {}),
     robots: { index: true, follow: true },
   };
 }
@@ -142,6 +144,7 @@ export default async function LocaleLayout({
           />
           <WhatsappFab url={contact.whatsappUrl} />
         </NextIntlClientProvider>
+        <Analytics gaMeasurementId={contact.gaMeasurementId} metaPixelId={contact.metaPixelId} />
       </body>
     </html>
   );

@@ -31,6 +31,9 @@ export default async function ConfigPage() {
     bizum: c?.bizum ?? "",
     paymentInfo: c?.paymentInfo ?? "",
     contractTerms: c?.contractTerms ?? "",
+    gaMeasurementId: c?.gaMeasurementId ?? "",
+    gscVerification: c?.gscVerification ?? "",
+    metaPixelId: c?.metaPixelId ?? "",
   };
 
   return (

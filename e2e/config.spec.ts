@@ -58,6 +58,26 @@ test("redes sociales del admin aparecen en el pie de página", async ({ page }) 
   await expect(page.getByText("Configuración guardada correctamente.")).toBeVisible();
 });
 
+test("Google Analytics configurado se inyecta en la web pública", async ({ page }) => {
+  await login(page);
+  await page.goto("/admin/configuracion");
+  await page.locator("#gaMeasurementId").fill("G-E2ETEST123");
+  await page.getByRole("button", { name: "Guardar cambios" }).click();
+  await expect(page.getByText("Configuración guardada correctamente.")).toBeVisible();
+
+  // El script de GA aparece en la home (revalidación por tag).
+  await page.goto("/es");
+  await expect(page.locator('script[src*="googletagmanager.com/gtag/js?id=G-E2ETEST123"]')).toHaveCount(1);
+
+  // Limpieza: quitar el ID.
+  await page.goto("/admin/configuracion");
+  await page.locator("#gaMeasurementId").fill("");
+  await page.getByRole("button", { name: "Guardar cambios" }).click();
+  await expect(page.getByText("Configuración guardada correctamente.")).toBeVisible();
+  await page.goto("/es");
+  await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(0);
+});
+
 test("FAQ accesible y enlazada desde el pie", async ({ page }) => {
   await page.goto("/es/faq");
   await expect(page.getByRole("heading", { name: "Preguntas frecuentes", level: 1 })).toBeVisible();

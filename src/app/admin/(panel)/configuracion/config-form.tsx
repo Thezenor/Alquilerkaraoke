@@ -26,6 +26,9 @@ export type ConfigValues = {
   bizum: string;
   paymentInfo: string;
   contractTerms: string;
+  gaMeasurementId: string;
+  gscVerification: string;
+  metaPixelId: string;
 };
 
 function Field({
@@ -135,6 +138,18 @@ export function ConfigForm({ values }: { values: ConfigValues }) {
             placeholder="Ej. Indica tu nombre y la fecha del evento en el concepto."
             className="rounded-lg border border-brand-border bg-brand-bg px-3 py-2.5 text-brand-text outline-none transition focus:border-brand-neon focus:ring-2 focus:ring-brand-neon/30"
           />
+        </div>
+      </div>
+
+      <h2 className="mt-8 mb-1 text-sm font-semibold tracking-wide text-brand-muted uppercase">Analítica y verificación</h2>
+      <p className="mb-4 text-sm text-brand-muted">
+        Se inyectan en la web pública solo si los rellenas. Carga diferida para no penalizar el rendimiento.
+      </p>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field name="gaMeasurementId" label="Google Analytics 4 (ID de medición)" defaultValue={values.gaMeasurementId} placeholder="G-XXXXXXXXXX" />
+        <Field name="metaPixelId" label="Meta Pixel (ID)" defaultValue={values.metaPixelId} placeholder="000000000000000" />
+        <div className="sm:col-span-2">
+          <Field name="gscVerification" label="Google Search Console (token de verificación meta)" defaultValue={values.gscVerification} placeholder="contenido de la meta google-site-verification" />
         </div>
       </div>
 

@@ -32,6 +32,11 @@ const schema = z.object({
   bizum: z.string().trim().max(40).optional(),
   paymentInfo: z.string().trim().max(1000).optional(),
   contractTerms: z.string().trim().max(8000).optional(),
+  gaMeasurementId: z
+    .union([z.literal(""), z.string().regex(/^G-[A-Z0-9]{4,}$/i, "ID de GA4 no válido (ej. G-XXXXXXXXXX).")])
+    .optional(),
+  gscVerification: z.string().trim().max(200).optional(),
+  metaPixelId: z.union([z.literal(""), z.string().regex(/^\d{6,20}$/, "El Pixel ID son solo dígitos.")]).optional(),
 });
 
 export type ConfigFormState = {
@@ -82,6 +87,9 @@ export async function updateSiteConfig(
     bizum: orNull(d.bizum),
     paymentInfo: orNull(d.paymentInfo),
     contractTerms: orNull(d.contractTerms),
+    gaMeasurementId: orNull(d.gaMeasurementId),
+    gscVerification: orNull(d.gscVerification),
+    metaPixelId: orNull(d.metaPixelId),
   };
   await prisma.siteConfig.upsert({
     where: { id: "default" },

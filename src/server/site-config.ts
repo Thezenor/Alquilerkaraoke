@@ -49,6 +49,9 @@ export async function getContact() {
     logoUrl: config?.logoUrl || null,
     faviconUrl: config?.faviconUrl || null,
     ogImageUrl: config?.ogImageUrl || null,
+    gaMeasurementId: config?.gaMeasurementId || null,
+    gscVerification: config?.gscVerification || null,
+    metaPixelId: config?.metaPixelId || null,
     socials: {
       instagram: config?.instagram || null,
       facebook: config?.facebook || null,
