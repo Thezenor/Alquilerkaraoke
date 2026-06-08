@@ -6,13 +6,9 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
-import { CITIES, getCity } from "@/lib/cities";
+import { getActiveCities, getCityBySlug } from "@/server/cities";
 
 type Item = { title: string; text: string };
-
-export function generateStaticParams() {
-  return CITIES.map((c) => ({ ciudad: c.slug }));
-}
 
 export async function generateMetadata({
   params,
@@ -20,7 +16,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; ciudad: string }>;
 }): Promise<Metadata> {
   const { locale, ciudad } = await params;
-  const city = getCity(ciudad);
+  const city = await getCityBySlug(ciudad);
   if (!city) return {};
   const t = await getTranslations({ locale, namespace: "CityLandingMeta" });
   return buildMetadata({
@@ -37,12 +33,13 @@ export default async function CityLandingPage({
   params: Promise<{ locale: string; ciudad: string }>;
 }) {
   const { locale, ciudad } = await params;
-  const city = getCity(ciudad);
+  const city = await getCityBySlug(ciudad);
   if (!city) notFound();
 
   setRequestLocale(locale);
   const t = await getTranslations("CityLanding");
   const services = (await getTranslations("HomeServices")).raw("items") as Item[];
+  const allCities = await getActiveCities();
 
   const faq = [1, 2, 3].map((i) => ({
     q: t(`faqQ${i}`, { city: city.name }),
@@ -78,7 +75,7 @@ export default async function CityLandingPage({
     },
   ];
 
-  const otherCities = CITIES.filter((c) => c.slug !== ciudad);
+  const otherCities = allCities.filter((c) => c.slug !== ciudad);
 
   return (
     <>

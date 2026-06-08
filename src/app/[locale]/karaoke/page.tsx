@@ -5,7 +5,8 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
-import { CITIES, citiesByRegion } from "@/lib/cities";
+import { citiesByRegion } from "@/lib/cities";
+import { getActiveCities } from "@/server/cities";
 
 export async function generateMetadata({
   params,
@@ -30,13 +31,14 @@ export default async function CitiesHubPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("CitiesHub");
-  const groups = citiesByRegion();
+  const cities = await getActiveCities();
+  const groups = citiesByRegion(cities);
 
   const schema = [
     {
       "@context": "https://schema.org",
       "@type": "ItemList",
-      itemListElement: CITIES.map((c, i) => ({
+      itemListElement: cities.map((c, i) => ({
         "@type": "ListItem",
         position: i + 1,
         name: c.name,

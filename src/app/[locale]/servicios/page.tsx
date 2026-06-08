@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { buildMetadata } from "@/lib/seo";
-import { CITIES } from "@/lib/cities";
+import { getActiveCities } from "@/server/cities";
 import { getActiveServices, localizedService } from "@/server/services";
 
 export const dynamic = "force-dynamic";
@@ -34,6 +34,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
   const cl = await getTranslations("CityLanding");
   const staticServices = (await getTranslations("HomeServices")).raw("items") as Item[];
   const dbServices = await getActiveServices();
+  const cities = await getActiveCities();
 
   return (
     <>
@@ -70,7 +71,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
           {/* Enlaces internos a ciudades */}
           <h2 className="mt-14 text-xl font-semibold text-white">{cl("otherCitiesTitle")}</h2>
           <ul className="mt-4 flex flex-wrap gap-2">
-            {CITIES.map((c) => (
+            {cities.map((c) => (
               <li key={c.slug}>
                 <Link
                   href={`/${locale}/karaoke/${c.slug}`}

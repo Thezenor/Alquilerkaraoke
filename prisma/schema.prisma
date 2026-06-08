@@ -540,6 +540,22 @@ model Song {
   @@index([isPrimary])
 }
 
+// ── Ciudades (landings SEO locales, gestionables desde el admin) ──
+model City {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  province  String
+  region    String // comunidad autónoma (agrupa el hub)
+  nearby    String[] // poblaciones cercanas que cubrimos (contenido local)
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
 // ── Servicios (páginas SEO por servicio, con packs asociados) ────
 model Service {
   id               String   @id @default(cuid())

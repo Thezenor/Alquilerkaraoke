@@ -1,16 +1,15 @@
-export type City = {
+// Datos por defecto de ciudades (para el seed inicial). Una vez en BD, se gestionan
+// desde el admin (/admin/ciudades). Las páginas públicas leen de BD vía @/server/cities.
+
+export type CityData = {
   slug: string;
   name: string;
-  /** Provincia (todas las ciudades iniciales son capital de provincia). */
   province: string;
-  /** Comunidad autónoma — se usa para agrupar el hub y dar contexto local. */
   region: string;
-  /** Poblaciones cercanas que cubrimos: contenido local real para SEO long-tail. */
   nearby: string[];
 };
 
-// Ciudades iniciales (DECISIONS.md / docs 05-seo). Gestionables desde admin en el futuro.
-export const CITIES: City[] = [
+export const DEFAULT_CITIES: CityData[] = [
   {
     slug: "madrid",
     name: "Madrid",
@@ -104,15 +103,11 @@ export const CITIES: City[] = [
   },
 ];
 
-export function getCity(slug: string): City | undefined {
-  return CITIES.find((c) => c.slug === slug);
-}
-
-/** Ciudades agrupadas por comunidad autónoma (para el hub), conservando el orden de aparición. */
-export function citiesByRegion(): { region: string; cities: City[] }[] {
+/** Agrupa ciudades por comunidad autónoma, conservando el orden de aparición. */
+export function citiesByRegion<T extends { region: string }>(cities: T[]): { region: string; cities: T[] }[] {
   const order: string[] = [];
-  const map = new Map<string, City[]>();
-  for (const c of CITIES) {
+  const map = new Map<string, T[]>();
+  for (const c of cities) {
     if (!map.has(c.region)) {
       map.set(c.region, []);
       order.push(c.region);
@@ -120,4 +115,15 @@ export function citiesByRegion(): { region: string; cities: City[] }[] {
     map.get(c.region)!.push(c);
   }
   return order.map((region) => ({ region, cities: map.get(region)! }));
+}
+
+/** Convierte un nombre en slug ASCII (para crear ciudades desde el admin). */
+export function slugifyCity(input: string): string {
+  return input
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }

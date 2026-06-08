@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-import { CITIES } from "@/lib/cities";
+import { getActiveCities } from "@/server/cities";
 import { getActivePacks } from "@/server/packs";
 import { getPublishedPostRefs } from "@/server/blog";
 import { getActiveServices } from "@/server/services";
@@ -11,10 +11,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [packs, posts, services] = await Promise.all([
+  const [packs, posts, services, cities] = await Promise.all([
     getActivePacks(),
     getPublishedPostRefs(),
     getActiveServices(),
+    getActiveCities(),
   ]);
 
   // Rutas públicas comunes a todos los idiomas (sin prefijo).
@@ -31,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/karaoke",
     ...services.map((s) => `/servicios/${s.slug}`),
     ...packs.map((p) => `/packs/${p.slug}`),
-    ...CITIES.map((c) => `/karaoke/${c.slug}`),
+    ...cities.map((c) => `/karaoke/${c.slug}`),
   ];
 
   const common = publicPaths.flatMap((path) =>

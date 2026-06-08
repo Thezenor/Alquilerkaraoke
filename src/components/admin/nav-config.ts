@@ -36,6 +36,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/admin/blog", label: "Blog", icon: "file-text" },
       { href: "/admin/canciones", label: "Canciones", icon: "music" },
+      { href: "/admin/ciudades", label: "Ciudades", icon: "map-pin" },
     ],
   },
   {
