@@ -4,7 +4,7 @@ import { parse } from "csv-parse";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { dedupKey } from "../src/lib/song-dedup";
-import { normalizeLanguageCode } from "../src/lib/song-languages";
+import { normalizeLanguageCode, languageFromCode } from "../src/lib/song-languages";
 import { optimizeCatalog } from "../src/server/songs";
 
 // Importador del catálogo de canciones (CSV). Columnas: Idioma, Código, Título,
@@ -87,9 +87,10 @@ async function main() {
       const title = (row[idx.title] ?? "").trim();
       const performer = (row[idx.performer ?? -1] ?? "").trim();
       if (!title) continue;
-      const langRaw = idx.lang !== undefined ? (row[idx.lang] ?? "").trim() : "";
-      const languageCode = normalizeLanguageCode(langRaw) ?? (langRaw ? langRaw.toUpperCase() : "NI");
       const code = idx.code !== undefined ? (row[idx.code] ?? "").trim() || null : null;
+      const langRaw = idx.lang !== undefined ? (row[idx.lang] ?? "").trim() : "";
+      const languageCode =
+        normalizeLanguageCode(langRaw) ?? languageFromCode(code) ?? (langRaw ? langRaw.toUpperCase() : "NI");
       const brandId = idx.brand !== undefined ? await ensureBrand(row[idx.brand]) : null;
       batch.push({ languageCode, code, title, performer, brandId, dedupKey: dedupKey(title, performer) });
       if (batch.length >= 1000) await flush();

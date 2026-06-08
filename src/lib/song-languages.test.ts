@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { SONG_LANGUAGES, languageName, normalizeLanguageCode } from "./song-languages";
+import { SONG_LANGUAGES, languageName, normalizeLanguageCode, languageFromCode } from "./song-languages";
 
 test("la leyenda tiene códigos únicos", () => {
   const codes = SONG_LANGUAGES.map((l) => l.code);
@@ -20,4 +20,12 @@ test("languageName respeta las abreviaturas del cliente (no ISO)", () => {
 test("normalizeLanguageCode valida contra la leyenda", () => {
   assert.equal(normalizeLanguageCode(" es "), "ES");
   assert.equal(normalizeLanguageCode("zzz"), null);
+});
+
+test("languageFromCode extrae el idioma del prefijo del código", () => {
+  assert.equal(languageFromCode("AL82215"), "AL"); // Alemán
+  assert.equal(languageFromCode("in40276"), "IN"); // Inglés (minúsculas)
+  assert.equal(languageFromCode("ES001"), "ES");
+  assert.equal(languageFromCode("123456"), null); // sin prefijo de letras
+  assert.equal(languageFromCode(""), null);
 });

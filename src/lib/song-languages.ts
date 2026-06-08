@@ -145,3 +145,17 @@ export function normalizeLanguageCode(raw: string | null | undefined): string | 
   const code = raw.trim().toUpperCase();
   return LANGUAGE_BY_CODE[code] ? code : null;
 }
+
+/**
+ * Deriva el idioma del prefijo del código de canción (p. ej. "AL82215" → "AL").
+ * Las abreviaturas de la leyenda son de 2 letras. Devuelve la abreviatura (2 letras)
+ * o null si el código no empieza por letras.
+ */
+export function languageFromCode(code: string | null | undefined): string | null {
+  if (!code) return null;
+  const letters = code.trim().toUpperCase().match(/^[A-Z]+/)?.[0];
+  if (!letters) return null;
+  if (LANGUAGE_BY_CODE[letters]) return letters;
+  const two = letters.slice(0, 2);
+  return LANGUAGE_BY_CODE[two] ? two : two || null;
+}

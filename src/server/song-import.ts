@@ -4,7 +4,7 @@ import ExcelJS from "exceljs";
 import { prisma } from "@/lib/prisma";
 import { updateTag } from "next/cache";
 import { dedupKey } from "@/lib/song-dedup";
-import { normalizeLanguageCode } from "@/lib/song-languages";
+import { normalizeLanguageCode, languageFromCode } from "@/lib/song-languages";
 import { optimizeCatalog, SONGS_TAG } from "@/server/songs";
 
 type ColIndex = { lang?: number; code?: number; title?: number; performer?: number; brand?: number };
@@ -75,9 +75,11 @@ export async function runImport(jobId: string, filePath: string, format: "xlsx" 
     const title = (idx.title !== undefined ? cells[idx.title] : "")?.trim() ?? "";
     if (!title) return;
     const performer = (idx.performer !== undefined ? cells[idx.performer] : "")?.trim() ?? "";
-    const langRaw = (idx.lang !== undefined ? cells[idx.lang] : "")?.trim() ?? "";
-    const languageCode = normalizeLanguageCode(langRaw) ?? (langRaw ? langRaw.toUpperCase().slice(0, 8) : "NI");
     const code = idx.code !== undefined ? (cells[idx.code] ?? "").trim() || null : null;
+    const langRaw = (idx.lang !== undefined ? cells[idx.lang] : "")?.trim() ?? "";
+    // El idioma puede venir en su columna o como prefijo del código (p. ej. AL82215 → AL).
+    const languageCode =
+      normalizeLanguageCode(langRaw) ?? languageFromCode(code) ?? (langRaw ? langRaw.toUpperCase().slice(0, 8) : "NI");
     const brandId = idx.brand !== undefined ? await ensureBrand(cells[idx.brand] ?? "") : null;
     batch.push({ languageCode, code, title, performer, brandId, dedupKey: dedupKey(title, performer) });
     if (batch.length >= 1000) {
