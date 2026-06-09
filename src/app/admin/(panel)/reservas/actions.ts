@@ -7,7 +7,8 @@ import { requireRole } from "@/server/auth/guards";
 import { logAudit } from "@/server/audit";
 import { recomputeBookingPayment } from "@/server/payments";
 import { createContractForBooking } from "@/server/contracts";
-import { sendEmail } from "@/server/email";
+import { redirect } from "next/navigation";
+import { sendEmail, sendQuoteEmail } from "@/server/email";
 import { eurosToCents } from "@/lib/money";
 import { Role, type PaymentMethod } from "@/generated/prisma/enums";
 
@@ -182,6 +183,28 @@ export async function sendContract(formData: FormData): Promise<void> {
 
   await logAudit({ userId, action: "contract.send", entity: "Contract", entityId: contract.id, metadata: { bookingId } });
   revalidatePath(`/admin/reservas/${bookingId}`);
+}
+
+/** Envía el presupuesto (PDF premium) por email al cliente. */
+export async function sendQuoteAction(formData: FormData): Promise<void> {
+  let userId: string | undefined;
+  try {
+    userId = (await requireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL)).user.id;
+  } catch {
+    return;
+  }
+  const bookingId = String(formData.get("bookingId") ?? "");
+  if (!bookingId) return;
+
+  let outcome: "ok" | "skip" | "err" = "err";
+  try {
+    const res = await sendQuoteEmail(bookingId);
+    outcome = res.sent ? "ok" : res.skipped ? "skip" : "err";
+  } catch {
+    outcome = "err";
+  }
+  await logAudit({ userId, action: "quote.send", entity: "Booking", entityId: bookingId, metadata: { outcome } });
+  redirect(`/admin/reservas/${bookingId}?sent=${outcome}`);
 }
 
 export async function cancelContract(formData: FormData): Promise<void> {

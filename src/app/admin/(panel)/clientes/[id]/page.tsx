@@ -38,7 +38,15 @@ export default async function EditCustomerPage({ params }: { params: Promise<{ i
   return (
     <div>
       <Link href="/admin/clientes" className="text-sm text-brand-muted transition hover:text-white">← Volver a clientes</Link>
-      <h1 className="mt-4 text-2xl font-semibold text-white">Editar: {customer.name || customer.email}</h1>
+      <div className="mt-4 flex items-center justify-between gap-4">
+        <h1 className="text-2xl font-semibold text-white">Editar: {customer.name || customer.email}</h1>
+        <Link
+          href={`/admin/clientes/presupuesto?customerId=${customer.id}`}
+          className="shrink-0 rounded-full border border-brand-neon/60 px-4 py-2 text-sm font-semibold text-brand-neon transition hover:bg-brand-neon/10"
+        >
+          Crear presupuesto
+        </Link>
+      </div>
       <div className="mt-8"><CustomerForm values={values} /></div>
 
       {customer.bookings.length > 0 && (

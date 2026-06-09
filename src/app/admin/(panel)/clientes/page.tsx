@@ -64,12 +64,20 @@ export default async function ClientesPage({
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-white">Clientes</h1>
-        <Link
-          href="/admin/clientes/nuevo"
-          className="rounded-full bg-brand-neon px-4 py-2 text-sm font-semibold text-brand-bg transition hover:bg-brand-neon-strong"
-        >
-          Nuevo cliente
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            href="/admin/clientes/presupuesto"
+            className="rounded-full border border-brand-neon/60 px-4 py-2 text-sm font-semibold text-brand-neon transition hover:bg-brand-neon/10"
+          >
+            Crear presupuesto
+          </Link>
+          <Link
+            href="/admin/clientes/nuevo"
+            className="rounded-full bg-brand-neon px-4 py-2 text-sm font-semibold text-brand-bg transition hover:bg-brand-neon-strong"
+          >
+            Nuevo cliente
+          </Link>
+        </div>
       </div>
 
       <ListControls chips={[{ value: "1", label: "Profesionales" }]} filterParam="pro" placeholder="Buscar por nombre o email…" />

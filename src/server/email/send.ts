@@ -2,11 +2,18 @@
 // Usa Resend o Brevo según la API key disponible. Si no hay ninguna,
 // hace no-op seguro (registra y omite) para no romper en dev/test.
 
+export type EmailAttachment = {
+  filename: string;
+  /** Contenido del adjunto en base64. */
+  contentBase64: string;
+};
+
 export type EmailMessage = {
   to: string;
   subject: string;
   html: string;
   replyTo?: string;
+  attachments?: EmailAttachment[];
 };
 
 export type EmailResult = { sent: boolean; skipped?: boolean; error?: string };
@@ -40,6 +47,9 @@ export async function sendEmail(msg: EmailMessage): Promise<EmailResult> {
           subject: msg.subject,
           html: msg.html,
           ...(msg.replyTo ? { reply_to: msg.replyTo } : {}),
+          ...(msg.attachments?.length
+            ? { attachments: msg.attachments.map((a) => ({ filename: a.filename, content: a.contentBase64 })) }
+            : {}),
         }),
       });
       if (!res.ok) return { sent: false, error: `Resend ${res.status}` };
@@ -61,6 +71,9 @@ export async function sendEmail(msg: EmailMessage): Promise<EmailResult> {
           subject: msg.subject,
           htmlContent: msg.html,
           ...(msg.replyTo ? { replyTo: { email: msg.replyTo } } : {}),
+          ...(msg.attachments?.length
+            ? { attachment: msg.attachments.map((a) => ({ name: a.filename, content: a.contentBase64 })) }
+            : {}),
         }),
       });
       if (!res.ok) return { sent: false, error: `Brevo ${res.status}` };

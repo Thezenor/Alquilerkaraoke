@@ -8,7 +8,7 @@ import { amountDue } from "@/lib/payments";
 import { BOOKING_STATUS_LABELS, BOOKING_STATUS_CLASSES } from "../status";
 import { BookingForm } from "./booking-form";
 import { PaymentForm } from "./payment-form";
-import { deletePayment, generateContract, sendContract, cancelContract } from "../actions";
+import { deletePayment, generateContract, sendContract, cancelContract, sendQuoteAction } from "../actions";
 import { CopyLink } from "./copy-link";
 import { StatusBadge, PAYMENT_STATUS, PAYMENT_METHOD_LABELS, CONTRACT_STATUS } from "@/components/admin/status-badge";
 import { ConfirmButton } from "@/components/admin/confirm-button";
@@ -31,9 +31,16 @@ function waLink(phone: string | null): string | null {
 type ExtraSnap = { name: string; price: number };
 type ActivitySnap = { packName: string; hours: number; extras: ExtraSnap[]; lineTotal: number };
 
-export default async function ReservaDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ReservaDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ sent?: string; created?: string }>;
+}) {
   await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
   const { id } = await params;
+  const sp = await searchParams;
   const b = await prisma.booking.findUnique({
     where: { id },
     include: { payments: { orderBy: { paidAt: "desc" } }, contract: true },
@@ -56,6 +63,27 @@ export default async function ReservaDetailPage({ params }: { params: Promise<{ 
       <Link href="/admin/reservas" className="text-sm text-brand-muted transition hover:text-white">
         ← Volver a reservas
       </Link>
+
+      {sp.created === "quote" && (
+        <p className="mt-4 rounded-lg border border-brand-neon/40 bg-brand-neon/10 px-4 py-2.5 text-sm text-brand-neon">
+          Presupuesto creado. Descarga el PDF o envíalo al cliente desde los botones de abajo.
+        </p>
+      )}
+      {sp.sent === "ok" && (
+        <p className="mt-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-400">
+          Presupuesto enviado al cliente por email.
+        </p>
+      )}
+      {sp.sent === "skip" && (
+        <p className="mt-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2.5 text-sm text-amber-300">
+          Email no configurado: añade una clave de Resend o Brevo para enviar. El PDF se puede descargar igualmente.
+        </p>
+      )}
+      {sp.sent === "err" && (
+        <p className="mt-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
+          No se pudo enviar el email del presupuesto. Inténtalo de nuevo o descarga el PDF.
+        </p>
+      )}
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold text-white">{b.name} · {b.packName}</h1>
@@ -174,6 +202,24 @@ export default async function ReservaDetailPage({ params }: { params: Promise<{ 
               <Icon name="box" className="h-4 w-4" />
               Proforma (PDF)
             </a>
+            <a
+              href={`/admin/reservas/${b.id}/presupuesto`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-brand-neon/60 px-4 py-2 text-sm font-medium text-brand-neon transition hover:bg-brand-neon/10"
+            >
+              <Icon name="box" className="h-4 w-4" />
+              Presupuesto (PDF premium)
+            </a>
+            <form action={sendQuoteAction}>
+              <input type="hidden" name="bookingId" value={b.id} />
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 rounded-full border border-brand-border px-4 py-2 text-sm text-brand-text transition hover:border-brand-neon/60"
+              >
+                Enviar presupuesto
+              </button>
+            </form>
           </div>
         </div>
 
