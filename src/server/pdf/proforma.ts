@@ -1,4 +1,4 @@
-import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
+import { PDFDocument, StandardFonts, rgb, type PDFFont } from "pdf-lib";
 import { LOGO_DARK_PNG_BASE64, LOGO_DARK_RATIO } from "./logo";
 
 // Genera una proforma/presupuesto en PDF (A4) con pdf-lib (JS puro, sin navegador).
@@ -131,10 +131,16 @@ export async function buildProformaPdf(data: ProformaData): Promise<Uint8Array> 
 
   // ── Tabla de conceptos ──
   const amountX = A4.w - M;
-  page.drawRectangle({ x: M, y: y - 4, width: A4.w - 2 * M, height: 20, color: rgb(0.96, 0.97, 0.98) });
-  text("CONCEPTO", M + 8, y + 2, 9, bold, MUTED);
-  right("IMPORTE", amountX - 8, y + 2, 9, bold, MUTED);
-  y -= 22;
+  const tableW = A4.w - 2 * M;
+  const conceptX = M + 12;
+  const conceptMaxW = tableW - 12 - 110; // deja ~110 pt para la columna de importe
+
+  // Cabecera de la tabla: barra clara + subrayado de acento.
+  page.drawRectangle({ x: M, y: y - 7, width: tableW, height: 21, color: rgb(0.95, 0.96, 0.98) });
+  text("CONCEPTO", conceptX, y, 9, bold, MUTED);
+  right("IMPORTE", amountX - 12, y, 9, bold, MUTED);
+  page.drawLine({ start: { x: M, y: y - 8 }, end: { x: amountX, y: y - 8 }, thickness: 1.2, color: ACCENT });
+  let rowTop = y - 8; // borde superior de la primera fila
 
   let items: { concept: string; amount: number }[];
   if (data.activities && data.activities.length > 1) {
@@ -155,31 +161,44 @@ export async function buildProformaPdf(data: ProformaData): Promise<Uint8Array> 
     ];
   }
 
-  for (const it of items) {
-    drawConcept(page, font, it.concept, M + 8, y, A4.w - 2 * M - 90);
-    right(eur(it.amount), amountX - 8, y, 10);
-    y -= 16;
-    page.drawLine({ start: { x: M, y: y + 5 }, end: { x: A4.w - M, y: y + 5 }, thickness: 0.4, color: LINE });
-  }
+  // Filas: alto generoso, fondo cebra y separador BAJO el texto (nunca lo cruza).
+  items.forEach((it, idx) => {
+    const lines = wrapText(font, it.concept, 10.5, conceptMaxW).slice(0, 2);
+    const rowH = lines.length > 1 ? 32 : 22;
+    if (idx % 2 === 1) {
+      page.drawRectangle({ x: M, y: rowTop - rowH, width: tableW, height: rowH, color: rgb(0.972, 0.978, 0.985) });
+    }
+    const baseline = rowTop - 15;
+    lines.forEach((ln, k) => text(ln, conceptX, baseline - k * 13, 10.5, font, INK));
+    right(eur(it.amount), amountX - 12, baseline, 10.5, font, INK);
+    page.drawLine({ start: { x: M, y: rowTop - rowH }, end: { x: amountX, y: rowTop - rowH }, thickness: 0.5, color: LINE });
+    rowTop -= rowH;
+  });
 
-  y -= 12;
+  y = rowTop - 24;
 
   // ── Totales (bloque derecho) ──
-  const tLabelX = A4.w / 2 + 20;
-  const totalRow = (label: string, value: string, strong = false) => {
+  const totalsLeft = A4.w / 2 + 6;
+  const tLabelX = totalsLeft + 14;
+  const totalRow = (label: string, value: string, opts?: { strong?: boolean; highlight?: boolean }) => {
+    const strong = opts?.strong || opts?.highlight;
+    if (opts?.highlight) {
+      page.drawRectangle({ x: totalsLeft, y: y - 7, width: amountX - totalsLeft, height: 22, color: ACCENT });
+    }
     const f = strong ? bold : font;
-    text(label, tLabelX, y, strong ? 11 : 10, f, strong ? INK : MUTED);
-    right(value, amountX, y, strong ? 11 : 10, f);
-    y -= 15;
+    const color = opts?.highlight ? rgb(1, 1, 1) : strong ? INK : MUTED;
+    const size = opts?.highlight ? 12 : 10;
+    text(label, tLabelX, y, size, f, color);
+    right(value, amountX - 12, y, size, f, color);
+    y -= opts?.highlight ? 26 : 15;
   };
   totalRow("Subtotal (sin IVA)", eur(data.amounts.subtotal));
   if (data.amounts.discount > 0) totalRow("Descuento", `-${eur(data.amounts.discount)}`);
   totalRow("IVA", eur(data.amounts.vat));
-  page.drawLine({ start: { x: tLabelX, y: y + 6 }, end: { x: amountX, y: y + 6 }, thickness: 0.6, color: LINE });
-  y -= 4;
-  totalRow("TOTAL", eur(data.amounts.total), true);
-  y -= 4;
-  totalRow("Reserva para confirmar", eur(data.amounts.deposit));
+  page.drawLine({ start: { x: totalsLeft, y: y + 6 }, end: { x: amountX, y: y + 6 }, thickness: 0.6, color: LINE });
+  y -= 6;
+  totalRow("TOTAL", eur(data.amounts.total), { highlight: true });
+  totalRow("Reserva para confirmar", eur(data.amounts.deposit), { strong: true });
   if (data.amounts.securityDeposit > 0) totalRow("Fianza (reembolsable)", eur(data.amounts.securityDeposit));
   if (data.amounts.amountPaid !== 0) totalRow("Cobrado", eur(data.amounts.amountPaid));
   totalRow("Estado de pago", data.paymentStatusLabel);
@@ -250,17 +269,6 @@ export async function buildProformaPdf(data: ProformaData): Promise<Uint8Array> 
   }
 
   return pdf.save();
-}
-
-/** Dibuja un concepto truncándolo si no cabe en maxWidth. */
-function drawConcept(page: PDFPage, font: PDFFont, concept: string, x: number, y: number, maxWidth: number) {
-  let s = safe(concept);
-  const size = 10;
-  while (s.length > 1 && font.widthOfTextAtSize(s, size) > maxWidth) {
-    s = s.slice(0, -2);
-  }
-  if (s !== safe(concept)) s = `${s.slice(0, -1)}…`.replace("…", "...");
-  page.drawText(s, { x, y, size, font, color: INK });
 }
 
 /** Parte un texto en líneas que caben en maxWidth. */

@@ -100,9 +100,11 @@ export async function buildQuoteCatalogPdf(data: QuoteCatalogData): Promise<Uint
     return p;
   };
   const glow = (p: PDFPage, x: number, y: number, r: number, color: RGB, opacity = 0.32) => {
-    // Aproxima un "glow" difuminado con círculos concéntricos translúcidos.
-    for (let i = 3; i >= 1; i--) {
-      p.drawCircle({ x, y, size: (r * i) / 3, color, opacity: opacity / (i * 1.6) });
+    // Aproxima un "glow" difuminado con muchos círculos concéntricos translúcidos
+    // (más anillos = degradado más suave, sin bandas marcadas).
+    const rings = 10;
+    for (let i = rings; i >= 1; i--) {
+      p.drawCircle({ x, y, size: (r * i) / rings, color, opacity: opacity * 0.12 });
     }
   };
   const text = (p: PDFPage, s: string, x: number, y: number, size: number, f: PDFFont = font, color = INK, opacity = 1) =>
@@ -296,11 +298,12 @@ export async function buildQuoteCatalogPdf(data: QuoteCatalogData): Promise<Uint
         rowsCount += w.length;
         return w;
       });
-      const cardH = 40 + rowsCount * 15 + (items.length - 1) * 4;
+      const cardH = 48 + rowsCount * 15 + (items.length - 1) * 4;
       card(p, MX, y - cardH, A4.w - 2 * MX, cardH, accent, 0.3);
       let iy = y - 24;
       text(p, "QUE INCLUYE", MX + 20, iy, 11, bold, accent);
-      iy -= 22;
+      p.drawLine({ start: { x: MX + 20, y: iy - 9 }, end: { x: A4.w - MX - 20, y: iy - 9 }, thickness: 0.8, color: accent, opacity: 0.35 });
+      iy -= 24;
       for (const w of wrapped) {
         p.drawRectangle({ x: MX + 20, y: iy + 1, width: 6, height: 6, color: accent });
         w.forEach((l, k) => {
