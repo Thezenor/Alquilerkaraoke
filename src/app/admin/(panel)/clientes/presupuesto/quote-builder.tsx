@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useMemo, useRef, useState } from "react";
 import { eurosToCents, formatCents } from "@/lib/money";
 import { createManualQuote, type QuoteState } from "./actions";
 
@@ -28,6 +28,9 @@ export function QuoteBuilder({
   prefill: QuotePrefill;
 }) {
   const [state, action, pending] = useActionState(createManualQuote, initial);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [previewing, setPreviewing] = useState(false);
+  const [previewError, setPreviewError] = useState<string | null>(null);
 
   const [name, setName] = useState(prefill.name);
   const [email, setEmail] = useState(prefill.email);
@@ -79,8 +82,37 @@ export function QuoteBuilder({
       .map((l) => ({ name: l.name.trim(), description: l.description, price: l.price, hours: l.hours })),
   );
 
+  // Previsualiza el PDF sin guardar nada: POST del formulario a /preview y abre el PDF.
+  async function handlePreview() {
+    setPreviewError(null);
+    if (!lines.some((l) => l.name.trim() && eurosToCents(l.price) > 0)) {
+      setPreviewError("Añade al menos un producto con su precio para previsualizar.");
+      return;
+    }
+    // Abre la pestaña de forma síncrona (evita el bloqueo de popups tras el await).
+    const win = window.open("", "_blank");
+    setPreviewing(true);
+    try {
+      const res = await fetch("/admin/clientes/presupuesto/preview", { method: "POST", body: new FormData(formRef.current!) });
+      if (!res.ok) {
+        win?.close();
+        setPreviewError((await res.text()) || "No se pudo generar la previsualización.");
+        return;
+      }
+      const url = URL.createObjectURL(await res.blob());
+      if (win) win.location.href = url;
+      else window.open(url, "_blank");
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch {
+      win?.close();
+      setPreviewError("No se pudo generar la previsualización.");
+    } finally {
+      setPreviewing(false);
+    }
+  }
+
   return (
-    <form action={action} className="max-w-3xl">
+    <form ref={formRef} action={action} className="max-w-3xl">
       <input type="hidden" name="lines" value={linesJson} />
 
       {/* Evento */}
@@ -210,14 +242,25 @@ export function QuoteBuilder({
       {state.status === "error" && state.message && (
         <p role="alert" className="mt-5 text-sm text-red-400">{state.message}</p>
       )}
+      {previewError && <p role="alert" className="mt-5 text-sm text-red-400">{previewError}</p>}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="mt-6 rounded-full bg-brand-neon px-6 py-2.5 font-semibold text-brand-bg transition hover:bg-brand-neon-strong disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {pending ? "Guardando…" : "Guardar y generar presupuesto"}
-      </button>
+      <div className="mt-6 flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={handlePreview}
+          disabled={previewing}
+          className="rounded-full border border-brand-neon/60 px-5 py-2.5 text-sm font-semibold text-brand-neon transition hover:bg-brand-neon/10 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {previewing ? "Generando…" : "👁 Previsualizar PDF"}
+        </button>
+        <button
+          type="submit"
+          disabled={pending}
+          className="rounded-full bg-brand-neon px-6 py-2.5 font-semibold text-brand-bg transition hover:bg-brand-neon-strong disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {pending ? "Guardando…" : "Guardar y generar presupuesto"}
+        </button>
+      </div>
     </form>
   );
 }

@@ -28,11 +28,35 @@ test("presupuesto admin: crear desde clientes, alta de usuario y PDF premium", a
   await line.locator("input").nth(2).fill("750.00");
   await line.locator("textarea").fill("Equipo 2.400 W\n2 micrófonos\nMontaje incluido");
 
+  // Segundo producto: ejercita la vista de varias actividades en la ficha.
+  await page.getByRole("button", { name: "+ Añadir producto" }).click();
+  const line2 = page.getByTestId("quote-line").nth(1);
+  await line2.locator("input").nth(0).fill("Opción Furor E2E");
+  await line2.locator("input").nth(2).fill("1800.00");
+
+  // Previsualizar (sin guardar) devuelve un PDF.
+  const preview = await page.request.post("/admin/clientes/presupuesto/preview", {
+    multipart: {
+      customerName: name,
+      customerEmail: email,
+      customerPhone: "600555444",
+      depositPercent: "50",
+      lines: JSON.stringify([
+        { name: "Opción Karaoke E2E", description: "Equipo", price: "750.00", hours: "4" },
+        { name: "Opción Furor E2E", description: "Producción", price: "1800.00", hours: "4" },
+      ]),
+    },
+  });
+  expect(preview.status()).toBe(200);
+  expect(preview.headers()["content-type"]).toContain("application/pdf");
+  expect((await preview.body()).subarray(0, 5).toString("latin1")).toBe("%PDF-");
+
   await page.getByRole("button", { name: "Guardar y generar presupuesto" }).click();
 
-  // Redirige a la ficha de la reserva creada.
+  // Redirige a la ficha de la reserva creada y se muestra sin error (2 actividades).
   await page.waitForURL(/\/admin\/reservas\/.*created=quote/);
   await expect(page.getByText("Presupuesto creado.")).toBeVisible();
+  await expect(page.getByText("Opción Furor E2E")).toBeVisible();
 
   // El PDF premium se descarga con la sesión autenticada.
   const href = await page.getByRole("link", { name: "Presupuesto (PDF premium)" }).getAttribute("href");

@@ -29,7 +29,7 @@ function waLink(phone: string | null): string | null {
 }
 
 type ExtraSnap = { name: string; price: number };
-type ActivitySnap = { packName: string; hours: number; extras: ExtraSnap[]; lineTotal: number };
+type ActivitySnap = { packName?: string; name?: string; description?: string | null; hours?: number | null; extras?: ExtraSnap[]; lineTotal: number };
 
 export default async function ReservaDetailPage({
   params,
@@ -129,14 +129,20 @@ export default async function ReservaDetailPage({
               <ul className="mt-2 space-y-2">
                 {activities.map((a, i) => (
                   <li key={i} className="rounded-lg border border-brand-border bg-brand-bg p-3 text-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-white">{a.packName}</span>
-                      <span className="text-brand-muted">{a.hours} h</span>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-medium text-white">{a.name ?? a.packName ?? "—"}</span>
+                      <div className="flex items-center gap-3 text-brand-muted">
+                        {a.hours ? <span>{a.hours} h</span> : null}
+                        <span>{formatCents(a.lineTotal)}</span>
+                      </div>
                     </div>
-                    {a.extras.length > 0 && (
+                    {a.extras && a.extras.length > 0 && (
                       <p className="mt-1 text-xs text-brand-muted">
                         {a.extras.map((e) => e.name).join(", ")}
                       </p>
+                    )}
+                    {a.description && (
+                      <p className="mt-1 whitespace-pre-line text-xs text-brand-muted">{a.description}</p>
                     )}
                   </li>
                 ))}

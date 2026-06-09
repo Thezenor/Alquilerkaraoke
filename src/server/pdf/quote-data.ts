@@ -10,7 +10,54 @@ function siteWeb(): string {
   return url.replace(/^https?:\/\//, "").replace(/\/$/, "");
 }
 
-/** Construye los datos del PDF premium a partir de una reserva/presupuesto y la config. */
+/** Datos de empresa para el PDF a partir de la configuración del sitio. */
+function companyFrom(config: SiteConfig | null): QuoteCatalogData["company"] {
+  return {
+    name: config?.companyName ?? "Alquiler Karaoke",
+    legalName: config?.legalName,
+    taxId: config?.taxId,
+    address: config?.address,
+    email: config?.email,
+    phone: config?.phone ?? "607724965",
+    whatsapp: config?.whatsapp,
+    web: siteWeb(),
+    iban: config?.iban,
+    instagram: config?.instagram,
+    facebook: config?.facebook,
+    tiktok: config?.tiktok,
+    youtube: config?.youtube,
+  };
+}
+
+/** Construye los datos del PDF premium a partir de inputs ya calculados. */
+export function quoteCatalogDataFromInput(
+  input: {
+    number: string;
+    date: string;
+    customer: { name: string; email?: string | null; phone?: string | null };
+    event: { eventDate?: string | null; province?: string | null; eventTime?: string | null };
+    lines: QuoteCatalogLine[];
+    amounts: { subtotal: number; vat: number; total: number; deposit: number; vatPercent: number };
+    depositPercent: number;
+    locale?: string | null;
+  },
+  config: SiteConfig | null,
+): QuoteCatalogData {
+  return {
+    number: input.number,
+    date: input.date,
+    company: companyFrom(config),
+    customer: input.customer,
+    event: input.event,
+    lines: input.lines.length ? input.lines : [{ name: "Servicio", description: null, hours: null, lineTotal: input.amounts.subtotal }],
+    amounts: input.amounts,
+    depositPercent: input.depositPercent,
+    terms: config?.quoteTerms || defaultQuoteTerms(input.locale),
+    termsHeading: quoteTermsHeading(input.locale),
+  };
+}
+
+/** Construye los datos del PDF premium a partir de una reserva/presupuesto guardado. */
 export function quoteCatalogDataFromBooking(b: Booking, config: SiteConfig | null): QuoteCatalogData {
   const number = `PRE-${b.createdAt.getFullYear()}-${b.id.slice(-6).toUpperCase()}`;
   const activities = (b.activities ?? []) as ActivitySnap[];
@@ -34,34 +81,21 @@ export function quoteCatalogDataFromBooking(b: Booking, config: SiteConfig | nul
   const vatPercent = taxableBase > 0 ? Math.round((b.vat * 100) / taxableBase) : 21;
   const depositPercent = b.total > 0 ? Math.round((b.deposit * 100) / b.total) : 50;
 
-  return {
-    number,
-    date: b.createdAt.toLocaleDateString("es-ES"),
-    company: {
-      name: config?.companyName ?? "Alquiler Karaoke",
-      legalName: config?.legalName,
-      taxId: config?.taxId,
-      address: config?.address,
-      email: config?.email,
-      phone: config?.phone ?? "607724965",
-      whatsapp: config?.whatsapp,
-      web: siteWeb(),
-      iban: config?.iban,
-      instagram: config?.instagram,
-      facebook: config?.facebook,
-      tiktok: config?.tiktok,
-      youtube: config?.youtube,
+  return quoteCatalogDataFromInput(
+    {
+      number,
+      date: b.createdAt.toLocaleDateString("es-ES"),
+      customer: { name: b.name, email: b.email, phone: b.phone },
+      event: {
+        eventDate: b.eventDate ? b.eventDate.toLocaleDateString("es-ES") : null,
+        province: b.province,
+        eventTime: b.eventTime,
+      },
+      lines,
+      amounts: { subtotal: b.subtotal, vat: b.vat, total: b.total, deposit: b.deposit, vatPercent },
+      depositPercent,
+      locale: b.locale,
     },
-    customer: { name: b.name, email: b.email, phone: b.phone },
-    event: {
-      eventDate: b.eventDate ? b.eventDate.toLocaleDateString("es-ES") : null,
-      province: b.province,
-      eventTime: b.eventTime,
-    },
-    lines,
-    amounts: { subtotal: b.subtotal, vat: b.vat, total: b.total, deposit: b.deposit, vatPercent },
-    depositPercent,
-    terms: config?.quoteTerms || defaultQuoteTerms(b.locale),
-    termsHeading: quoteTermsHeading(b.locale),
-  };
+    config,
+  );
 }

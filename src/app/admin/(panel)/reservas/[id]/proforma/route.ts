@@ -26,7 +26,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
   const number = `PRE-${b.createdAt.getFullYear()}-${b.id.slice(-6).toUpperCase()}`;
   const extras = (b.extras ?? []) as ExtraSnap[];
-  const activities = (b.activities ?? []) as { packName: string; hours: number; lineTotal: number }[];
+  const activities = (b.activities ?? []) as { packName?: string; name?: string; hours?: number | null; lineTotal: number }[];
 
   const data: ProformaData = {
     number,
@@ -61,7 +61,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     paymentStatusLabel: PAYMENT_STATUS[b.paymentStatus]?.label ?? b.paymentStatus,
     terms: config?.quoteTerms || defaultQuoteTerms(b.locale),
     termsHeading: quoteTermsHeading(b.locale),
-    activities: activities.length > 1 ? activities.map((a) => ({ packName: a.packName, hours: a.hours, lineTotal: a.lineTotal })) : undefined,
+    activities: activities.length > 1 ? activities.map((a) => ({ packName: a.name ?? a.packName ?? "—", hours: a.hours ?? b.hours, lineTotal: a.lineTotal })) : undefined,
   };
 
   const bytes = await buildProformaPdf(data);
