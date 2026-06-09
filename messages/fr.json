@@ -207,15 +207,35 @@
     "faq": [
       {
         "q": "Travaillez-vous dans toute l'Espagne ?",
-        "a": "Oui. Nous couvrons les principales villes et provinces ; demandez-nous pour votre zone."
+        "a": "Oui, nous intervenons dans toute l'Espagne, dans les villes comme dans les villages. Nous apportons l'installation complète là où se déroule votre événement."
       },
       {
         "q": "Le karaoké inclut-il un technicien ?",
-        "a": "Vous pouvez le réserver avec ou sans technicien, selon le service et le forfait."
+        "a": "Vous pouvez le réserver avec ou sans technicien. Avec technicien, quelqu'un installe, gère le son et anime la fête ; sans technicien, nous laissons tout prêt et cela se contrôle facilement depuis un mobile ou une tablette."
+      },
+      {
+        "q": "Combien de temps à l'avance dois-je réserver ?",
+        "a": "Nous recommandons de réserver 2 à 3 semaines à l'avance ; pour les dates fortes comme les mariages, Noël ou l'été, le plus tôt sera le mieux. Écrivez-nous et nous confirmons la disponibilité."
+      },
+      {
+        "q": "Que comprend le matériel ?",
+        "a": "Écrans LED, micros sans fil, système de sonorisation professionnel, éclairage de fête et accès à plus de 180 000 chansons. Le transport et l'installation sont inclus selon l'option choisie."
+      },
+      {
+        "q": "De combien d'espace ai-je besoin ?",
+        "a": "Environ 2×2 mètres suffisent pour le matériel de base. Nous nous adaptons à l'espace disponible, en intérieur comme en extérieur."
+      },
+      {
+        "q": "Combien de chansons avez-vous et dans quelles langues ?",
+        "a": "Plus de 180 000 chansons, des classiques aux derniers tubes, en plusieurs langues. Vous pouvez consulter le catalogue sur notre site."
+      },
+      {
+        "q": "Pour quel type d'événements ?",
+        "a": "Mariages, anniversaires, événements d'entreprise, communions, enterrements de vie de garçon/jeune fille, fêtes d'enfants, fêtes de Noël, remises de diplômes et toute autre célébration."
       },
       {
         "q": "Combien ça coûte ?",
-        "a": "Cela dépend du service, de la date et du lieu. Demandez-nous un devis sans engagement."
+        "a": "Chaque événement est différent (durée, lieu et extras), nous préparons donc un devis sur mesure. Demandez-le sans engagement et nous répondons au plus vite."
       }
     ],
     "ctaTitle": "On organise votre événement ?",

@@ -206,16 +206,36 @@
     "faqTitle": "Frequently asked questions",
     "faq": [
       {
-        "q": "Do you work across Spain?",
-        "a": "Yes. We cover the main cities and provinces; ask us about your area."
+        "q": "Do you work all over Spain?",
+        "a": "Yes, we operate across the whole of Spain, in cities and towns. We bring the full setup wherever your event takes place."
       },
       {
-        "q": "Does karaoke include a technician?",
-        "a": "You can book it with or without a technician, depending on the service and package."
+        "q": "Does the karaoke include a technician?",
+        "a": "You can book it with or without a technician. With a technician, someone sets up, controls the sound and hosts the party; without one, we leave everything ready and it's easy to control from a phone or tablet."
+      },
+      {
+        "q": "How far in advance should I book?",
+        "a": "We recommend booking 2-3 weeks ahead; for peak dates such as weddings, Christmas or summer, the sooner the better. Write to us and we'll confirm availability."
+      },
+      {
+        "q": "What does the equipment include?",
+        "a": "LED screens, wireless microphones, a professional sound system, party lighting and access to more than 180,000 songs. Transport and setup are included depending on the chosen option."
+      },
+      {
+        "q": "How much space do I need?",
+        "a": "About 2×2 metres is enough for the basic setup. We adapt to the available space, both indoors and outdoors."
+      },
+      {
+        "q": "How many songs do you have and in which languages?",
+        "a": "More than 180,000 songs, from classics to the latest hits, in several languages. You can browse the catalogue on our website."
+      },
+      {
+        "q": "What kind of events is it for?",
+        "a": "Weddings, birthdays, company events, communions, stag/hen parties, kids' parties, Christmas parties, graduations and any other celebration."
       },
       {
         "q": "How much does it cost?",
-        "a": "It depends on the service, date and location. Ask us for a no-obligation quote."
+        "a": "Every event is different (duration, location and extras), so we prepare a tailored quote. Ask for one with no commitment and we'll reply as soon as possible."
       }
     ],
     "ctaTitle": "Shall we set up your event?",

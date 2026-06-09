@@ -207,15 +207,35 @@
     "faq": [
       {
         "q": "¿Trabajáis en toda España?",
-        "a": "Sí. Damos servicio en las principales ciudades y provincias; consúltanos tu localidad."
+        "a": "Sí, damos servicio en toda España, en ciudades y poblaciones. Llevamos el montaje completo allá donde sea tu evento."
       },
       {
         "q": "¿El karaoke incluye técnico?",
-        "a": "Puedes contratarlo con o sin técnico, según el servicio y el pack."
+        "a": "Puedes contratarlo con o sin técnico. Con técnico, alguien monta, controla el sonido y anima la fiesta; sin técnico, lo dejamos todo listo y se maneja fácilmente desde el móvil o una tablet."
+      },
+      {
+        "q": "¿Con cuánta antelación debo reservar?",
+        "a": "Recomendamos reservar con 2-3 semanas de antelación; para fechas señaladas como bodas, Navidad o verano, cuanto antes mejor. Escríbenos y confirmamos disponibilidad."
+      },
+      {
+        "q": "¿Qué incluye el equipo?",
+        "a": "Pantallas LED, micrófonos inalámbricos, equipo de sonido profesional, iluminación de fiesta y acceso a más de 180.000 canciones. El transporte y el montaje se incluyen según la opción elegida."
+      },
+      {
+        "q": "¿Cuánto espacio necesito?",
+        "a": "Con unos 2×2 metros basta para el equipo básico. Nos adaptamos al espacio disponible, tanto en interior como en exterior."
+      },
+      {
+        "q": "¿Cuántas canciones tenéis y en qué idiomas?",
+        "a": "Más de 180.000 canciones, desde clásicos hasta los últimos éxitos, en varios idiomas. Puedes consultar el catálogo en nuestra web."
+      },
+      {
+        "q": "¿Para qué tipo de eventos sirve?",
+        "a": "Bodas, cumpleaños, eventos de empresa, comuniones, despedidas, fiestas infantiles, fiestas de Navidad, graduaciones y cualquier otra celebración."
       },
       {
         "q": "¿Cuánto cuesta?",
-        "a": "Depende del servicio, la fecha y la ubicación. Pídenos un presupuesto sin compromiso."
+        "a": "Cada evento es distinto (duración, ubicación y extras), así que preparamos un presupuesto a medida. Pídelo sin compromiso y te respondemos lo antes posible."
       }
     ],
     "ctaTitle": "¿Montamos tu evento?",
