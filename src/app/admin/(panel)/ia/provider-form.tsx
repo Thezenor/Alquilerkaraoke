@@ -13,6 +13,7 @@ export type ProviderFormValues = {
   provider: "ANTHROPIC" | "OPENAI";
   model: string;
   baseUrl: string;
+  imageModel: string;
   isActive: boolean;
   hasKey: boolean;
 };
@@ -59,11 +60,18 @@ export function ProviderForm({ values }: { values: ProviderFormValues }) {
           <input name="apiKey" type="password" autoComplete="off" maxLength={300} placeholder={values.hasKey ? "•••••••• (sin cambios)" : "sk-…"} className={inputClass} />
         </label>
         {provider === "OPENAI" && (
-          <label className="sm:col-span-2 flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-brand-text">URL base (opcional, para compatibles)</span>
-            <input name="baseUrl" maxLength={300} defaultValue={values.baseUrl} placeholder="https://api.openai.com/v1 (o OpenRouter, Groq…)" className={inputClass} />
-            <span className="text-xs text-brand-muted">Déjalo vacío para OpenAI. Para otros compatibles, pon su endpoint /v1.</span>
-          </label>
+          <>
+            <label className="sm:col-span-2 flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-brand-text">URL base (opcional, para compatibles)</span>
+              <input name="baseUrl" maxLength={300} defaultValue={values.baseUrl} placeholder="https://api.openai.com/v1 (o OpenRouter, Groq…)" className={inputClass} />
+              <span className="text-xs text-brand-muted">Déjalo vacío para OpenAI. Para otros compatibles, pon su endpoint /v1.</span>
+            </label>
+            <label className="sm:col-span-2 flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-brand-text">Modelo de imágenes (opcional)</span>
+              <input name="imageModel" maxLength={120} defaultValue={values.imageModel} placeholder="gpt-image-1 o dall-e-3" className={inputClass} />
+              <span className="text-xs text-brand-muted">Si lo rellenas, este proveedor podrá generar imágenes para el blog.</span>
+            </label>
+          </>
         )}
       </div>
 

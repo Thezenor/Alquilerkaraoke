@@ -14,6 +14,7 @@ const empty: ProviderFormValues = {
   provider: "ANTHROPIC",
   model: "claude-sonnet-4-6",
   baseUrl: "",
+  imageModel: "",
   isActive: true,
   hasKey: false,
 };

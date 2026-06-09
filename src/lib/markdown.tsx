@@ -7,7 +7,11 @@ import type { ReactNode } from "react";
 type Block =
   | { type: "h"; level: 2 | 3 | 4; text: string }
   | { type: "ul"; items: string[] }
+  | { type: "img"; src: string; alt: string }
   | { type: "p"; text: string };
+
+// Imagen de bloque: una línea que es solo ![alt](url)
+const IMG_RE = /^!\[([^\]]*)\]\(([^)\s]+)\)$/;
 
 function parseBlocks(md: string): Block[] {
   const lines = md.replace(/\r\n/g, "\n").split("\n");
@@ -33,6 +37,17 @@ function parseBlocks(md: string): Block[] {
     if (!line) {
       flushPara();
       flushList();
+      continue;
+    }
+    const img = IMG_RE.exec(line);
+    if (img) {
+      flushPara();
+      flushList();
+      const src = img[2];
+      // Solo rutas relativas (/media/…) o http(s); descarta cualquier otra cosa.
+      if (/^(https?:\/\/|\/)/i.test(src)) {
+        blocks.push({ type: "img", src, alt: img[1].trim() });
+      }
       continue;
     }
     const h = /^(#{1,3})\s+(.*)$/.exec(line);
@@ -110,6 +125,15 @@ export function Markdown({ source }: { source: string }) {
             </Tag>
           );
         }
+        if (b.type === "img") {
+          return (
+            <figure key={i} className="my-2 overflow-hidden rounded-xl border border-brand-border">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={b.src} alt={b.alt} loading="lazy" className="w-full" />
+              {b.alt && <figcaption className="px-3 py-2 text-center text-xs text-brand-muted">{b.alt}</figcaption>}
+            </figure>
+          );
+        }
         if (b.type === "ul") {
           return (
             <ul key={i} className="ml-5 list-disc space-y-1">
@@ -131,6 +155,7 @@ export function markdownToPlain(md: string, max = 160): string {
     .replace(/\r\n/g, "\n")
     .replace(/^\s*#{1,6}\s+/gm, "") // encabezados
     .replace(/^\s*[-*]\s+/gm, "") // viñetas de lista (solo al inicio de línea)
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, "") // imágenes → fuera
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1") // enlaces → texto
     .replace(/[*_`>#]/g, "") // marcas inline (no toca los guiones internos)
     .replace(/\s+/g, " ")

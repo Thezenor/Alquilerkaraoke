@@ -8,7 +8,8 @@ import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/server/auth/guards";
 import { logAudit } from "@/server/audit";
 import { BLOG_TAG } from "@/server/blog";
-import { generateJSON, isAIConfigured } from "@/server/ai";
+import { generateJSON, isAIConfigured, isImageAIConfigured, generateImageBytes } from "@/server/ai";
+import { saveImage } from "@/lib/uploads";
 import { getActiveServices, localizedService } from "@/server/services";
 import { getActiveEventTypes, localizedEventType } from "@/server/event-types";
 import { getActiveCities } from "@/server/cities";
@@ -206,5 +207,56 @@ export async function generateBlogDraft(input: { title: string; locale: string; 
   } catch (e) {
     const msg = e instanceof Error ? e.message : "AI_ERROR";
     return { ok: false, error: `No se pudo generar (${msg}).` };
+  }
+}
+
+export type BlogImage = { url: string; alt: string };
+export type BlogImagesResult = { ok: boolean; images?: BlogImage[]; error?: string };
+
+/**
+ * Genera con IA 2-3 imágenes para el artículo, las optimiza y guarda en /media,
+ * y devuelve sus URLs + alt para insertarlas. Requiere un proveedor OpenAI con modelo de imágenes.
+ */
+export async function generateBlogImages(input: { title: string; brief?: string; count?: number }): Promise<BlogImagesResult> {
+  let userId: string | undefined;
+  try {
+    userId = (await ensureRole()).user.id;
+  } catch {
+    return { ok: false, error: "No tienes permisos." };
+  }
+  if (!(await isImageAIConfigured())) {
+    return { ok: false, error: "Generación de imágenes no configurada. En Admin → IA, añade un proveedor OpenAI con un 'Modelo de imágenes' (p. ej. gpt-image-1 o dall-e-3)." };
+  }
+
+  const title = (input.title || "").trim();
+  if (!title) return { ok: false, error: "Escribe primero un título o tema." };
+  const n = Math.min(3, Math.max(1, input.count ?? 3));
+
+  const angles = [
+    "plano general del ambiente, gente disfrutando",
+    "primer plano de un micrófono inalámbrico con pantalla de letras desenfocada al fondo",
+    "grupo de invitados cantando y riendo en una fiesta",
+  ];
+  const styleBase =
+    `Fotografía realista, luminosa y profesional para un blog sobre "${title}"` +
+    (input.brief ? ` (${input.brief})` : "") +
+    ". Evento de karaoke profesional en España, ambiente festivo y elegante, iluminación cálida. " +
+    "Sin texto, sin marcas de agua, sin logotipos, sin rostros reconocibles de personas famosas.";
+
+  const images: BlogImage[] = [];
+  try {
+    for (let i = 0; i < n; i++) {
+      const prompt = `${styleBase} Encuadre: ${angles[i % angles.length]}.`;
+      const bytes = await generateImageBytes(prompt);
+      const { url } = await saveImage(bytes, "image/png");
+      images.push({ url, alt: `${title} — imagen ${i + 1}` });
+    }
+    await logAudit({ userId, action: "ai.generate", entity: "Post", metadata: { kind: "blog-images", title, count: images.length } });
+    return { ok: true, images };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "AI_ERROR";
+    // Si ya generó alguna, la devolvemos aunque falle una posterior.
+    if (images.length) return { ok: true, images };
+    return { ok: false, error: `No se pudieron generar imágenes (${msg}).` };
   }
 }

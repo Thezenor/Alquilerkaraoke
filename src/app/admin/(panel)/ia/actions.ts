@@ -38,6 +38,7 @@ const schema = z.object({
   provider: z.enum(["ANTHROPIC", "OPENAI"]),
   model: z.string().trim().min(1, "Indica el modelo.").max(120),
   baseUrl: z.string().trim().max(300).optional(),
+  imageModel: z.string().trim().max(120).optional(),
   apiKey: z.string().trim().max(300).optional(),
   isActive: z.string().optional(),
 });
@@ -66,6 +67,7 @@ export async function saveAiProvider(_prev: AiFormState, formData: FormData): Pr
     provider: d.provider,
     model: d.model,
     baseUrl: optText(d.baseUrl),
+    imageModel: d.provider === "OPENAI" ? optText(d.imageModel) : null,
     isActive,
   };
 

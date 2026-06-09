@@ -27,6 +27,7 @@ export default async function EditAiProviderPage({ params }: { params: Promise<{
     provider: p.provider,
     model: p.model,
     baseUrl: p.baseUrl ?? "",
+    imageModel: p.imageModel ?? "",
     isActive: p.isActive,
     hasKey: Boolean(p.apiKey),
   };

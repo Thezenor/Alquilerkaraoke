@@ -2,7 +2,7 @@
 
 import { useActionState, useState, useTransition } from "react";
 import { ImageUpload } from "@/components/admin/image-upload";
-import { savePost, generateBlogDraft, type PostFormState } from "./actions";
+import { savePost, generateBlogDraft, generateBlogImages, type PostFormState } from "./actions";
 
 const initial: PostFormState = { status: "idle" };
 
@@ -36,6 +36,23 @@ export function PostForm({ values }: { values: PostFormValues }) {
   const [coverHint, setCoverHint] = useState<string | null>(null);
   const [aiPending, startAi] = useTransition();
   const [aiError, setAiError] = useState<string | null>(null);
+  const [imgPending, startImg] = useTransition();
+  const [imgError, setImgError] = useState<string | null>(null);
+  const [images, setImages] = useState<{ url: string; alt: string }[]>([]);
+
+  function handleImages() {
+    setImgError(null);
+    startImg(async () => {
+      const res = await generateBlogImages({ title, brief, count: 3 });
+      if (res.ok && res.images?.length) {
+        setImages(res.images);
+        const md = res.images.map((im) => `\n\n![${im.alt}](${im.url})`).join("");
+        setContent((c) => c + md);
+      } else {
+        setImgError(res.error ?? "No se pudieron generar imágenes.");
+      }
+    });
+  }
 
   function handleGenerate() {
     setAiError(null);
@@ -116,10 +133,39 @@ export function PostForm({ values }: { values: PostFormValues }) {
         </label>
       </div>
 
+      {/* Generador de imágenes IA: crea 2-3 imágenes y las inserta en el contenido */}
+      <div className="mt-5 rounded-xl border border-brand-neon/30 bg-brand-neon/5 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-medium text-brand-text">Imágenes con IA</p>
+            <p className="mt-1 text-xs text-brand-muted">
+              Genera 3 imágenes realistas a partir del título y las añade al final del contenido como Markdown.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleImages}
+            disabled={imgPending || !title.trim()}
+            className="shrink-0 rounded-full border border-brand-neon/60 px-4 py-2 text-sm font-medium text-brand-neon transition hover:bg-brand-neon/10 disabled:opacity-50"
+          >
+            {imgPending ? "Generando imágenes…" : "🖼️ Generar imágenes (IA)"}
+          </button>
+        </div>
+        {imgError && <p className="mt-2 text-xs text-red-400">{imgError}</p>}
+        {images.length > 0 && (
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {images.map((im) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={im.url} src={im.url} alt={im.alt} className="aspect-square w-full rounded-lg object-cover" />
+            ))}
+          </div>
+        )}
+      </div>
+
       <label className="mt-5 flex flex-col gap-1.5">
         <span className="text-sm font-medium text-brand-text">
           Contenido <span className="text-brand-neon">*</span>
-          <span className="ml-2 font-normal text-brand-muted">Markdown: # títulos, **negrita**, - listas, [texto](url)</span>
+          <span className="ml-2 font-normal text-brand-muted">Markdown: # títulos, **negrita**, - listas, [texto](url), ![alt](img)</span>
         </span>
         <textarea name="content" required rows={16} maxLength={50000} value={content} onChange={(e) => setContent(e.target.value)} className={`${inputClass} font-mono text-sm`} />
       </label>

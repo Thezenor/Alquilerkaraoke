@@ -112,6 +112,53 @@ export async function generateWithProvider(
     .trim();
 }
 
+// ── Generación de imágenes (OpenAI-compatible: gpt-image-1 / dall-e-3) ──
+
+type ImageProvider = { apiKey: string; model: string; baseUrl: string | null };
+
+const getImageProvider = unstable_cache(
+  async (): Promise<ImageProvider | null> => {
+    try {
+      // Prefiere el activo si tiene modelo de imágenes; si no, el primero con imageModel.
+      const active = await prisma.aiProvider.findFirst({ where: { isActive: true, provider: "OPENAI", imageModel: { not: null } } });
+      const p = active ?? (await prisma.aiProvider.findFirst({ where: { provider: "OPENAI", imageModel: { not: null } } }));
+      if (p?.apiKey && p.imageModel) return { apiKey: p.apiKey, model: p.imageModel, baseUrl: p.baseUrl };
+    } catch {
+      // sin proveedor de imágenes
+    }
+    return null;
+  },
+  [`${AI_TAG}-image`],
+  { tags: [AI_TAG], revalidate: 3600 },
+);
+
+/** ¿Hay un proveedor de imágenes configurado (OpenAI con modelo de imágenes)? */
+export async function isImageAIConfigured(): Promise<boolean> {
+  return (await getImageProvider()) !== null;
+}
+
+/** Genera una imagen y devuelve sus bytes (PNG). Lanza si no hay proveedor de imágenes. */
+export async function generateImageBytes(prompt: string): Promise<ArrayBuffer> {
+  const cfg = await getImageProvider();
+  if (!cfg) throw new AINotConfiguredError();
+  const base = (cfg.baseUrl || "https://api.openai.com/v1").replace(/\/$/, "");
+  const res = await fetch(`${base}/images/generations`, {
+    method: "POST",
+    headers: { "content-type": "application/json", authorization: `Bearer ${cfg.apiKey}` },
+    body: JSON.stringify({ model: cfg.model, prompt, n: 1, size: "1024x1024" }),
+  });
+  if (!res.ok) throw new Error(`AI_IMG_${res.status}`);
+  const data = (await res.json()) as { data?: { b64_json?: string; url?: string }[] };
+  const item = data.data?.[0];
+  if (item?.b64_json) return Buffer.from(item.b64_json, "base64").buffer as ArrayBuffer;
+  if (item?.url) {
+    const img = await fetch(item.url);
+    if (!img.ok) throw new Error(`AI_IMG_FETCH_${img.status}`);
+    return await img.arrayBuffer();
+  }
+  throw new Error("AI_IMG_EMPTY");
+}
+
 /** Como generateContent, pero parsea la respuesta como JSON (tolerante a ```json ... ```). */
 export async function generateJSON<T = unknown>(opts: { system: string; prompt: string; maxTokens?: number }): Promise<T> {
   const raw = await generateContent(opts);
