@@ -127,3 +127,31 @@ export function defaultQuoteTerms(locale?: string | null): string {
   if (locale === "fr") return DEFAULT_QUOTE_TERMS_FR;
   return DEFAULT_QUOTE_TERMS;
 }
+
+// Fragmentos que se eliminan al reutilizar las condiciones como cláusulas del contrato
+// (las menciones a "proforma"/validez y la línea de firma no aplican a un contrato firmado).
+const CONTRACT_STRIP: Record<string, string[]> = {
+  es: [
+    "Este documento es una proforma sin valor de factura. ",
+    " La validez de la proforma/reserva es de 7 días hábiles.",
+    "\n\nFecha y firma de aceptación del cliente:",
+  ],
+  en: [
+    "This document is a proforma with no invoice value. ",
+    " The proforma/booking is valid for 7 business days.",
+    "\n\nDate and client's signature of acceptance:",
+  ],
+  fr: [
+    "Ce document est une proforma sans valeur de facture. ",
+    " La proforma/réservation est valable 7 jours ouvrables.",
+    "\n\nDate et signature d'acceptation du client :",
+  ],
+};
+
+/** Cláusulas por defecto del CONTRATO (mismas condiciones, adaptadas) en el idioma del cliente. */
+export function defaultContractTerms(locale?: string | null): string {
+  const key = locale === "en" ? "en" : locale === "fr" ? "fr" : "es";
+  let t = defaultQuoteTerms(key);
+  for (const frag of CONTRACT_STRIP[key]) t = t.replace(frag, "");
+  return t.trimEnd();
+}

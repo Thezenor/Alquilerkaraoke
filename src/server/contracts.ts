@@ -1,6 +1,6 @@
 import { randomBytes, createHash } from "crypto";
 import { prisma } from "@/lib/prisma";
-import { DEFAULT_CONTRACT_TERMS } from "@/lib/contract-terms";
+import { defaultContractTerms } from "@/lib/legal-terms";
 
 /** Hash de integridad del contenido firmado (determinista). */
 export function computeContentHash(parts: {
@@ -20,13 +20,13 @@ export async function createContractForBooking(bookingId: string, userId?: strin
   if (existing) return existing;
 
   const [booking, config] = await Promise.all([
-    prisma.booking.findUnique({ where: { id: bookingId }, select: { id: true, createdAt: true } }),
+    prisma.booking.findUnique({ where: { id: bookingId }, select: { id: true, createdAt: true, locale: true } }),
     prisma.siteConfig.findUnique({ where: { id: "default" }, select: { contractTerms: true } }),
   ]);
   if (!booking) throw new Error("Reserva no encontrada");
 
   const number = `CON-${booking.createdAt.getFullYear()}-${booking.id.slice(-6).toUpperCase()}`;
-  const terms = config?.contractTerms?.trim() || DEFAULT_CONTRACT_TERMS;
+  const terms = config?.contractTerms?.trim() || defaultContractTerms(booking.locale);
   const token = randomBytes(24).toString("base64url");
 
   return prisma.contract.create({
