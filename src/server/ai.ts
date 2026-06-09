@@ -87,10 +87,15 @@ export async function generateWithProvider(
     return (data.choices?.[0]?.message?.content ?? "").trim();
   }
 
-  // Anthropic (por defecto)
+  // Anthropic (por defecto). Las API keys estándar (sk-ant-api…) van en x-api-key;
+  // los tokens OAuth (sk-ant-oat…) van en Authorization: Bearer.
+  const isOAuth = cfg.apiKey.startsWith("sk-ant-oat");
+  const authHeaders: Record<string, string> = isOAuth
+    ? { authorization: `Bearer ${cfg.apiKey}` }
+    : { "x-api-key": cfg.apiKey };
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "content-type": "application/json", "x-api-key": cfg.apiKey, "anthropic-version": "2023-06-01" },
+    headers: { "content-type": "application/json", "anthropic-version": "2023-06-01", ...authHeaders },
     body: JSON.stringify({
       model: cfg.model,
       max_tokens: maxTokens,
