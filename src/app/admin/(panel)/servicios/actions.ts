@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/server/auth/guards";
 import { logAudit } from "@/server/audit";
 import { SERVICES_TAG } from "@/server/services";
+import { generateContent, isAIConfigured } from "@/server/ai";
 import { Role } from "@/generated/prisma/enums";
 
 const schema = z.object({
@@ -127,4 +128,39 @@ export async function deleteService(formData: FormData): Promise<void> {
   updateTag(SERVICES_TAG);
   revalidatePath("/admin/servicios");
   redirect("/admin/servicios");
+}
+
+export type AiDraftResult = { ok: boolean; text?: string; error?: string };
+
+/** Genera con IA un BORRADOR (Markdown) de la descripción de un servicio. No guarda. */
+export async function generateServiceDescription(id: string): Promise<AiDraftResult> {
+  let userId: string | undefined;
+  try {
+    userId = (await ensureRole()).user.id;
+  } catch {
+    return { ok: false, error: "No tienes permisos." };
+  }
+  if (!isAIConfigured()) return { ok: false, error: "IA no configurada. Define ANTHROPIC_API_KEY en el servidor." };
+
+  const service = await prisma.service.findUnique({ where: { id } });
+  if (!service) return { ok: false, error: "Servicio no encontrado." };
+
+  const system =
+    "Eres redactor SEO profesional de 'Alquiler Karaoke', empresa española de alquiler de karaoke y eventos con cobertura nacional. " +
+    "Tono profesional y cercano, sin inventar precios, teléfonos ni datos falsos. " +
+    "Devuelves SOLO Markdown: 2-3 párrafos y 2 subtítulos de nivel 2 (##). Nada de H1.";
+  const prompt =
+    `Redacta la descripción de la página del servicio "${service.name}". ` +
+    (service.shortDescription ? `Resumen: ${service.shortDescription}. ` : "") +
+    "Explica en qué consiste, qué incluye (equipo de sonido, pantallas, microfonía, iluminación, con o sin técnico, miles de canciones cuando aplique), " +
+    "para qué eventos es ideal y la cobertura en toda España. Usa la keyword del servicio de forma natural.";
+
+  try {
+    const text = await generateContent({ system, prompt, maxTokens: 900 });
+    await logAudit({ userId, action: "ai.generate", entity: "Service", entityId: id, metadata: { field: "description" } });
+    return { ok: true, text };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "AI_ERROR";
+    return { ok: false, error: `No se pudo generar (${msg}).` };
+  }
 }

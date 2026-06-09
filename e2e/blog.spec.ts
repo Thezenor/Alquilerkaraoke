@@ -17,6 +17,9 @@ test("blog: crear y publicar una entrada y verla en la web", async ({ page }) =>
   await page.goto("/admin/blog/nuevo");
   await page.fill('input[name="title"]', title);
   await page.fill('input[name="slug"]', slug);
+  // Asistente IA: sin clave configurada informa correctamente.
+  await page.getByRole("button", { name: /Generar borrador/ }).click();
+  await expect(page.getByText(/IA no configurada/)).toBeVisible();
   await page.fill('textarea[name="content"]', "# Hola\n\nEsto es **contenido** de prueba.\n\n- punto uno\n- punto dos");
   await page.selectOption('select[name="status"]', "PUBLISHED");
   await page.getByRole("button", { name: "Guardar entrada" }).click();

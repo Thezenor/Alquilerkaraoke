@@ -52,3 +52,16 @@ export async function generateContent(opts: {
     .join("\n")
     .trim();
 }
+
+/** Como generateContent, pero parsea la respuesta como JSON (tolerante a ```json ... ```). */
+export async function generateJSON<T = unknown>(opts: { system: string; prompt: string; maxTokens?: number }): Promise<T> {
+  const raw = await generateContent(opts);
+  const cleaned = raw
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/, "")
+    .trim();
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  const json = start >= 0 && end > start ? cleaned.slice(start, end + 1) : cleaned;
+  return JSON.parse(json) as T;
+}

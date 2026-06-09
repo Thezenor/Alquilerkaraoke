@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/server/auth/guards";
 import { logAudit } from "@/server/audit";
 import { BLOG_TAG } from "@/server/blog";
+import { generateJSON, isAIConfigured } from "@/server/ai";
 import { Role } from "@/generated/prisma/enums";
 
 const schema = z.object({
@@ -106,4 +107,49 @@ export async function deletePost(formData: FormData): Promise<void> {
   updateTag(BLOG_TAG);
   revalidatePath("/admin/blog");
   redirect("/admin/blog");
+}
+
+export type BlogDraft = { excerpt: string; content: string; metaTitle: string; metaDescription: string };
+export type BlogDraftResult = { ok: boolean; draft?: BlogDraft; error?: string };
+
+const LANG: Record<string, string> = { es: "español", en: "inglés", fr: "francés" };
+
+/**
+ * Genera con IA un BORRADOR completo de artículo de blog (extracto, contenido Markdown y meta).
+ * No guarda nada: el redactor lo revisa y guarda.
+ */
+export async function generateBlogDraft(input: { title: string; locale: string; brief?: string }): Promise<BlogDraftResult> {
+  let userId: string | undefined;
+  try {
+    userId = (await ensureRole()).user.id;
+  } catch {
+    return { ok: false, error: "No tienes permisos." };
+  }
+  if (!isAIConfigured()) return { ok: false, error: "IA no configurada. Define ANTHROPIC_API_KEY en el servidor." };
+
+  const title = (input.title || "").trim();
+  if (!title) return { ok: false, error: "Escribe primero un título o tema." };
+  const lang = LANG[input.locale] ?? "español";
+
+  const system =
+    "Eres redactor SEO profesional de 'Alquiler Karaoke', empresa española de alquiler de karaoke y eventos con cobertura nacional. " +
+    "Tono profesional, cercano y útil. No inventes datos falsos (precios, teléfonos, fechas ni estadísticas inventadas). " +
+    "Devuelves EXCLUSIVAMENTE un JSON válido, sin texto alrededor ni ```.";
+  const prompt =
+    `Escribe un artículo de blog en ${lang} sobre: "${title}". ` +
+    (input.brief ? `Enfoque/indicaciones: ${input.brief}. ` : "") +
+    "Orientado a SEO para karaoke y eventos en España. Devuelve un JSON con EXACTAMENTE estas claves: " +
+    `"excerpt" (1-2 frases gancho), ` +
+    `"content" (Markdown de 500-800 palabras con 3-4 subtítulos "## ", listas cuando aporten, consejos prácticos y una llamada a la acción final; sin H1 y sin inventar URLs), ` +
+    `"metaTitle" (<=60 caracteres con keyword), ` +
+    `"metaDescription" (140-155 caracteres con gancho).`;
+
+  try {
+    const draft = await generateJSON<BlogDraft>({ system, prompt, maxTokens: 2000 });
+    await logAudit({ userId, action: "ai.generate", entity: "Post", metadata: { kind: "blog", title } });
+    return { ok: true, draft };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "AI_ERROR";
+    return { ok: false, error: `No se pudo generar (${msg}).` };
+  }
 }

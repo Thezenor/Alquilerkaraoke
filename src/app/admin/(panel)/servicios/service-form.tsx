@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
-import { saveService, type ServiceFormState } from "./actions";
+import { useActionState, useState, useTransition } from "react";
+import { saveService, generateServiceDescription, type ServiceFormState } from "./actions";
 
 const initial: ServiceFormState = { status: "idle" };
 
@@ -30,6 +30,19 @@ export type ServiceFormValues = {
 
 export function ServiceForm({ values, categories }: { values: ServiceFormValues; categories: string[] }) {
   const [state, formAction, pending] = useActionState(saveService, initial);
+  const [description, setDescription] = useState(values.description);
+  const [aiPending, startAi] = useTransition();
+  const [aiError, setAiError] = useState<string | null>(null);
+
+  function handleGenerate() {
+    if (!values.id) return;
+    setAiError(null);
+    startAi(async () => {
+      const res = await generateServiceDescription(values.id!);
+      if (res.ok && res.text) setDescription(res.text);
+      else setAiError(res.error ?? "No se pudo generar.");
+    });
+  }
 
   return (
     <form action={formAction} className="max-w-3xl">
@@ -68,13 +81,35 @@ export function ServiceForm({ values, categories }: { values: ServiceFormValues;
         </label>
       </div>
 
-      <label className="mt-5 flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-brand-text">
-          Descripción (SEO)
-          <span className="ml-2 font-normal text-brand-muted">Markdown: # títulos, **negrita**, - listas, [texto](url)</span>
-        </span>
-        <textarea name="description" rows={10} maxLength={20000} defaultValue={values.description} className={`${inputClass} font-mono text-sm`} />
-      </label>
+      <div className="mt-5">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-sm font-medium text-brand-text">
+            Descripción (SEO)
+            <span className="ml-2 font-normal text-brand-muted">Markdown: # títulos, **negrita**, - listas, [texto](url)</span>
+          </span>
+          {values.id && (
+            <button
+              type="button"
+              onClick={handleGenerate}
+              disabled={aiPending}
+              className="shrink-0 rounded-full border border-brand-neon/50 px-3 py-1 text-xs font-medium text-brand-neon transition hover:bg-brand-neon/10 disabled:opacity-50"
+            >
+              {aiPending ? "Generando…" : "✨ Generar con IA"}
+            </button>
+          )}
+        </div>
+        <textarea
+          name="description"
+          rows={10}
+          maxLength={20000}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          aria-label="Descripción (SEO)"
+          className={`${inputClass} mt-1.5 w-full font-mono text-sm`}
+        />
+        {aiError && <p className="mt-1 text-xs text-red-400">{aiError}</p>}
+        {values.id && <p className="mt-1 text-xs text-brand-muted">La IA genera un borrador; revísalo y pulsa «Guardar».</p>}
+      </div>
 
       <h2 className="mt-8 mb-3 text-sm font-semibold tracking-wide text-brand-muted uppercase">SEO (opcional)</h2>
       <div className="grid gap-5 sm:grid-cols-2">
