@@ -19,6 +19,19 @@ const optText = (s: string | undefined) => {
   return v ? v : null;
 };
 
+/** Limpia la API key pegada por error con comillas, espacios o prefijo "VAR=". */
+function sanitizeKey(raw: string | undefined): string | null {
+  let v = (raw ?? "").trim();
+  if (!v) return null;
+  // Quita un prefijo tipo ANTHROPIC_API_KEY= u OPENAI_API_KEY= si lo pegaron entero.
+  v = v.replace(/^[A-Z0-9_]+\s*=\s*/i, "");
+  // Quita comillas envolventes.
+  v = v.replace(/^["']|["']$/g, "").trim();
+  // Quita cualquier espacio/salto interno accidental.
+  v = v.replace(/\s+/g, "");
+  return v || null;
+}
+
 const schema = z.object({
   id: z.string().optional(),
   name: z.string().trim().min(1, "Ponle un nombre.").max(100),
@@ -45,7 +58,7 @@ export async function saveAiProvider(_prev: AiFormState, formData: FormData): Pr
   const isActive = d.isActive === "on";
 
   // La clave solo se cambia si se escribe una nueva (en edición se mantiene la anterior).
-  const newKey = optText(d.apiKey);
+  const newKey = sanitizeKey(d.apiKey);
   if (!d.id && !newKey) return { status: "error", message: "Introduce la API key." };
 
   const base = {
@@ -142,6 +155,12 @@ export async function testAiProvider(id: string): Promise<AiTestResult> {
     return { ok: true, message: `Conexión correcta. Respuesta: "${text.slice(0, 40)}"` };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "ERROR";
+    if (msg.includes("401"))
+      return { ok: false, message: "Clave rechazada (401): la API key no es válida. Pega solo el valor (sin comillas ni 'VAR='), regénerala en el panel del proveedor y revisa que el proveedor seleccionado coincide con la clave." };
+    if (msg.includes("404"))
+      return { ok: false, message: "Modelo no encontrado (404): revisa el ID del modelo (p. ej. claude-sonnet-4-6) y la URL base." };
+    if (msg.includes("400"))
+      return { ok: false, message: "Petición rechazada (400): revisa el modelo y, si hay saldo, la facturación del proveedor." };
     return { ok: false, message: `Fallo de conexión (${msg}). Revisa la clave, el modelo y la URL.` };
   }
 }
