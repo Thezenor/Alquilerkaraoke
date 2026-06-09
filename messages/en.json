@@ -19,7 +19,7 @@
   "Home": {
     "heroKicker": "Premium karaoke & events",
     "heroTitle": "Karaoke and event rental for a professional experience",
-    "heroSubtitle": "Professional karaoke, sound, lighting and events for individuals, companies, weddings and parties across Spain.",
+    "heroSubtitle": "Karaoke gear with LED screens, wireless microphones, professional sound and lighting, plus a catalogue of 180,000+ songs. For weddings, birthdays, companies and all kinds of events across Spain.",
     "ctaQuote": "Get a quote",
     "ctaWhatsapp": "Chat on WhatsApp",
     "servicesTitle": "Our services",
@@ -34,7 +34,9 @@
     "linkPacks": "Packs",
     "linkCities": "Cities",
     "linkSongs": "Songs",
-    "linkBlog": "Blog"
+    "linkBlog": "Blog",
+    "equipmentTitle": "Professional karaoke equipment, all included",
+    "equipmentSubtitle": "We bring everything your event needs and handle the setup, anywhere in Spain."
   },
   "HomeServices": {
     "items": [
@@ -386,5 +388,33 @@
     "ctaTitle": "Shall we set up your event?",
     "ctaText": "Tell us about your celebration and we'll prepare a tailored quote, no commitment.",
     "otherTitle": "Other event types"
+  },
+  "HomeEquipment": {
+    "items": [
+      {
+        "title": "HD LED screens",
+        "text": "High-resolution screens to read the lyrics clearly from any corner of the venue."
+      },
+      {
+        "title": "Wireless microphones",
+        "text": "Professional cable-free microphones so you can sing and move freely."
+      },
+      {
+        "title": "Professional sound",
+        "text": "Powerful PA sound system, matched to the size of your venue or event."
+      },
+      {
+        "title": "Party lighting",
+        "text": "Lights, effects and a club atmosphere to keep the dance floor going."
+      },
+      {
+        "title": "180,000+ songs",
+        "text": "A huge catalogue of hits and classics in several languages, always up to date."
+      },
+      {
+        "title": "Setup & teardown",
+        "text": "We handle transport, installation and pickup. You just sing."
+      }
+    ]
   }
 }

@@ -19,7 +19,7 @@
   "Home": {
     "heroKicker": "Karaoke y eventos premium",
     "heroTitle": "Alquiler de karaoke y eventos para una experiencia profesional",
-    "heroSubtitle": "Karaoke profesional, sonido, iluminación y eventos para particulares, empresas, bodas y fiestas en toda España.",
+    "heroSubtitle": "Equipos de karaoke con pantallas LED, micrófonos inalámbricos, sonido profesional e iluminación, y un catálogo de +180.000 canciones. Para bodas, cumpleaños, empresas y todo tipo de eventos en toda España.",
     "ctaQuote": "Pedir presupuesto",
     "ctaWhatsapp": "Hablar por WhatsApp",
     "servicesTitle": "Nuestros servicios",
@@ -34,7 +34,9 @@
     "linkPacks": "Packs",
     "linkCities": "Ciudades",
     "linkSongs": "Canciones",
-    "linkBlog": "Blog"
+    "linkBlog": "Blog",
+    "equipmentTitle": "Equipo de karaoke profesional, todo incluido",
+    "equipmentSubtitle": "Llevamos todo lo necesario para tu evento y nos encargamos del montaje, en cualquier punto de España."
   },
   "HomeServices": {
     "items": [
@@ -386,5 +388,33 @@
     "ctaTitle": "¿Montamos tu evento?",
     "ctaText": "Cuéntanos tu celebración y te preparamos un presupuesto a medida, sin compromiso.",
     "otherTitle": "Otros tipos de evento"
+  },
+  "HomeEquipment": {
+    "items": [
+      {
+        "title": "Pantallas LED HD",
+        "text": "Pantallas de alta resolución para leer la letra con claridad desde cualquier rincón del local."
+      },
+      {
+        "title": "Micrófonos inalámbricos",
+        "text": "Micrófonos profesionales sin cables para cantar y moverte con total libertad."
+      },
+      {
+        "title": "Sonido profesional",
+        "text": "Equipo de sonido PA potente, ajustado al tamaño de tu local o evento."
+      },
+      {
+        "title": "Iluminación de fiesta",
+        "text": "Luces, efectos y ambiente de discoteca para que la pista no pare."
+      },
+      {
+        "title": "+180.000 canciones",
+        "text": "Catálogo enorme con éxitos y clásicos en varios idiomas, siempre actualizado."
+      },
+      {
+        "title": "Montaje y desmontaje",
+        "text": "Nos ocupamos del transporte, la instalación y la recogida. Tú solo cantas."
+      }
+    ]
   }
 }

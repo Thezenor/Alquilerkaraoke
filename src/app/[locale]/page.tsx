@@ -14,6 +14,34 @@ export const revalidate = 300;
 
 type Item = { title: string; text: string };
 
+// Iconos del equipo profesional (orden = items de HomeEquipment): pantalla, micrófono,
+// sonido, iluminación, canciones, montaje. SVG inline, sin dependencias.
+const EQUIPMENT_ICONS = [
+  <path key="screen" d="M3 4h18v12H3zM8 20h8M12 16v4" />,
+  <g key="mic">
+    <rect x="9" y="2" width="6" height="11" rx="3" />
+    <path d="M5 10a7 7 0 0 0 14 0M12 17v4M8 21h8" />
+  </g>,
+  <g key="sound">
+    <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+    <path d="M17 8a5 5 0 0 1 0 8M19.5 5.5a9 9 0 0 1 0 13" />
+  </g>,
+  <g key="light">
+    <path d="m9 18 6-2M10 14l4-1.5M11 10l3-1" />
+    <path d="M13 3 5 14h6l-1 7 9-12h-6l1-6Z" />
+  </g>,
+  <g key="songs">
+    <path d="M9 18V5l12-2v13" />
+    <circle cx="6" cy="18" r="3" />
+    <circle cx="18" cy="16" r="3" />
+  </g>,
+  <g key="setup">
+    <path d="M10 17h4V5H2v12h2M14 9h4l3 3v5h-2" />
+    <circle cx="7.5" cy="17.5" r="2" />
+    <circle cx="17.5" cy="17.5" r="2" />
+  </g>,
+];
+
 export async function generateMetadata({
   params,
 }: {
@@ -34,6 +62,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   setRequestLocale(locale);
 
   const t = await getTranslations("Home");
+  const equipment = (await getTranslations("HomeEquipment")).raw("items") as Item[];
   const services = (await getTranslations("HomeServices")).raw("items") as Item[];
   const segments = (await getTranslations("HomeSegments")).raw("items") as Item[];
   const steps = (await getTranslations("HomeProcess")).raw("steps") as Item[];
@@ -95,6 +124,29 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               {t("ctaWhatsapp")}
             </Button>
           </div>
+        </Container>
+      </section>
+
+      {/* EQUIPO PROFESIONAL (iconos) */}
+      <section className="border-y border-brand-border/60 bg-brand-surface py-16 sm:py-20">
+        <Container>
+          <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("equipmentTitle")}</h2>
+          <p className="mt-2 max-w-2xl text-brand-muted">{t("equipmentSubtitle")}</p>
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {equipment.map((e, i) => (
+              <li key={e.title} className="flex gap-4 rounded-2xl border border-brand-border bg-brand-bg p-5">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-neon/10 text-brand-neon">
+                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    {EQUIPMENT_ICONS[i]}
+                  </svg>
+                </span>
+                <div>
+                  <h3 className="font-semibold text-white">{e.title}</h3>
+                  <p className="mt-1 text-sm text-brand-muted">{e.text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
 

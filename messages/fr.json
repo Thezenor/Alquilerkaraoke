@@ -19,7 +19,7 @@
   "Home": {
     "heroKicker": "Karaoké et événements premium",
     "heroTitle": "Location de karaoké et d'événements pour une expérience professionnelle",
-    "heroSubtitle": "Karaoké professionnel, son, éclairage et événements pour particuliers, entreprises, mariages et fêtes dans toute l'Espagne.",
+    "heroSubtitle": "Matériel de karaoké avec écrans LED, micros sans fil, son professionnel et éclairage, plus un catalogue de plus de 180 000 chansons. Pour mariages, anniversaires, entreprises et tout type d'événement dans toute l'Espagne.",
     "ctaQuote": "Demander un devis",
     "ctaWhatsapp": "Discuter sur WhatsApp",
     "servicesTitle": "Nos services",
@@ -34,7 +34,9 @@
     "linkPacks": "Packs",
     "linkCities": "Villes",
     "linkSongs": "Chansons",
-    "linkBlog": "Blog"
+    "linkBlog": "Blog",
+    "equipmentTitle": "Matériel de karaoké professionnel, tout compris",
+    "equipmentSubtitle": "Nous apportons tout le nécessaire pour votre événement et nous occupons de l'installation, partout en Espagne."
   },
   "HomeServices": {
     "items": [
@@ -386,5 +388,33 @@
     "ctaTitle": "On organise votre événement ?",
     "ctaText": "Parlez-nous de votre célébration et nous préparons un devis sur mesure, sans engagement.",
     "otherTitle": "Autres types d'événement"
+  },
+  "HomeEquipment": {
+    "items": [
+      {
+        "title": "Écrans LED HD",
+        "text": "Écrans haute résolution pour lire les paroles clairement depuis n'importe quel coin de la salle."
+      },
+      {
+        "title": "Micros sans fil",
+        "text": "Micros professionnels sans fil pour chanter et bouger en toute liberté."
+      },
+      {
+        "title": "Son professionnel",
+        "text": "Système de sonorisation PA puissant, adapté à la taille de votre salle ou événement."
+      },
+      {
+        "title": "Éclairage de fête",
+        "text": "Lumières, effets et ambiance de discothèque pour que la piste ne s'arrête jamais."
+      },
+      {
+        "title": "Plus de 180 000 chansons",
+        "text": "Un immense catalogue de tubes et classiques en plusieurs langues, toujours à jour."
+      },
+      {
+        "title": "Montage et démontage",
+        "text": "Nous gérons le transport, l'installation et la récupération. Vous n'avez qu'à chanter."
+      }
+    ]
   }
 }
