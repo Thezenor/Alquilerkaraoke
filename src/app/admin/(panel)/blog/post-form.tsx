@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState, useTransition } from "react";
+import { ImageUpload } from "@/components/admin/image-upload";
 import { savePost, generateBlogDraft, type PostFormState } from "./actions";
 
 const initial: PostFormState = { status: "idle" };
@@ -25,12 +26,14 @@ export function PostForm({ values }: { values: PostFormValues }) {
   const [state, formAction, pending] = useActionState(savePost, initial);
 
   const [title, setTitle] = useState(values.title);
+  const [slug, setSlug] = useState(values.slug);
   const [locale, setLocale] = useState(values.locale);
   const [excerpt, setExcerpt] = useState(values.excerpt);
   const [content, setContent] = useState(values.content);
   const [metaTitle, setMetaTitle] = useState(values.metaTitle);
   const [metaDescription, setMetaDescription] = useState(values.metaDescription);
   const [brief, setBrief] = useState("");
+  const [coverHint, setCoverHint] = useState<string | null>(null);
   const [aiPending, startAi] = useTransition();
   const [aiError, setAiError] = useState<string | null>(null);
 
@@ -39,10 +42,13 @@ export function PostForm({ values }: { values: PostFormValues }) {
     startAi(async () => {
       const res = await generateBlogDraft({ title, locale, brief });
       if (res.ok && res.draft) {
-        setExcerpt(res.draft.excerpt ?? "");
-        setContent(res.draft.content ?? "");
-        setMetaTitle(res.draft.metaTitle ?? "");
-        setMetaDescription(res.draft.metaDescription ?? "");
+        const d = res.draft;
+        if (d.slug && !slug) setSlug(d.slug);
+        setExcerpt(d.excerpt ?? "");
+        setContent(d.content ?? "");
+        setMetaTitle(d.metaTitle ?? "");
+        setMetaDescription(d.metaDescription ?? "");
+        setCoverHint(d.coverImagePrompt || null);
       } else {
         setAiError(res.error ?? "No se pudo generar.");
       }
@@ -60,7 +66,7 @@ export function PostForm({ values }: { values: PostFormValues }) {
         </label>
         <label className="flex flex-col gap-1.5">
           <span className="text-sm font-medium text-brand-text">Slug <span className="text-brand-neon">*</span></span>
-          <input name="slug" required maxLength={160} defaultValue={values.slug} placeholder="mi-articulo" className={inputClass} />
+          <input name="slug" required maxLength={160} value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="se genera del título" className={inputClass} />
         </label>
         <label className="flex flex-col gap-1.5">
           <span className="text-sm font-medium text-brand-text">Idioma</span>
@@ -97,11 +103,13 @@ export function PostForm({ values }: { values: PostFormValues }) {
         {aiError && <p className="mt-2 text-xs text-red-400">{aiError}</p>}
       </div>
 
-      <div className="mt-5 grid gap-5 sm:grid-cols-1">
-        <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-brand-text">Imagen de portada (URL)</span>
-          <input name="coverImageUrl" maxLength={500} defaultValue={values.coverImageUrl} placeholder="https://… o sube desde Eventos/Galerías" className={inputClass} />
-        </label>
+      <div className="mt-5 flex flex-col gap-5">
+        <div>
+          <ImageUpload name="coverImageUrl" label="Imagen de portada" defaultValue={values.coverImageUrl} />
+          {coverHint && (
+            <p className="mt-1 text-xs text-brand-neon/90">💡 Sugerencia de portada (IA): {coverHint}</p>
+          )}
+        </div>
         <label className="flex flex-col gap-1.5">
           <span className="text-sm font-medium text-brand-text">Extracto</span>
           <textarea name="excerpt" rows={2} maxLength={400} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} className={inputClass} />

@@ -23,7 +23,7 @@ export async function generateMetadata({
     pathname: `/blog/${slug}`,
     title: post.metaTitle || `${post.title} | Alquiler Karaoke`,
     description: post.metaDescription || post.excerpt || markdownToPlain(post.content),
-    ...(post.coverImageUrl ? { images: [post.coverImageUrl] } : {}),
+    // La imagen OG la genera /blog/[slug]/opengraph-image (tarjeta de marca con el título).
   });
 }
 
