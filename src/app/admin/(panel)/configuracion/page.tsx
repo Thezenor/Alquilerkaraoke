@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { DEFAULT_QUOTE_TERMS } from "@/lib/legal-terms";
 import { ConfigForm, type ConfigValues } from "./config-form";
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default async function ConfigPage() {
     gaMeasurementId: c?.gaMeasurementId ?? "",
     gscVerification: c?.gscVerification ?? "",
     metaPixelId: c?.metaPixelId ?? "",
+    quoteTerms: c?.quoteTerms ?? DEFAULT_QUOTE_TERMS,
   };
 
   return (

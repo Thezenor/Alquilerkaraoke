@@ -201,6 +201,8 @@ model SiteConfig {
   paymentInfo  String? // instrucciones libres mostradas al cliente
   // Cláusulas por defecto para los contratos (snapshot al generar cada contrato)
   contractTerms String?
+  // Condiciones que se imprimen en el presupuesto/proforma (reserva, pagos, cancelación…)
+  quoteTerms    String?
   // Analítica y verificación (se inyectan en el <head> público si están definidos)
   gaMeasurementId  String? // Google Analytics 4: "G-XXXXXXXXXX"
   gscVerification  String? // Google Search Console: token de etiqueta meta

@@ -236,6 +236,22 @@
       {
         "q": "Combien ça coûte ?",
         "a": "Chaque événement est différent (durée, lieu et extras), nous préparons donc un devis sur mesure. Demandez-le sans engagement et nous répondons au plus vite."
+      },
+      {
+        "q": "Comment se fait la réservation et le paiement ?",
+        "a": "Pour réserver la date, vous versez 50% du montant ; les 50% restants sont payés le jour de l'événement, une fois le matériel installé et testé."
+      },
+      {
+        "q": "Quelle est la politique d'annulation ?",
+        "a": "Vous pouvez annuler jusqu'à 7 jours avant avec une pénalité de 50 € de frais de gestion. Passé ce délai, les 50% déjà versés sont perdus."
+      },
+      {
+        "q": "Avez-vous une assurance responsabilité civile ?",
+        "a": "Oui. Tous nos événements sont couverts par une assurance responsabilité civile obligatoire ; vous pouvez nous demander le certificat."
+      },
+      {
+        "q": "Respectez-vous les droits d'auteur (SGAE, AGEDI) ?",
+        "a": "Oui, nous disposons des accords avec APEK, SGAE et AGEDI, et nous émettons des factures. Exigez toujours une entreprise légale, une facture et le certificat de RC pour garantir votre événement."
       }
     ],
     "ctaTitle": "On organise votre événement ?",

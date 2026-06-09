@@ -3,6 +3,7 @@ import { canAccessAdmin } from "@/lib/auth-roles";
 import { prisma } from "@/lib/prisma";
 import { logAudit } from "@/server/audit";
 import { buildProformaPdf, type ProformaData } from "@/server/pdf/proforma";
+import { DEFAULT_QUOTE_TERMS } from "@/lib/legal-terms";
 import { PAYMENT_STATUS } from "@/components/admin/status-badge";
 
 export const runtime = "nodejs";
@@ -58,6 +59,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     },
     payment: config ? { iban: config.iban, bizum: config.bizum, info: config.paymentInfo } : undefined,
     paymentStatusLabel: PAYMENT_STATUS[b.paymentStatus]?.label ?? b.paymentStatus,
+    terms: config?.quoteTerms || DEFAULT_QUOTE_TERMS,
     activities: activities.length > 1 ? activities.map((a) => ({ packName: a.packName, hours: a.hours, lineTotal: a.lineTotal })) : undefined,
   };
 

@@ -29,6 +29,8 @@ export type ProformaData = {
   };
   payment?: { iban?: string | null; bizum?: string | null; info?: string | null };
   paymentStatusLabel: string;
+  /** Condiciones del presupuesto (se imprimen en una página aparte). */
+  terms?: string | null;
   // Si hay varias actividades, se listan como líneas independientes.
   activities?: { packName: string; hours: number; lineTotal: number }[];
 };
@@ -211,6 +213,39 @@ export async function buildProformaPdf(data: ProformaData): Promise<Uint8Array> 
     font,
     MUTED,
   );
+
+  // ── Condiciones (página(s) aparte, con paginación) ──
+  const terms = safe(data.terms);
+  if (terms) {
+    const SIZE = 8.5;
+    const LEAD = 11.5;
+    let tp = pdf.addPage([A4.w, A4.h]);
+    let ty = A4.h - M;
+    tp.drawText("CONDICIONES DE LA RESERVA", { x: M, y: ty, size: 12, font: bold, color: ACCENT });
+    ty -= 22;
+    const ensure = () => {
+      if (ty < M + LEAD) {
+        tp = pdf.addPage([A4.w, A4.h]);
+        ty = A4.h - M;
+      }
+    };
+    for (const para of data.terms!.replace(/\r\n/g, "\n").split("\n")) {
+      const raw = safe(para).trim();
+      if (!raw) {
+        ty -= LEAD * 0.6;
+        continue;
+      }
+      // Encabezados destacados (MUY IMPORTANTE / ATENCIÓN) en negrita.
+      const heading = /^(MUY IMPORTANTE|ATENCI)/.test(raw);
+      const f = heading ? bold : font;
+      const color = heading ? INK : rgb(0.25, 0.27, 0.3);
+      for (const line of wrapText(f, raw, SIZE, A4.w - 2 * M)) {
+        ensure();
+        tp.drawText(line, { x: M, y: ty, size: SIZE, font: f, color });
+        ty -= LEAD;
+      }
+    }
+  }
 
   return pdf.save();
 }

@@ -236,6 +236,22 @@
       {
         "q": "How much does it cost?",
         "a": "Every event is different (duration, location and extras), so we prepare a tailored quote. Ask for one with no commitment and we'll reply as soon as possible."
+      },
+      {
+        "q": "How is the booking made and paid?",
+        "a": "To reserve the date you pay 50% of the amount; the remaining 50% is paid on the event day, once the equipment is set up and tested."
+      },
+      {
+        "q": "What is the cancellation policy?",
+        "a": "You can cancel up to 7 days before with a 50 € handling fee. After that, the 50% already paid is forfeited."
+      },
+      {
+        "q": "Do you have public liability insurance?",
+        "a": "Yes. All our events are covered by mandatory public liability insurance; you can request the certificate."
+      },
+      {
+        "q": "Do you comply with copyright (SGAE, AGEDI)?",
+        "a": "Yes, we hold the agreements with APEK, SGAE and AGEDI, and we issue invoices. Always require a legal company, an invoice and the liability certificate to safeguard your event."
       }
     ],
     "ctaTitle": "Shall we set up your event?",

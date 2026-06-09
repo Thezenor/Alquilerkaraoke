@@ -29,6 +29,7 @@ export type ConfigValues = {
   gaMeasurementId: string;
   gscVerification: string;
   metaPixelId: string;
+  quoteTerms: string;
 };
 
 function Field({
@@ -151,6 +152,23 @@ export function ConfigForm({ values }: { values: ConfigValues }) {
         <div className="sm:col-span-2">
           <Field name="gscVerification" label="Google Search Console (token de verificación meta)" defaultValue={values.gscVerification} placeholder="contenido de la meta google-site-verification" />
         </div>
+      </div>
+
+      <h2 className="mt-8 mb-1 text-sm font-semibold tracking-wide text-brand-muted uppercase">Condiciones del presupuesto</h2>
+      <p className="mb-4 text-sm text-brand-muted">
+        Se imprimen en una página aparte del PDF del presupuesto (reserva, pagos, cancelación, seguros…).
+      </p>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="quoteTerms" className="text-sm font-medium text-brand-text">Condiciones (texto del presupuesto)</label>
+        <textarea
+          id="quoteTerms"
+          name="quoteTerms"
+          defaultValue={values.quoteTerms}
+          rows={10}
+          maxLength={8000}
+          placeholder="Condiciones que aparecerán en el presupuesto."
+          className="rounded-lg border border-brand-border bg-brand-bg px-3 py-2.5 text-xs text-brand-text outline-none transition focus:border-brand-neon focus:ring-2 focus:ring-brand-neon/30"
+        />
       </div>
 
       <h2 className="mt-8 mb-1 text-sm font-semibold tracking-wide text-brand-muted uppercase">Contrato</h2>

@@ -37,6 +37,7 @@ const schema = z.object({
     .optional(),
   gscVerification: z.string().trim().max(200).optional(),
   metaPixelId: z.union([z.literal(""), z.string().regex(/^\d{6,20}$/, "El Pixel ID son solo dígitos.")]).optional(),
+  quoteTerms: z.string().trim().max(8000).optional(),
 });
 
 export type ConfigFormState = {
@@ -90,6 +91,7 @@ export async function updateSiteConfig(
     gaMeasurementId: orNull(d.gaMeasurementId),
     gscVerification: orNull(d.gscVerification),
     metaPixelId: orNull(d.metaPixelId),
+    quoteTerms: orNull(d.quoteTerms),
   };
   await prisma.siteConfig.upsert({
     where: { id: "default" },

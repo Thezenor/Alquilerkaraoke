@@ -236,6 +236,22 @@
       {
         "q": "¿Cuánto cuesta?",
         "a": "Cada evento es distinto (duración, ubicación y extras), así que preparamos un presupuesto a medida. Pídelo sin compromiso y te respondemos lo antes posible."
+      },
+      {
+        "q": "¿Cómo se reserva y se paga?",
+        "a": "Para reservar la fecha se abona el 50% del importe; el 50% restante se paga el día del evento, una vez montado y probado el equipo."
+      },
+      {
+        "q": "¿Cuál es la política de cancelación?",
+        "a": "Puedes anular hasta 7 días antes con una penalización de 50 € por gastos de gestión. Pasado ese plazo, se pierde el 50% ya abonado."
+      },
+      {
+        "q": "¿Tenéis seguro de responsabilidad civil?",
+        "a": "Sí. Todos nuestros eventos cuentan con un Seguro de Responsabilidad Civil obligatorio; puedes solicitarnos el certificado."
+      },
+      {
+        "q": "¿Cumplís con los derechos de autor (SGAE, AGEDI)?",
+        "a": "Sí, disponemos de los acuerdos con APEK, SGAE y AGEDI, y emitimos factura. Exige siempre empresa legal, factura y certificado de RC para garantizar tu evento."
       }
     ],
     "ctaTitle": "¿Montamos tu evento?",
