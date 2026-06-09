@@ -1,4 +1,6 @@
-import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage, type RGB } from "pdf-lib";
+import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFImage, type PDFPage } from "pdf-lib";
+import { glowPng } from "./assets";
+import { LOGO_LIGHT_PNG_BASE64, LOGO_LIGHT_RATIO } from "./logo-light";
 
 // Genera un presupuesto/catálogo en PDF (A4) con el diseño premium oscuro de la marca,
 // usando pdf-lib (JS puro, sin navegador). Importes en céntimos. Devuelve los bytes del PDF.
@@ -99,13 +101,19 @@ export async function buildQuoteCatalogPdf(data: QuoteCatalogData): Promise<Uint
     p.drawRectangle({ x: 0, y: 0, width: A4.w, height: A4.h, color: BG });
     return p;
   };
-  const glow = (p: PDFPage, x: number, y: number, r: number, color: RGB, opacity = 0.32) => {
-    // Aproxima un "glow" difuminado con muchos círculos concéntricos translúcidos
-    // (más anillos = degradado más suave, sin bandas marcadas).
-    const rings = 10;
-    for (let i = rings; i >= 1; i--) {
-      p.drawCircle({ x, y, size: (r * i) / rings, color, opacity: opacity * 0.12 });
-    }
+  // Imágenes embebidas: logo real de marca + glows con degradado radial suave.
+  const cyGlow = await pdf.embedPng(await glowPng("#22D3EE"));
+  const viGlow = await pdf.embedPng(await glowPng("#7C3AED"));
+  const logo = await pdf.embedPng(Buffer.from(LOGO_LIGHT_PNG_BASE64, "base64"));
+
+  // Glow centrado en (cx,cy) con diámetro `size` (imagen radial → degradado suave).
+  const glow = (p: PDFPage, cx: number, cy: number, size: number, img: PDFImage, opacity = 0.55) =>
+    p.drawImage(img, { x: cx - size / 2, y: cy - size / 2, width: size, height: size, opacity });
+  // Logo de marca con altura `h`; devuelve su anchura para colocar elementos al lado.
+  const drawLogo = (p: PDFPage, x: number, y: number, h: number) => {
+    const w = h * LOGO_LIGHT_RATIO;
+    p.drawImage(logo, { x, y, width: w, height: h });
+    return w;
   };
   const text = (p: PDFPage, s: string, x: number, y: number, size: number, f: PDFFont = font, color = INK, opacity = 1) =>
     p.drawText(safe(s), { x, y, size, font: f, color, opacity });
@@ -117,15 +125,6 @@ export async function buildQuoteCatalogPdf(data: QuoteCatalogData): Promise<Uint
     p.drawRectangle({ x, y, width: w, height: h, color: WHITE, opacity: 0.045 });
     p.drawRectangle({ x, y, width: w, height: h, borderColor: border, borderWidth: 1, opacity: 0, borderOpacity: borderOp });
   };
-  // Insignia de marca (mapea el SVG del HTML: viewBox 120x172). Altura objetivo h.
-  const badge = (p: PDFPage, x: number, y: number, h: number) => {
-    const s = h / 172;
-    const r = (bx: number, by: number, bw: number, bh: number, c: RGB) =>
-      p.drawRectangle({ x: x + bx * s, y: y + (172 - by - bh) * s, width: bw * s, height: bh * s, color: c });
-    r(46, 98, 28, 62, rgb(0.133, 0.165, 0.2)); // pie
-    r(26, 84, 68, 18, CY); // base
-    r(30, 10, 60, 82, CY); // cápsula
-  };
   const footer = (p: PDFPage, n: number) => {
     text(p, data.company.web || "www.alquilerkaraoke.com", MX, 26, 7.5, font, MUTED, 0.5);
     right(p, `${String(n).padStart(2, "0")} / ${String(totalPages).padStart(2, "0")}`, A4.w - MX, 26, 7.5, font, MUTED);
@@ -134,12 +133,10 @@ export async function buildQuoteCatalogPdf(data: QuoteCatalogData): Promise<Uint
   // ════════ PÁGINA 1 · PORTADA ════════
   {
     const p = newPage();
-    glow(p, 70, A4.h - 40, 230, CY, 0.5);
-    glow(p, A4.w - 40, 90, 230, VIO, 0.36);
-    // Cabecera: marca + fecha
-    badge(p, MX, A4.h - MT - 40, 40);
-    text(p, "Alquiler", MX + 40, A4.h - MT - 22, 15, bold, INK);
-    text(p, "Karaoke", MX + 40 + bold.widthOfTextAtSize("Alquiler ", 15), A4.h - MT - 22, 15, bold, CY);
+    glow(p, 60, A4.h - 30, 560, cyGlow, 0.6);
+    glow(p, A4.w - 30, 120, 560, viGlow, 0.42);
+    // Cabecera: logo real + fecha
+    drawLogo(p, MX, A4.h - MT - 30, 34);
     right(p, "FECHA DE PROPUESTA", A4.w - MX, A4.h - MT - 8, 8.5, bold, MUTED);
     right(p, data.date, A4.w - MX, A4.h - MT - 24, 11, bold, INK);
 
@@ -179,8 +176,8 @@ export async function buildQuoteCatalogPdf(data: QuoteCatalogData): Promise<Uint
   // ════════ PÁGINA 2 · SERVICIOS (marca) ════════
   {
     const p = newPage();
-    glow(p, A4.w - 30, A4.h - 30, 170, CY, 0.32);
-    glow(p, 20, 120, 180, VIO, 0.26);
+    glow(p, A4.w - 20, A4.h - 20, 440, cyGlow, 0.42);
+    glow(p, 10, 140, 460, viGlow, 0.34);
     let y = A4.h - MT;
     text(p, "QUE HACEMOS", MX, y, 10.5, bold, CY);
     y -= 28;
@@ -261,8 +258,8 @@ export async function buildQuoteCatalogPdf(data: QuoteCatalogData): Promise<Uint
     const premium = /furor|premium/i.test(line.name);
     const accent = premium ? VIO : CY;
     const p = newPage();
-    glow(p, premium ? 40 : A4.w - 40, A4.h - 40, 200, accent, 0.4);
-    glow(p, premium ? A4.w - 30 : 30, 110, 150, premium ? CY : VIO, 0.26);
+    glow(p, premium ? 30 : A4.w - 30, A4.h - 30, 520, premium ? viGlow : cyGlow, 0.45);
+    glow(p, premium ? A4.w - 20 : 20, 120, 420, premium ? cyGlow : viGlow, 0.3);
     let y = A4.h - MT;
 
     // Etiqueta + fecha del evento
@@ -342,7 +339,7 @@ export async function buildQuoteCatalogPdf(data: QuoteCatalogData): Promise<Uint
   {
     const terms = safe(data.terms);
     let p = newPage();
-    glow(p, A4.w - 30, A4.h - 30, 150, CY, 0.26);
+    glow(p, A4.w - 20, A4.h - 20, 420, cyGlow, 0.3);
     let y = A4.h - MT;
     text(p, "CONTRATO", MX, y, 10.5, bold, CY);
     y -= 24;
@@ -406,13 +403,13 @@ export async function buildQuoteCatalogPdf(data: QuoteCatalogData): Promise<Uint
   // ════════ CONTRAPORTADA ════════
   {
     const p = newPage();
-    glow(p, A4.w / 2, A4.h - 30, 220, CY, 0.42);
-    glow(p, A4.w - 30, 90, 200, VIO, 0.34);
+    glow(p, A4.w / 2, A4.h - 20, 620, cyGlow, 0.5);
+    glow(p, A4.w - 30, 90, 540, viGlow, 0.4);
     let y = A4.h - 150;
-    badge(p, A4.w / 2 - 80, y, 56);
-    text(p, "Alquiler Karaoke", A4.w / 2 - 80 + 56, y + 16, 21, bold, INK);
+    const backLogoH = 52;
+    drawLogo(p, (A4.w - backLogoH * LOGO_LIGHT_RATIO) / 2, y, backLogoH);
 
-    y -= 70;
+    y -= 60;
     const claim1 = "Tu pones la voz.";
     text(p, claim1, (A4.w - bold.widthOfTextAtSize(claim1, 30)) / 2, y, 30, bold, INK);
     y -= 34;
