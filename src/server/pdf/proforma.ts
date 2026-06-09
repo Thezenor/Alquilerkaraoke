@@ -31,6 +31,8 @@ export type ProformaData = {
   paymentStatusLabel: string;
   /** Condiciones del presupuesto (se imprimen en una página aparte). */
   terms?: string | null;
+  /** Encabezado de la sección de condiciones (según idioma del cliente). */
+  termsHeading?: string | null;
   // Si hay varias actividades, se listan como líneas independientes.
   activities?: { packName: string; hours: number; lineTotal: number }[];
 };
@@ -221,7 +223,7 @@ export async function buildProformaPdf(data: ProformaData): Promise<Uint8Array> 
     const LEAD = 11.5;
     let tp = pdf.addPage([A4.w, A4.h]);
     let ty = A4.h - M;
-    tp.drawText("CONDICIONES DE LA RESERVA", { x: M, y: ty, size: 12, font: bold, color: ACCENT });
+    tp.drawText(safe(data.termsHeading) || "CONDICIONES DE LA RESERVA", { x: M, y: ty, size: 12, font: bold, color: ACCENT });
     ty -= 22;
     const ensure = () => {
       if (ty < M + LEAD) {
@@ -236,7 +238,7 @@ export async function buildProformaPdf(data: ProformaData): Promise<Uint8Array> 
         continue;
       }
       // Encabezados destacados (MUY IMPORTANTE / ATENCIÓN) en negrita.
-      const heading = /^(MUY IMPORTANTE|ATENCI)/.test(raw);
+      const heading = /^(MUY IMPORTANTE|IMPORTANT|ATENCI)/.test(raw);
       const f = heading ? bold : font;
       const color = heading ? INK : rgb(0.25, 0.27, 0.3);
       for (const line of wrapText(f, raw, SIZE, A4.w - 2 * M)) {
