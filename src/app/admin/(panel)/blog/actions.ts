@@ -125,7 +125,7 @@ export async function generateBlogDraft(input: { title: string; locale: string; 
   } catch {
     return { ok: false, error: "No tienes permisos." };
   }
-  if (!isAIConfigured()) return { ok: false, error: "IA no configurada. Define ANTHROPIC_API_KEY en el servidor." };
+  if (!(await isAIConfigured())) return { ok: false, error: "IA no configurada. Conéctala en Admin → IA." };
 
   const title = (input.title || "").trim();
   if (!title) return { ok: false, error: "Escribe primero un título o tema." };

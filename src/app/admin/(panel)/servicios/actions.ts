@@ -140,7 +140,7 @@ export async function generateServiceDescription(id: string): Promise<AiDraftRes
   } catch {
     return { ok: false, error: "No tienes permisos." };
   }
-  if (!isAIConfigured()) return { ok: false, error: "IA no configurada. Define ANTHROPIC_API_KEY en el servidor." };
+  if (!(await isAIConfigured())) return { ok: false, error: "IA no configurada. Conéctala en Admin → IA." };
 
   const service = await prisma.service.findUnique({ where: { id } });
   if (!service) return { ok: false, error: "Servicio no encontrado." };

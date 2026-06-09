@@ -607,6 +607,26 @@ model GalleryItem {
   @@index([galleryId, sortOrder])
 }
 
+// ── Proveedores de IA (configurables desde el admin) ────────────
+enum AiProviderType {
+  ANTHROPIC
+  OPENAI // y compatibles con la API de OpenAI (OpenRouter, Groq, etc. vía baseUrl)
+}
+
+model AiProvider {
+  id        String         @id @default(cuid())
+  name      String // etiqueta libre, p. ej. "Claude (principal)"
+  provider  AiProviderType @default(ANTHROPIC)
+  apiKey    String // se guarda cifrado en BD; nunca se devuelve al cliente
+  model     String // p. ej. claude-sonnet-4-6 / gpt-4o-mini
+  baseUrl   String? // opcional, para APIs compatibles con OpenAI
+  isActive  Boolean        @default(false) // solo uno activo a la vez
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([isActive])
+}
+
 // ── Tipos de evento (páginas SEO: bodas, empresas, cumpleaños…) ──
 model EventType {
   id               String   @id @default(cuid())

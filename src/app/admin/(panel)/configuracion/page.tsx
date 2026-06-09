@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_QUOTE_TERMS } from "@/lib/legal-terms";
+import { isAIConfigured } from "@/server/ai";
 import { ConfigForm, type ConfigValues } from "./config-form";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Configuración de empresa · Panel Alquiler Karaoke",
@@ -10,6 +14,7 @@ export const metadata: Metadata = {
 
 export default async function ConfigPage() {
   const c = await prisma.siteConfig.findUnique({ where: { id: "default" } });
+  const aiConfigured = await isAIConfigured();
 
   const values: ConfigValues = {
     companyName: c?.companyName ?? "",
@@ -45,6 +50,17 @@ export default async function ConfigPage() {
         Estos datos se muestran en la web pública (contacto, WhatsApp). Al guardar se refresca
         automáticamente.
       </p>
+
+      {/* Estado de la IA (lee la variable de entorno del servidor; no expone la clave) */}
+      <div className="mt-6 flex items-center gap-2 rounded-xl border border-brand-border bg-brand-surface px-4 py-3 text-sm">
+        <span className="text-brand-muted">Integración de IA:</span>
+        {aiConfigured ? (
+          <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 font-medium text-emerald-300">✓ Conectada (ANTHROPIC_API_KEY detectada)</span>
+        ) : (
+          <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 font-medium text-amber-300">⚠ No configurada — añádela en la sección IA</span>
+        )}
+        <Link href="/admin/ia" className="ml-auto text-brand-neon underline-offset-2 hover:underline">Gestionar IA →</Link>
+      </div>
 
       <div className="mt-8">
         <ConfigForm values={values} />

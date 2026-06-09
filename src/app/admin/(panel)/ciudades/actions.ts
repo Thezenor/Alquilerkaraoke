@@ -115,8 +115,8 @@ export async function generateCityBody(cityId: string): Promise<AiDraftResult> {
   } catch {
     return { ok: false, error: "No tienes permisos." };
   }
-  if (!isAIConfigured()) {
-    return { ok: false, error: "IA no configurada. Define ANTHROPIC_API_KEY en el servidor." };
+  if (!(await isAIConfigured())) {
+    return { ok: false, error: "IA no configurada. Conéctala en Admin → IA." };
   }
 
   const city = await prisma.city.findUnique({ where: { id: cityId } });

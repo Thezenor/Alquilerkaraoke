@@ -52,6 +52,7 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: "Sistema",
     items: [
+      { href: "/admin/ia", label: "IA", icon: "cpu", roles: [Role.SUPERADMIN, Role.ADMIN] },
       { href: "/admin/configuracion", label: "Configuración", icon: "settings" },
       { href: "/admin/usuarios", label: "Usuarios", icon: "shield", roles: [Role.SUPERADMIN] },
     ],

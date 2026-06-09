@@ -139,7 +139,7 @@ export async function generateEventBody(id: string): Promise<AiDraftResult> {
   } catch {
     return { ok: false, error: "No tienes permisos." };
   }
-  if (!isAIConfigured()) return { ok: false, error: "IA no configurada. Define ANTHROPIC_API_KEY en el servidor." };
+  if (!(await isAIConfigured())) return { ok: false, error: "IA no configurada. Conéctala en Admin → IA." };
 
   const e = await prisma.eventType.findUnique({ where: { id } });
   if (!e) return { ok: false, error: "Evento no encontrado." };
