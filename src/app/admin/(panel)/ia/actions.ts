@@ -147,20 +147,28 @@ export async function testAiProvider(id: string): Promise<AiTestResult> {
   }
   const p = await prisma.aiProvider.findUnique({ where: { id } });
   if (!p?.apiKey) return { ok: false, message: "Falta la API key." };
+  // Descriptor seguro de la clave (solo el prefijo público + longitud, nunca la clave).
+  const keyHint = `${p.apiKey.slice(0, 12)}… (${p.apiKey.length} car.)`;
+  const ctx = `[proveedor ${p.provider}, modelo ${p.model}, clave ${keyHint}]`;
+  // Coherencia proveedor/clave: aviso temprano del desajuste más común.
+  if (p.provider === "ANTHROPIC" && !p.apiKey.startsWith("sk-ant-"))
+    return { ok: false, message: `La clave no parece de Anthropic (debería empezar por sk-ant-…). ${ctx}` };
+  if (p.provider === "OPENAI" && p.apiKey.startsWith("sk-ant-"))
+    return { ok: false, message: `Has puesto una clave de Anthropic con proveedor OpenAI. Cambia el proveedor a "Anthropic". ${ctx}` };
   try {
     const text = await generateWithProvider(
       { provider: p.provider, apiKey: p.apiKey, model: p.model, baseUrl: p.baseUrl },
       { system: "Responde solo con: OK", prompt: "Di OK", maxTokens: 16 },
     );
-    return { ok: true, message: `Conexión correcta. Respuesta: "${text.slice(0, 40)}"` };
+    return { ok: true, message: `Conexión correcta. Respuesta: "${text.slice(0, 40)}" ${ctx}` };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "ERROR";
     if (msg.includes("401"))
-      return { ok: false, message: "Clave rechazada (401): la API key no es válida. Pega solo el valor (sin comillas ni 'VAR='), regénerala en el panel del proveedor y revisa que el proveedor seleccionado coincide con la clave." };
+      return { ok: false, message: `Clave rechazada (401): la API key no es válida o no coincide con el proveedor. ${ctx}` };
     if (msg.includes("404"))
-      return { ok: false, message: "Modelo no encontrado (404): revisa el ID del modelo (p. ej. claude-sonnet-4-6) y la URL base." };
+      return { ok: false, message: `Modelo no encontrado (404): revisa el ID del modelo y la URL base. ${ctx}` };
     if (msg.includes("400"))
-      return { ok: false, message: "Petición rechazada (400): revisa el modelo y, si hay saldo, la facturación del proveedor." };
-    return { ok: false, message: `Fallo de conexión (${msg}). Revisa la clave, el modelo y la URL.` };
+      return { ok: false, message: `Petición rechazada (400): revisa el modelo y la facturación del proveedor. ${ctx}` };
+    return { ok: false, message: `Fallo de conexión (${msg}). ${ctx}` };
   }
 }
