@@ -48,3 +48,6 @@ next-env.d.ts
 /playwright/.cache
 
 /src/generated/prisma
+
+# Subidas locales (en prod = Railway Volume)
+/uploads

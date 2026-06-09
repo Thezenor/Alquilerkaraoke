@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState, useTransition } from "react";
+import { ImageUpload } from "@/components/admin/image-upload";
 import { saveEventType, generateEventBody, type EventFormState } from "./actions";
 
 const initial: EventFormState = { status: "idle" };
@@ -61,13 +62,12 @@ export function EventForm({ values }: { values: EventFormValues }) {
           <textarea name="intro" rows={2} defaultValue={values.intro} className={`${inputClass} resize-y`} />
         </label>
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-brand-text">Imagen (URL)</span>
-          <input name="heroImageUrl" maxLength={500} defaultValue={values.heroImageUrl} placeholder="https://…" className={inputClass} />
-        </label>
-        <label className="flex flex-col gap-1.5">
           <span className="text-sm font-medium text-brand-text">Orden</span>
           <input name="sortOrder" type="number" min={0} defaultValue={values.sortOrder} placeholder="0" className={inputClass} />
         </label>
+        <div className="sm:col-span-2">
+          <ImageUpload name="heroImageUrl" label="Imagen del evento" defaultValue={values.heroImageUrl} />
+        </div>
       </div>
 
       <div className="mt-4">

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { pageRequireRole } from "@/server/auth/guards";
 import { Role } from "@/generated/prisma/enums";
 import { ConfirmButton } from "@/components/admin/confirm-button";
+import { ImageUpload } from "@/components/admin/image-upload";
 import { GalleryForm, type GalleryFormValues } from "../gallery-form";
 import { deleteGallery, addGalleryItem, deleteGalleryItem } from "../actions";
 
@@ -60,30 +61,29 @@ export default async function EditGalleryPage({ params }: { params: Promise<{ id
 
       {/* Elementos */}
       <h2 className="mt-12 text-lg font-semibold text-white">Fotos y vídeos ({g.items.length})</h2>
-      <form action={addGalleryItem} className="mt-4 flex flex-wrap items-end gap-2 rounded-xl border border-brand-border bg-brand-surface p-4">
+      <form action={addGalleryItem} className="mt-4 rounded-xl border border-brand-border bg-brand-surface p-4">
         <input type="hidden" name="galleryId" value={g.id} />
-        <label className="flex flex-col gap-1">
-          <span className="text-xs text-brand-muted">Tipo</span>
-          <select name="type" className={inputClass}>
-            <option value="IMAGE">Imagen</option>
-            <option value="VIDEO">Vídeo</option>
-          </select>
-        </label>
-        <label className="flex flex-1 flex-col gap-1">
-          <span className="text-xs text-brand-muted">URL del archivo</span>
-          <input name="url" required placeholder="https://…" className={`${inputClass} w-full`} />
-        </label>
-        <label className="flex flex-1 flex-col gap-1">
-          <span className="text-xs text-brand-muted">Miniatura (opcional)</span>
-          <input name="thumbnailUrl" placeholder="https://… (recom. para vídeo)" className={`${inputClass} w-full`} />
-        </label>
-        <label className="flex flex-1 flex-col gap-1">
-          <span className="text-xs text-brand-muted">Pie (opcional)</span>
-          <input name="caption" maxLength={300} className={`${inputClass} w-full`} />
-        </label>
-        <button type="submit" className="rounded-lg bg-brand-neon px-4 py-1.5 text-sm font-semibold text-brand-bg transition hover:bg-brand-neon-strong">
-          Añadir
-        </button>
+        <ImageUpload name="url" label="Sube una foto (o pega la URL de un vídeo)" />
+        <div className="mt-3 flex flex-wrap items-end gap-2">
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-brand-muted">Tipo</span>
+            <select name="type" className={inputClass}>
+              <option value="IMAGE">Imagen</option>
+              <option value="VIDEO">Vídeo</option>
+            </select>
+          </label>
+          <label className="flex flex-1 flex-col gap-1">
+            <span className="text-xs text-brand-muted">Miniatura del vídeo (opcional)</span>
+            <input name="thumbnailUrl" placeholder="https://… (recom. para vídeo)" className={`${inputClass} w-full`} />
+          </label>
+          <label className="flex flex-1 flex-col gap-1">
+            <span className="text-xs text-brand-muted">Pie (opcional)</span>
+            <input name="caption" maxLength={300} className={`${inputClass} w-full`} />
+          </label>
+          <button type="submit" className="rounded-lg bg-brand-neon px-4 py-1.5 text-sm font-semibold text-brand-bg transition hover:bg-brand-neon-strong">
+            Añadir
+          </button>
+        </div>
       </form>
 
       {g.items.length > 0 && (

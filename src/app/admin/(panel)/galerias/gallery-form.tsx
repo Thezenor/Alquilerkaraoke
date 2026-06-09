@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { ImageUpload } from "@/components/admin/image-upload";
 import { saveGallery, type GalleryFormState } from "./actions";
 
 const initial: GalleryFormState = { status: "idle" };
@@ -41,10 +42,9 @@ export function GalleryForm({ values }: { values: GalleryFormValues }) {
           <span className="text-sm font-medium text-brand-text">Descripción</span>
           <textarea name="description" rows={2} defaultValue={values.description} className={`${inputClass} resize-y`} />
         </label>
-        <label className="sm:col-span-2 flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-brand-text">Imagen de portada (URL)</span>
-          <input name="coverImageUrl" maxLength={500} defaultValue={values.coverImageUrl} placeholder="https://…" className={inputClass} />
-        </label>
+        <div className="sm:col-span-2">
+          <ImageUpload name="coverImageUrl" label="Imagen de portada" defaultValue={values.coverImageUrl} />
+        </div>
         <label className="flex flex-col gap-1.5">
           <span className="text-sm font-medium text-brand-text">Caduca el</span>
           <input name="expiresAt" type="date" defaultValue={values.expiresAt} className={inputClass} />
