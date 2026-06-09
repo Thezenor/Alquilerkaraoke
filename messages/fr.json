@@ -13,7 +13,8 @@
     "access": "Accès",
     "menu": "Menu",
     "cities": "Villes",
-    "galleries": "Galeries"
+    "galleries": "Galeries",
+    "events": "Événements"
   },
   "Home": {
     "heroKicker": "Karaoké et événements premium",
@@ -367,5 +368,23 @@
     "unlockPlaceholder": "Mot de passe d'accès",
     "unlockButton": "Accéder",
     "download": "Télécharger"
+  },
+  "EventsMeta": {
+    "title": "Karaoké pour événements | Alquiler Karaoke",
+    "description": "Karaoké professionnel pour mariages, entreprises, anniversaires, communions et plus, dans toute l'Espagne. Installation, son et éclairage, avec ou sans technicien."
+  },
+  "Events": {
+    "title": "Karaoké pour tout type d'événement",
+    "intro": "Nous créons une expérience de karaoké sur mesure pour chaque célébration. Choisissez votre type d'événement et demandez un devis gratuit.",
+    "seeMore": "Voir plus"
+  },
+  "EventDetail": {
+    "breadcrumb": "Événements",
+    "requestQuote": "Demander un devis",
+    "featuresTitle": "Ce qui est inclus",
+    "faqTitle": "Questions fréquentes",
+    "ctaTitle": "On organise votre événement ?",
+    "ctaText": "Parlez-nous de votre célébration et nous préparons un devis sur mesure, sans engagement.",
+    "otherTitle": "Autres types d'événement"
   }
 }

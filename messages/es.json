@@ -13,7 +13,8 @@
     "access": "Acceso",
     "menu": "Menú",
     "cities": "Ciudades",
-    "galleries": "Galerías"
+    "galleries": "Galerías",
+    "events": "Eventos"
   },
   "Home": {
     "heroKicker": "Karaoke y eventos premium",
@@ -367,5 +368,23 @@
     "unlockPlaceholder": "Clave de acceso",
     "unlockButton": "Acceder",
     "download": "Descargar"
+  },
+  "EventsMeta": {
+    "title": "Karaoke para eventos | Alquiler Karaoke",
+    "description": "Karaoke profesional para bodas, empresas, cumpleaños, comuniones y más, en toda España. Montaje, sonido e iluminación con o sin técnico."
+  },
+  "Events": {
+    "title": "Karaoke para todo tipo de eventos",
+    "intro": "Montamos una experiencia de karaoke a medida para cada celebración. Elige tu tipo de evento y pide presupuesto sin compromiso.",
+    "seeMore": "Ver más"
+  },
+  "EventDetail": {
+    "breadcrumb": "Eventos",
+    "requestQuote": "Pedir presupuesto",
+    "featuresTitle": "Qué incluye",
+    "faqTitle": "Preguntas frecuentes",
+    "ctaTitle": "¿Montamos tu evento?",
+    "ctaText": "Cuéntanos tu celebración y te preparamos un presupuesto a medida, sin compromiso.",
+    "otherTitle": "Otros tipos de evento"
   }
 }

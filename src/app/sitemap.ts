@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { getActiveCities } from "@/server/cities";
+import { getActiveEventTypes } from "@/server/event-types";
 import { getListedGalleries } from "@/server/galleries";
 import { getActivePacks } from "@/server/packs";
 import { getPublishedPostRefs } from "@/server/blog";
@@ -12,12 +13,13 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [packs, posts, services, cities, galleries] = await Promise.all([
+  const [packs, posts, services, cities, galleries, eventTypes] = await Promise.all([
     getActivePacks(),
     getPublishedPostRefs(),
     getActiveServices(),
     getActiveCities(),
     getListedGalleries(),
+    getActiveEventTypes(),
   ]);
 
   // Rutas públicas comunes a todos los idiomas (sin prefijo).
@@ -33,6 +35,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/privacidad",
     "/karaoke",
     "/galerias",
+    "/eventos",
+    ...eventTypes.map((e) => `/eventos/${e.slug}`),
     ...services.map((s) => `/servicios/${s.slug}`),
     ...packs.map((p) => `/packs/${p.slug}`),
     ...cities.map((c) => `/karaoke/${c.slug}`),

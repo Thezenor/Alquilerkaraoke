@@ -20,6 +20,7 @@
     "db:seed:collaborators": "tsx prisma/seed-collaborators.ts",
     "db:seed:services": "tsx prisma/seed-services.ts",
     "db:seed:cities": "tsx prisma/seed-cities.ts",
+    "db:seed:event-types": "tsx prisma/seed-event-types.ts",
     "db:seed:socials": "tsx prisma/seed-demo-socials.ts",
     "db:import:songs": "tsx prisma/import-songs.ts",
     "db:studio": "prisma studio",

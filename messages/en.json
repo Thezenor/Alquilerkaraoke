@@ -13,7 +13,8 @@
     "access": "Admin",
     "menu": "Menu",
     "cities": "Cities",
-    "galleries": "Galleries"
+    "galleries": "Galleries",
+    "events": "Events"
   },
   "Home": {
     "heroKicker": "Premium karaoke & events",
@@ -367,5 +368,23 @@
     "unlockPlaceholder": "Access password",
     "unlockButton": "Enter",
     "download": "Download"
+  },
+  "EventsMeta": {
+    "title": "Karaoke for events | Alquiler Karaoke",
+    "description": "Professional karaoke for weddings, companies, birthdays, communions and more, across Spain. Setup, sound and lighting, with or without a technician."
+  },
+  "Events": {
+    "title": "Karaoke for every kind of event",
+    "intro": "We put together a tailored karaoke experience for each celebration. Choose your type of event and request a free quote.",
+    "seeMore": "See more"
+  },
+  "EventDetail": {
+    "breadcrumb": "Events",
+    "requestQuote": "Request a quote",
+    "featuresTitle": "What's included",
+    "faqTitle": "Frequently asked questions",
+    "ctaTitle": "Shall we set up your event?",
+    "ctaText": "Tell us about your celebration and we'll prepare a tailored quote, no commitment.",
+    "otherTitle": "Other event types"
   }
 }

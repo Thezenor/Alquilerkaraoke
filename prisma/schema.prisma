@@ -605,6 +605,28 @@ model GalleryItem {
   @@index([galleryId, sortOrder])
 }
 
+// ── Tipos de evento (páginas SEO: bodas, empresas, cumpleaños…) ──
+model EventType {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String
+  shortDescription String?
+  intro            String? // párrafo bajo el H1
+  description      String? // Markdown (cuerpo SEO)
+  features         Json? // string[] de ventajas / "incluye"
+  faq              Json? // [{ q, a }]
+  heroImageUrl     String?
+  metaTitle        String?
+  metaDescription  String?
+  translations     Json? // { en: {...}, fr: {...} }
+  isActive         Boolean  @default(true)
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
 // ── Servicios (páginas SEO por servicio, con packs asociados) ────
 model Service {
   id               String   @id @default(cuid())

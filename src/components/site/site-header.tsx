@@ -14,17 +14,28 @@ export type HeaderService = { slug: string; name: string };
 // Rutas internas localizadas (el Link i18n añade el prefijo de idioma).
 const NAV_ITEMS = [
   { key: "services", href: "/servicios" },
+  { key: "events", href: "/eventos" },
   { key: "packs", href: "/packs" },
   { key: "songs", href: "/canciones" },
   { key: "blog", href: "/blog" },
   { key: "contact", href: "/contacto" },
 ] as const;
 
-export function SiteHeader({ services = [], logoUrl }: { services?: HeaderService[]; logoUrl?: string | null }) {
+export function SiteHeader({
+  services = [],
+  events = [],
+  logoUrl,
+}: {
+  services?: HeaderService[];
+  events?: HeaderService[];
+  logoUrl?: string | null;
+}) {
   const t = useTranslations("Nav");
   const locale = useLocale();
   const quoteHref = `/${locale}/presupuesto`;
   const [open, setOpen] = useState(false);
+  // Ítems del menú con desplegable (subpáginas dinámicas desde BD).
+  const dropdowns: Record<string, HeaderService[]> = { services, events };
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-brand-border/60 bg-brand-bg/80 backdrop-blur-md">
@@ -36,8 +47,9 @@ export function SiteHeader({ services = [], logoUrl }: { services?: HeaderServic
 
         {/* Navegación desktop */}
         <nav className="hidden items-center gap-7 md:flex">
-          {NAV_ITEMS.map((item) =>
-            item.key === "services" && services.length > 0 ? (
+          {NAV_ITEMS.map((item) => {
+            const sub = dropdowns[item.key];
+            return sub && sub.length > 0 ? (
               <div key={item.key} className="group relative">
                 <Link
                   href={item.href}
@@ -49,10 +61,10 @@ export function SiteHeader({ services = [], logoUrl }: { services?: HeaderServic
                   </svg>
                 </Link>
                 <div className="invisible absolute left-0 top-full z-10 w-56 translate-y-1 rounded-xl border border-brand-border bg-brand-surface p-2 opacity-0 shadow-2xl transition group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                  {services.map((s) => (
+                  {sub.map((s) => (
                     <Link
                       key={s.slug}
-                      href={`/servicios/${s.slug}`}
+                      href={`${item.href}/${s.slug}`}
                       className="block rounded-lg px-3 py-2 text-sm text-brand-muted transition hover:bg-brand-surface-2 hover:text-white"
                     >
                       {s.name}
@@ -68,8 +80,8 @@ export function SiteHeader({ services = [], logoUrl }: { services?: HeaderServic
               >
                 {t(item.key)}
               </Link>
-            ),
-          )}
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -107,31 +119,34 @@ export function SiteHeader({ services = [], logoUrl }: { services?: HeaderServic
       {open && (
         <div className="border-t border-brand-border/60 bg-brand-surface md:hidden">
           <Container className="flex flex-col gap-1 py-4">
-            {NAV_ITEMS.map((item) => (
-              <div key={item.key}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="block rounded-lg px-3 py-2.5 text-brand-text transition hover:bg-brand-surface-2"
-                >
-                  {t(item.key)}
-                </Link>
-                {item.key === "services" && services.length > 0 && (
-                  <div className="ml-3 flex flex-col border-l border-brand-border pl-2">
-                    {services.map((s) => (
-                      <Link
-                        key={s.slug}
-                        href={`/servicios/${s.slug}`}
-                        onClick={() => setOpen(false)}
-                        className="rounded-lg px-3 py-2 text-sm text-brand-muted transition hover:bg-brand-surface-2 hover:text-white"
-                      >
-                        {s.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const sub = dropdowns[item.key];
+              return (
+                <div key={item.key}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="block rounded-lg px-3 py-2.5 text-brand-text transition hover:bg-brand-surface-2"
+                  >
+                    {t(item.key)}
+                  </Link>
+                  {sub && sub.length > 0 && (
+                    <div className="ml-3 flex flex-col border-l border-brand-border pl-2">
+                      {sub.map((s) => (
+                        <Link
+                          key={s.slug}
+                          href={`${item.href}/${s.slug}`}
+                          onClick={() => setOpen(false)}
+                          className="rounded-lg px-3 py-2 text-sm text-brand-muted transition hover:bg-brand-surface-2 hover:text-white"
+                        >
+                          {s.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
             <NextLink
               href="/admin/login"
               onClick={() => setOpen(false)}

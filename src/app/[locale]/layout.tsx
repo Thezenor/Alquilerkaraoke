@@ -12,6 +12,7 @@ import { Analytics } from "@/components/site/analytics";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getContact } from "@/server/site-config";
 import { getActiveServices, localizedService } from "@/server/services";
+import { getActiveEventTypes, localizedEventType } from "@/server/event-types";
 import { SITE_URL, SITE_NAME, absoluteUrl } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -62,12 +63,14 @@ export default async function LocaleLayout({
 
   const contact = await getContact();
   const services = (await getActiveServices()).map((s) => ({ slug: s.slug, name: localizedService(s, locale).name }));
+  const events = (await getActiveEventTypes()).map((e) => ({ slug: e.slug, name: localizedEventType(e, locale).name }));
 
   const nav = await getTranslations({ locale, namespace: "Nav" });
   const footer = await getTranslations({ locale, namespace: "Footer" });
   // Columna de servicios: los servicios activos + "todos" y packs.
   const servicesLinks = [
     ...services.map((s) => ({ href: `/${locale}/servicios/${s.slug}`, label: s.name })),
+    { href: `/${locale}/eventos`, label: nav("events") },
     { href: `/${locale}/packs`, label: nav("packs") },
   ];
   const infoLinks = [
@@ -126,7 +129,7 @@ export default async function LocaleLayout({
       <body className="flex min-h-full flex-col" style={themeStyle}>
         <JsonLd data={businessSchema} />
         <NextIntlClientProvider>
-          <SiteHeader services={services} logoUrl={contact.logoUrl} />
+          <SiteHeader services={services} events={events} logoUrl={contact.logoUrl} />
           <main className="flex flex-1 flex-col pt-16">{children}</main>
           <SiteFooter
             companyName={contact.companyName}
