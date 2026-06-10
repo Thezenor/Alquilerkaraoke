@@ -51,3 +51,6 @@ next-env.d.ts
 
 # Subidas locales (en prod = Railway Volume)
 /uploads
+
+# Config local de Claude Code (permisos por máquina)
+/.claude/settings.local.json
