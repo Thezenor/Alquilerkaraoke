@@ -16,9 +16,15 @@
     "galleries": "Galerías",
     "events": "Eventos"
   },
+  "MobileCta": {
+    "ariaLabel": "Acciones rápidas",
+    "quote": "Pedir presupuesto",
+    "call": "Llamar",
+    "whatsapp": "WhatsApp"
+  },
   "Home": {
     "heroKicker": "Karaoke y eventos premium",
-    "heroTitle": "Alquiler de karaoke y eventos para una experiencia profesional",
+    "heroTitle": "Alquiler de <accent>karaoke y eventos</accent> para una experiencia profesional",
     "heroSubtitle": "Equipos de karaoke con pantallas LED, micrófonos inalámbricos, sonido profesional e iluminación, y un catálogo de +180.000 canciones. Para bodas, cumpleaños, empresas y todo tipo de eventos en toda España.",
     "ctaQuote": "Pedir presupuesto",
     "ctaWhatsapp": "Hablar por WhatsApp",
@@ -39,7 +45,14 @@
     "linkSongs": "Canciones",
     "linkBlog": "Blog",
     "equipmentTitle": "Equipo de karaoke profesional, todo incluido",
-    "equipmentSubtitle": "Llevamos todo lo necesario para tu evento y nos encargamos del montaje, en cualquier punto de España."
+    "equipmentSubtitle": "Llevamos todo lo necesario para tu evento y nos encargamos del montaje, en cualquier punto de España.",
+    "statsSongs": "canciones para elegir",
+    "statsCities": "ciudades con cobertura",
+    "statsLanguages": "idiomas: ES · EN · FR",
+    "statsResponse": "respuesta a tu solicitud",
+    "faqTitle": "Preguntas frecuentes",
+    "faqSubtitle": "Lo esencial antes de reservar tu karaoke.",
+    "faqAll": "Ver todas las preguntas"
   },
   "HomeServices": {
     "items": [
@@ -285,7 +298,8 @@
     "introB": "¿Buscas alquiler de karaoke en {city}? Montamos el equipo completo —pantallas, microfonía, sonido e iluminación— en {city} y su provincia ({region}). Con o sin técnico, para fiestas privadas, bodas, comuniones y eventos de empresa.",
     "introC": "Karaoke profesional a domicilio o en tu local de {city}. Llevamos el montaje y miles de canciones para que tus invitados canten sin preocupaciones, en {city} y poblaciones de su entorno ({region}).",
     "otherCitiesRegionTitle": "Otras ciudades de {region}",
-    "populationNote": "Con cerca de {population, number} habitantes, {city} es un escenario ideal para fiestas y eventos."
+    "populationNote": "Con cerca de {population, number} habitantes, {city} es un escenario ideal para fiestas y eventos.",
+    "ctaButton": "Pedir presupuesto en {city}"
   },
   "PacksMeta": {
     "title": "Packs de karaoke y eventos | Alquiler Karaoke",
@@ -359,7 +373,11 @@
     "sending": "Enviando…",
     "bookedTitle": "¡Solicitud enviada!",
     "bookedText": "Hemos recibido tu solicitud. Te enviaremos el presupuesto a medida por email lo antes posible.",
-    "dateUnavailable": "La fecha seleccionada no está disponible. Prueba con otra fecha o contáctanos y buscaremos una alternativa."
+    "dateUnavailable": "La fecha seleccionada no está disponible. Prueba con otra fecha o contáctanos y buscaremos una alternativa.",
+    "bookedMeanwhile": "Mientras tanto, puedes:",
+    "bookedWhatsapp": "Hablar por WhatsApp",
+    "bookedPacks": "Ver nuestros packs",
+    "bookedCall": "Llámanos al {phone}"
   },
   "Unsubscribe": {
     "metaTitle": "Baja de comunicaciones | Alquiler Karaoke",

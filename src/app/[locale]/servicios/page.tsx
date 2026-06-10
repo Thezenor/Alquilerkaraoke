@@ -41,7 +41,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
       <section className="py-16 sm:py-20">
         <Container>
           <h1 className="text-3xl font-bold text-white sm:text-4xl">{t("title")}</h1>
-          <p className="mt-3 max-w-2xl text-brand-muted">{t("intro")}</p>
+          <p className="text-brand-muted mt-3 max-w-2xl">{t("intro")}</p>
 
           <h2 className="mt-12 text-xl font-semibold text-white">{t("servicesTitle")}</h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -52,18 +52,25 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
                     <Link
                       key={s.id}
                       href={`/${locale}/servicios/${s.slug}`}
-                      className="group rounded-2xl border border-brand-border bg-brand-surface p-6 transition hover:border-brand-neon/50"
+                      className="card-lift group border-brand-border bg-brand-surface hover:border-brand-neon/50 rounded-2xl border p-6"
                     >
                       <h3 className="font-semibold text-white">{l.name}</h3>
-                      {l.shortDescription && <p className="mt-2 text-sm text-brand-muted">{l.shortDescription}</p>}
-                      <span className="mt-3 inline-block text-sm font-medium text-brand-neon">{t("viewService")} →</span>
+                      {l.shortDescription && (
+                        <p className="text-brand-muted mt-2 text-sm">{l.shortDescription}</p>
+                      )}
+                      <span className="text-brand-neon mt-3 inline-block text-sm font-medium">
+                        {t("viewService")} →
+                      </span>
                     </Link>
                   );
                 })
               : staticServices.map((s) => (
-                  <article key={s.title} className="rounded-2xl border border-brand-border bg-brand-surface p-6">
+                  <article
+                    key={s.title}
+                    className="border-brand-border bg-brand-surface rounded-2xl border p-6"
+                  >
                     <h3 className="font-semibold text-white">{s.title}</h3>
-                    <p className="mt-2 text-sm text-brand-muted">{s.text}</p>
+                    <p className="text-brand-muted mt-2 text-sm">{s.text}</p>
                   </article>
                 ))}
           </div>
@@ -75,7 +82,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
               <li key={c.slug}>
                 <Link
                   href={`/${locale}/karaoke/${c.slug}`}
-                  className="inline-block rounded-full border border-brand-border px-3 py-1.5 text-sm text-brand-muted transition hover:border-brand-neon/60 hover:text-white"
+                  className="border-brand-border text-brand-muted hover:border-brand-neon/60 inline-block rounded-full border px-3 py-1.5 text-sm transition hover:text-white"
                 >
                   {c.name}
                 </Link>
@@ -84,9 +91,9 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
           </ul>
 
           {/* CTA */}
-          <div className="mt-14 rounded-3xl border border-brand-border bg-gradient-to-br from-brand-surface-2 to-brand-surface p-8 text-center sm:p-12">
+          <div className="border-brand-border from-brand-surface-2 to-brand-surface mt-14 rounded-3xl border bg-gradient-to-br p-8 text-center sm:p-12">
             <h2 className="text-2xl font-bold text-white">{t("ctaTitle")}</h2>
-            <p className="mx-auto mt-2 max-w-xl text-brand-muted">{t("ctaText")}</p>
+            <p className="text-brand-muted mx-auto mt-2 max-w-xl">{t("ctaText")}</p>
             <div className="mt-6">
               <Button href={`/${locale}/contacto`} size="lg">
                 {t("ctaTitle")}

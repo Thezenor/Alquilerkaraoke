@@ -15,7 +15,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "EventsMeta" });
-  return buildMetadata({ locale, pathname: "/eventos", title: t("title"), description: t("description") });
+  return buildMetadata({
+    locale,
+    pathname: "/eventos",
+    title: t("title"),
+    description: t("description"),
+  });
 }
 
 export default async function EventsHubPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -49,7 +54,7 @@ export default async function EventsHubPage({ params }: { params: Promise<{ loca
       <section className="py-16 sm:py-20">
         <Container>
           <h1 className="text-3xl font-bold text-white sm:text-4xl">{t("title")}</h1>
-          <p className="mt-4 max-w-2xl text-brand-muted">{t("intro")}</p>
+          <p className="text-brand-muted mt-4 max-w-2xl">{t("intro")}</p>
 
           <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {events.map((e) => {
@@ -58,18 +63,23 @@ export default async function EventsHubPage({ params }: { params: Promise<{ loca
                 <li key={e.id}>
                   <Link
                     href={`/${locale}/eventos/${e.slug}`}
-                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-brand-border bg-brand-surface transition hover:border-brand-neon/60"
+                    className="card-lift group border-brand-border bg-brand-surface hover:border-brand-neon/60 flex h-full flex-col overflow-hidden rounded-2xl border"
                   >
                     {e.heroImageUrl && (
-                      <div className="aspect-[16/9] w-full overflow-hidden bg-brand-surface-2">
+                      <div className="bg-brand-surface-2 aspect-[16/9] w-full overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element -- imagen remota */}
-                        <img src={e.heroImageUrl} alt={l.name} loading="lazy" className="h-full w-full object-cover transition group-hover:scale-105" />
+                        <img
+                          src={e.heroImageUrl}
+                          alt={l.name}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition group-hover:scale-105"
+                        />
                       </div>
                     )}
                     <div className="flex flex-1 flex-col p-5">
                       <h2 className="font-semibold text-white">{l.name}</h2>
-                      <p className="mt-1 text-sm text-brand-muted">{l.shortDescription}</p>
-                      <span className="mt-3 text-sm text-brand-neon">{t("seeMore")} →</span>
+                      <p className="text-brand-muted mt-1 text-sm">{l.shortDescription}</p>
+                      <span className="text-brand-neon mt-3 text-sm">{t("seeMore")} →</span>
                     </div>
                   </Link>
                 </li>

@@ -23,9 +23,38 @@
   /* Tipografía */
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* Display para titulares públicos (clase `font-display` o vía .public-headings) */
+  --font-display:
+    var(--font-space-grotesk), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 
   /* Sombra/halo neón reutilizable */
   --shadow-neon: 0 0 0 1px rgba(34, 211, 238, 0.25), 0 8px 30px -8px rgba(34, 211, 238, 0.35);
+
+  /* Animaciones de marca (entrada de secciones y panel del menú móvil) */
+  --animate-fade-up: fade-up 0.6s ease-out both;
+  --animate-menu-in: menu-in 0.2s ease-out both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 html {
@@ -42,4 +71,68 @@ body {
 /* Halo neón decorativo (utilidad propia) */
 @utility text-glow {
   text-shadow: 0 0 18px rgba(34, 211, 238, 0.45);
+}
+
+/* Texto con degradado de marca cian → magenta (titulares y stats) */
+@utility text-gradient-brand {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-brand-neon) 10%,
+    var(--color-brand-magenta) 90%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/*
+ * Microinteracción estándar de las cards públicas: elevación sutil + glow en
+ * borde. El borde en hover lo define cada card (hover:border-brand-neon/50…);
+ * el translate solo se aplica si el usuario no pide movimiento reducido.
+ */
+@utility card-lift {
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+  &:hover {
+    box-shadow:
+      0 0 24px -6px rgba(34, 211, 238, 0.3),
+      0 16px 32px -16px rgba(0, 0, 0, 0.55);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+}
+
+/*
+ * Tipografía display en titulares públicos. La clase se aplica al <body> del
+ * layout público ([locale]); el admin conserva Geist en todo.
+ */
+.public-headings h1,
+.public-headings h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+
+/*
+ * Entrada de secciones (<Reveal>): el componente añade .reveal solo con JS
+ * activo y sin reduced-motion → sin JS o con motion reducido el contenido se
+ * ve directamente. .reveal-visible dispara la transición (una sola vez).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.6s ease-out,
+      transform 0.6s ease-out;
+    transition-delay: var(--reveal-delay, 0ms);
+  }
 }

@@ -16,9 +16,15 @@
     "galleries": "Galleries",
     "events": "Events"
   },
+  "MobileCta": {
+    "ariaLabel": "Quick actions",
+    "quote": "Get a quote",
+    "call": "Call us",
+    "whatsapp": "WhatsApp"
+  },
   "Home": {
     "heroKicker": "Premium karaoke & events",
-    "heroTitle": "Karaoke and event rental for a professional experience",
+    "heroTitle": "<accent>Karaoke and event</accent> rental for a professional experience",
     "heroSubtitle": "Karaoke gear with LED screens, wireless microphones, professional sound and lighting, plus a catalogue of 180,000+ songs. For weddings, birthdays, companies and all kinds of events across Spain.",
     "ctaQuote": "Get a quote",
     "ctaWhatsapp": "Chat on WhatsApp",
@@ -39,7 +45,14 @@
     "linkSongs": "Songs",
     "linkBlog": "Blog",
     "equipmentTitle": "Professional karaoke equipment, all included",
-    "equipmentSubtitle": "We bring everything your event needs and handle the setup, anywhere in Spain."
+    "equipmentSubtitle": "We bring everything your event needs and handle the setup, anywhere in Spain.",
+    "statsSongs": "songs to choose from",
+    "statsCities": "cities covered",
+    "statsLanguages": "languages: ES · EN · FR",
+    "statsResponse": "reply to your request",
+    "faqTitle": "Frequently asked questions",
+    "faqSubtitle": "The essentials before booking your karaoke.",
+    "faqAll": "See all questions"
   },
   "HomeServices": {
     "items": [
@@ -285,7 +298,8 @@
     "introB": "Looking for karaoke rental in {city}? We set up the full rig —screens, microphones, sound and lighting— across {city} and its province ({region}). With or without a technician, for private parties, weddings and company events.",
     "introC": "Professional karaoke at your home or venue in {city}. We bring the setup and thousands of songs so your guests just sing, across {city} and nearby towns ({region}).",
     "otherCitiesRegionTitle": "Other cities in {region}",
-    "populationNote": "With around {population, number} inhabitants, {city} is an ideal setting for parties and events."
+    "populationNote": "With around {population, number} inhabitants, {city} is an ideal setting for parties and events.",
+    "ctaButton": "Get a quote in {city}"
   },
   "PacksMeta": {
     "title": "Karaoke & event packages | Alquiler Karaoke",
@@ -359,7 +373,11 @@
     "sending": "Sending…",
     "bookedTitle": "Request sent!",
     "bookedText": "We have received your request. We will email you a tailored quote as soon as possible.",
-    "dateUnavailable": "The selected date is not available. Try another date or contact us and we will find an alternative."
+    "dateUnavailable": "The selected date is not available. Try another date or contact us and we will find an alternative.",
+    "bookedMeanwhile": "In the meantime, you can:",
+    "bookedWhatsapp": "Chat on WhatsApp",
+    "bookedPacks": "Browse our packages",
+    "bookedCall": "Call us at {phone}"
   },
   "Unsubscribe": {
     "metaTitle": "Unsubscribe | Alquiler Karaoke",

@@ -41,7 +41,10 @@ function FooterCol({ title, links }: { title: string; links: FooterLink[] }) {
       <ul className="mt-3 space-y-2">
         {links.map((l) => (
           <li key={l.href + l.label}>
-            <Link href={l.href} className="text-sm text-brand-muted transition hover:text-brand-neon">
+            <Link
+              href={l.href}
+              className="text-brand-muted hover:text-brand-neon text-sm transition"
+            >
               {l.label}
             </Link>
           </li>
@@ -66,6 +69,7 @@ export function SiteFooter({
   contactTitle,
   socials,
   cookieSettingsLabel,
+  accessLabel,
 }: {
   companyName: string;
   logoUrl?: string | null;
@@ -81,6 +85,7 @@ export function SiteFooter({
   contactTitle: string;
   socials: FooterSocials;
   cookieSettingsLabel?: string;
+  accessLabel?: string;
 }) {
   const year = new Date().getFullYear();
   const socialEntries = (Object.keys(ICONS) as (keyof FooterSocials)[])
@@ -88,14 +93,20 @@ export function SiteFooter({
     .filter((s): s is { key: keyof FooterSocials; url: string } => Boolean(s.url));
 
   return (
-    <footer className="mt-auto border-t border-brand-border/60 bg-brand-surface">
+    <footer className="border-brand-border/60 bg-brand-surface mt-auto border-t">
       <Container className="py-12">
         <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
           {/* Marca */}
           <div className="max-w-xs">
             {/* eslint-disable-next-line @next/next/no-img-element -- logo SVG estático */}
-            <img src={logoUrl || "/logo.svg"} alt={companyName} className="h-10 w-auto" width={134} height={45} />
-            <p className="mt-4 text-sm text-brand-muted">{tagline}</p>
+            <img
+              src={logoUrl || "/logo.svg"}
+              alt={companyName}
+              className="h-10 w-auto"
+              width={134}
+              height={45}
+            />
+            <p className="text-brand-muted mt-4 text-sm">{tagline}</p>
             {socialEntries.length > 0 && (
               <div className="mt-5 flex gap-2">
                 {socialEntries.map((s) => (
@@ -105,7 +116,7 @@ export function SiteFooter({
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.key}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-brand-border text-brand-muted transition hover:border-brand-neon/60 hover:text-brand-neon"
+                    className="border-brand-border text-brand-muted hover:border-brand-neon/60 hover:text-brand-neon inline-flex h-9 w-9 items-center justify-center rounded-full border transition"
                   >
                     <SocialIcon d={ICONS[s.key]} />
                   </a>
@@ -119,22 +130,32 @@ export function SiteFooter({
 
           {/* Contacto */}
           <div>
-            <h3 className="text-xs font-semibold tracking-wider text-white uppercase">{contactTitle}</h3>
+            <h3 className="text-xs font-semibold tracking-wider text-white uppercase">
+              {contactTitle}
+            </h3>
             <ul className="mt-3 space-y-2 text-sm">
               <li>
-                <a href={phoneHref} className="text-brand-muted transition hover:text-brand-neon">
+                <a href={phoneHref} className="text-brand-muted hover:text-brand-neon transition">
                   {phone}
                 </a>
               </li>
               {email && (
                 <li>
-                  <a href={`mailto:${email}`} className="break-all text-brand-muted transition hover:text-brand-neon">
+                  <a
+                    href={`mailto:${email}`}
+                    className="text-brand-muted hover:text-brand-neon break-all transition"
+                  >
                     {email}
                   </a>
                 </li>
               )}
               <li>
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-brand-muted transition hover:text-brand-neon">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-brand-muted hover:text-brand-neon transition"
+                >
                   WhatsApp
                 </a>
               </li>
@@ -142,13 +163,24 @@ export function SiteFooter({
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-brand-border/60 pt-6 text-xs text-brand-muted sm:flex-row">
-          <span>© {year} {companyName}</span>
+        <div className="border-brand-border/60 text-brand-muted mt-10 flex flex-col items-center justify-between gap-2 border-t pt-6 text-xs sm:flex-row">
+          <span>
+            © {year} {companyName}
+          </span>
           {cookieSettingsLabel && (
             <CookieSettingsLink
               label={cookieSettingsLabel}
-              className="min-h-11 text-xs text-brand-muted underline underline-offset-2 transition hover:text-brand-neon"
+              className="text-brand-muted hover:text-brand-neon min-h-11 text-xs underline underline-offset-2 transition"
             />
+          )}
+          {/* Acceso al panel (login admin): discreto, fuera del header */}
+          {accessLabel && (
+            <Link
+              href="/admin/login"
+              className="text-brand-muted hover:text-brand-neon inline-flex min-h-11 items-center text-xs transition"
+            >
+              {accessLabel}
+            </Link>
           )}
           <span>{phone} · www.alquilerkaraoke.com</span>
         </div>

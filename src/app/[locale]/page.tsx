@@ -4,9 +4,14 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
+import { Reveal } from "@/components/site/reveal";
+import { StatCounter } from "@/components/site/stat-counter";
 import { getContact } from "@/server/site-config";
 import { getActiveCollaborators } from "@/server/collaborators";
 import { getActiveTestimonials, testimonialsForLocale } from "@/server/testimonials";
+import { getCatalogStats } from "@/server/songs";
+import { getActiveCities } from "@/server/cities";
+import { routing } from "@/i18n/routing";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
 
 // ISR: la home se regenera periódicamente para reflejar datos de BD (servicios
@@ -46,7 +51,7 @@ const EQUIPMENT_ICONS = [
 /** Estrellas de valoración (SVG accesible, 1–5). */
 function RatingStars({ rating, label }: { rating: number; label: string }) {
   return (
-    <span role="img" aria-label={label} className="flex gap-0.5 text-brand-neon">
+    <span role="img" aria-label={label} className="text-brand-neon flex gap-0.5">
       {Array.from({ length: 5 }, (_, i) => (
         <svg
           key={i}
@@ -90,6 +95,23 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const collaborators = await getActiveCollaborators();
   const allTestimonials = await getActiveTestimonials();
   const testimonials = testimonialsForLocale(allTestimonials, locale);
+  const songStats = await getCatalogStats();
+  const cities = await getActiveCities();
+  // FAQ resumida: las 4 primeras preguntas del FAQ general (sin schema aquí;
+  // el FAQPage JSON-LD vive en /faq para evitar duplicados).
+  const faqItems = (
+    (await getTranslations("ServicesPage")).raw("faq") as { q: string; a: string }[]
+  ).slice(0, 4);
+
+  // Stats reales: catálogo y ciudades desde BD (cacheadas); idiomas desde routing.
+  // El fallback de canciones solo aplica si la BD aún no tiene catálogo cargado.
+  const songsCount = songStats.total > 0 ? Math.floor(songStats.total / 1000) * 1000 : 180000;
+  const stats: { value: number; prefix?: string; suffix?: string; label: string }[] = [
+    { value: songsCount, prefix: "+", label: t("statsSongs") },
+    ...(cities.length > 0 ? [{ value: cities.length, label: t("statsCities") }] : []),
+    { value: routing.locales.length, label: t("statsLanguages") },
+    { value: 24, prefix: "<", suffix: " h", label: t("statsResponse") },
+  ];
 
   // AggregateRating + Review: solo si hay testimonios reales en BD.
   const rated = allTestimonials.filter((t) => t.rating >= 1 && t.rating <= 5);
@@ -106,7 +128,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           review: testimonials.slice(0, 3).map((t) => ({
             "@type": "Review",
             author: { "@type": "Person", name: t.authorName },
-            reviewRating: { "@type": "Rating", ratingValue: t.rating, bestRating: 5, worstRating: 1 },
+            reviewRating: {
+              "@type": "Rating",
+              ratingValue: t.rating,
+              bestRating: 5,
+              worstRating: 1,
+            },
             reviewBody: t.quote,
             ...(t.eventType ? { name: t.eventType } : {}),
           })),
@@ -118,7 +145,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     "@context": "https://schema.org",
     "@type": "Service",
     serviceType: "Alquiler de karaoke y eventos",
-    provider: { "@type": "Organization", name: contact.companyName, url: absoluteUrl(`/${locale}`) },
+    provider: {
+      "@type": "Organization",
+      name: contact.companyName,
+      url: absoluteUrl(`/${locale}`),
+    },
     areaServed: { "@type": "Country", name: "España" },
     hasOfferCatalog: {
       "@type": "OfferCatalog",
@@ -138,56 +169,88 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <section className="relative overflow-hidden">
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-32 left-1/2 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-brand-neon/15 blur-3xl"
+          className="bg-brand-neon/15 pointer-events-none absolute -top-32 left-1/2 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full blur-3xl"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-brand-magenta/10 blur-3xl"
+          className="bg-brand-magenta/10 pointer-events-none absolute right-0 bottom-0 h-80 w-80 rounded-full blur-3xl"
         />
         <Container className="relative py-20 text-center sm:py-28">
-          <p className="mb-5 text-xs font-semibold tracking-[0.25em] text-brand-neon uppercase">
-            {t("heroKicker")}
-          </p>
-          <h1 className="text-glow mx-auto max-w-3xl text-4xl leading-[1.1] font-bold text-white sm:text-6xl">
-            {t("heroTitle")}
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base text-brand-muted sm:text-lg">
-            {t("heroSubtitle")}
-          </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button href={`/${locale}/presupuesto`} size="lg" className="w-full sm:w-auto">
-              {t("ctaQuote")}
-            </Button>
-            <Button
-              href={contact.whatsappUrl}
-              variant="secondary"
-              size="lg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto"
-            >
-              {t("ctaWhatsapp")}
-            </Button>
-          </div>
+          <Reveal>
+            <p className="text-brand-neon mb-5 text-xs font-semibold tracking-[0.25em] uppercase">
+              {t("heroKicker")}
+            </p>
+            <h1 className="text-glow mx-auto max-w-3xl text-4xl leading-[1.1] font-bold text-white sm:text-6xl">
+              {t.rich("heroTitle", {
+                accent: (chunks) => <span className="text-gradient-brand">{chunks}</span>,
+              })}
+            </h1>
+            <p className="text-brand-muted mx-auto mt-6 max-w-xl text-base sm:text-lg">
+              {t("heroSubtitle")}
+            </p>
+            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Button href={`/${locale}/presupuesto`} size="lg" className="w-full sm:w-auto">
+                {t("ctaQuote")}
+              </Button>
+              <Button
+                href={contact.whatsappUrl}
+                variant="secondary"
+                size="lg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto"
+              >
+                {t("ctaWhatsapp")}
+              </Button>
+            </div>
+          </Reveal>
+
+          {/* STATS destacados (datos reales de BD + idiomas del routing) */}
+          <ul className="mt-16 grid grid-cols-2 gap-x-4 gap-y-8 sm:mt-20 lg:grid-cols-4">
+            {stats.map((s, i) => (
+              <li key={s.label}>
+                <Reveal delay={i * 100} className="text-center">
+                  <p className="text-gradient-brand font-display text-3xl font-bold tracking-tight sm:text-4xl">
+                    <StatCounter value={s.value} prefix={s.prefix} suffix={s.suffix} />
+                  </p>
+                  <p className="text-brand-muted mt-1 text-xs sm:text-sm">{s.label}</p>
+                </Reveal>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
 
       {/* EQUIPO PROFESIONAL (iconos) */}
-      <section className="border-y border-brand-border/60 bg-brand-surface py-16 sm:py-20">
+      <section className="border-brand-border/60 bg-brand-surface border-y py-16 sm:py-20">
         <Container>
-          <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("equipmentTitle")}</h2>
-          <p className="mt-2 max-w-2xl text-brand-muted">{t("equipmentSubtitle")}</p>
+          <Reveal>
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("equipmentTitle")}</h2>
+            <p className="text-brand-muted mt-2 max-w-2xl">{t("equipmentSubtitle")}</p>
+          </Reveal>
           <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {equipment.map((e, i) => (
-              <li key={e.title} className="flex gap-4 rounded-2xl border border-brand-border bg-brand-bg p-5">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-neon/10 text-brand-neon">
-                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <li
+                key={e.title}
+                className="border-brand-border bg-brand-bg flex gap-4 rounded-2xl border p-5"
+              >
+                <span className="bg-brand-neon/10 text-brand-neon flex h-11 w-11 shrink-0 items-center justify-center rounded-xl">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.8}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
                     {EQUIPMENT_ICONS[i]}
                   </svg>
                 </span>
                 <div>
                   <h3 className="font-semibold text-white">{e.title}</h3>
-                  <p className="mt-1 text-sm text-brand-muted">{e.text}</p>
+                  <p className="text-brand-muted mt-1 text-sm">{e.text}</p>
                 </div>
               </li>
             ))}
@@ -198,21 +261,26 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* SERVICIOS */}
       <section className="py-16 sm:py-20">
         <Container>
-          <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("servicesTitle")}</h2>
-          <p className="mt-2 max-w-2xl text-brand-muted">{t("servicesSubtitle")}</p>
+          <Reveal>
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("servicesTitle")}</h2>
+            <p className="text-brand-muted mt-2 max-w-2xl">{t("servicesSubtitle")}</p>
+          </Reveal>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((s) => (
               <article
                 key={s.title}
-                className="rounded-2xl border border-brand-border bg-brand-surface p-6 transition hover:border-brand-neon/50"
+                className="card-lift border-brand-border bg-brand-surface hover:border-brand-neon/50 rounded-2xl border p-6"
               >
                 <h3 className="font-semibold text-white">{s.title}</h3>
-                <p className="mt-2 text-sm text-brand-muted">{s.text}</p>
+                <p className="text-brand-muted mt-2 text-sm">{s.text}</p>
               </article>
             ))}
           </div>
           {/* Enlazado interno hacia las secciones clave (SEO) */}
-          <nav className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm" aria-label={t("exploreTitle")}>
+          <nav
+            className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm"
+            aria-label={t("exploreTitle")}
+          >
             {[
               { href: `/${locale}/servicios`, label: t("linkServices") },
               { href: `/${locale}/packs`, label: t("linkPacks") },
@@ -220,7 +288,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               { href: `/${locale}/canciones`, label: t("linkSongs") },
               { href: `/${locale}/blog`, label: t("linkBlog") },
             ].map((l) => (
-              <Link key={l.href} href={l.href} className="text-brand-neon underline-offset-4 transition hover:underline">
+              <Link
+                key={l.href}
+                href={l.href}
+                className="text-brand-neon underline-offset-4 transition hover:underline"
+              >
                 {l.label} →
               </Link>
             ))}
@@ -231,12 +303,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* SEGMENTOS */}
       <section className="bg-brand-surface py-16 sm:py-20">
         <Container>
-          <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("segmentsTitle")}</h2>
+          <Reveal>
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("segmentsTitle")}</h2>
+          </Reveal>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {segments.map((s) => (
-              <article key={s.title} className="rounded-2xl border border-brand-border bg-brand-bg p-6">
-                <h3 className="font-semibold text-brand-neon">{s.title}</h3>
-                <p className="mt-2 text-sm text-brand-muted">{s.text}</p>
+              <article
+                key={s.title}
+                className="card-lift border-brand-border bg-brand-bg hover:border-brand-magenta/40 rounded-2xl border p-6"
+              >
+                <h3 className="text-brand-neon font-semibold">{s.title}</h3>
+                <p className="text-brand-muted mt-2 text-sm">{s.text}</p>
               </article>
             ))}
           </div>
@@ -246,13 +323,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* PROCESO */}
       <section className="py-16 sm:py-20">
         <Container>
-          <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("processTitle")}</h2>
+          <Reveal>
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("processTitle")}</h2>
+          </Reveal>
           <ol className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, i) => (
               <li key={step.title} className="relative">
-                <span className="text-3xl font-bold text-brand-neon/40">{String(i + 1).padStart(2, "0")}</span>
+                <span className="text-gradient-brand font-display text-3xl font-bold opacity-60">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
                 <h3 className="mt-2 font-semibold text-white">{step.title}</h3>
-                <p className="mt-1 text-sm text-brand-muted">{step.text}</p>
+                <p className="text-brand-muted mt-1 text-sm">{step.text}</p>
               </li>
             ))}
           </ol>
@@ -263,19 +344,28 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {testimonials.length > 0 && (
         <section className="py-16 sm:py-20">
           <Container>
-            <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("testimonialsTitle")}</h2>
-            <p className="mt-2 max-w-2xl text-brand-muted">{t("testimonialsSubtitle")}</p>
+            <Reveal>
+              <h2 className="text-2xl font-bold text-white sm:text-3xl">
+                {t("testimonialsTitle")}
+              </h2>
+              <p className="text-brand-muted mt-2 max-w-2xl">{t("testimonialsSubtitle")}</p>
+            </Reveal>
             <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {testimonials.map((item) => (
                 <li key={item.id}>
-                  <figure className="flex h-full flex-col rounded-2xl border border-brand-border bg-brand-surface p-6 transition hover:border-brand-neon/50">
-                    <RatingStars rating={item.rating} label={t("ratingLabel", { rating: item.rating })} />
-                    <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-brand-text">
+                  <figure className="card-lift border-brand-border bg-brand-surface hover:border-brand-neon/50 flex h-full flex-col rounded-2xl border p-6">
+                    <RatingStars
+                      rating={item.rating}
+                      label={t("ratingLabel", { rating: item.rating })}
+                    />
+                    <blockquote className="text-brand-text mt-4 flex-1 text-sm leading-relaxed">
                       “{item.quote}”
                     </blockquote>
                     <figcaption className="mt-5">
                       <p className="font-semibold text-white">{item.authorName}</p>
-                      {item.eventType && <p className="mt-0.5 text-sm text-brand-muted">{item.eventType}</p>}
+                      {item.eventType && (
+                        <p className="text-brand-muted mt-0.5 text-sm">{item.eventType}</p>
+                      )}
                     </figcaption>
                   </figure>
                 </li>
@@ -289,12 +379,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {collaborators.length > 0 && (
         <section className="bg-brand-surface py-16 sm:py-20">
           <Container>
-            <h2 className="text-center text-2xl font-bold text-white sm:text-3xl">{t("collaboratorsTitle")}</h2>
+            <h2 className="text-center text-2xl font-bold text-white sm:text-3xl">
+              {t("collaboratorsTitle")}
+            </h2>
             <ul className="mt-10 flex flex-wrap items-center justify-center gap-4">
               {collaborators.map((c) => {
                 const inner = c.logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={c.logoUrl} alt={c.name} loading="lazy" className="max-h-12 w-auto object-contain" />
+                  <img
+                    src={c.logoUrl}
+                    alt={c.name}
+                    loading="lazy"
+                    className="max-h-12 w-auto object-contain"
+                  />
                 ) : (
                   <span className="font-semibold text-white">{c.name}</span>
                 );
@@ -306,12 +403,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                         title={c.name}
-                        className="flex h-20 min-w-[140px] items-center justify-center rounded-xl border border-brand-border bg-brand-bg px-6 transition hover:border-brand-neon/50"
+                        className="border-brand-border bg-brand-bg hover:border-brand-neon/50 flex h-20 min-w-[140px] items-center justify-center rounded-xl border px-6 transition"
                       >
                         {inner}
                       </a>
                     ) : (
-                      <span className="flex h-20 min-w-[140px] items-center justify-center rounded-xl border border-brand-border bg-brand-bg px-6">
+                      <span className="border-brand-border bg-brand-bg flex h-20 min-w-[140px] items-center justify-center rounded-xl border px-6">
                         {inner}
                       </span>
                     )}
@@ -323,12 +420,60 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       )}
 
+      {/* FAQ resumida (las respuestas completas viven en /faq) */}
+      <section className="py-16 sm:py-20">
+        <Container className="max-w-3xl">
+          <Reveal>
+            <p className="text-brand-magenta text-xs font-semibold tracking-[0.25em] uppercase">
+              FAQ
+            </p>
+            <h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">{t("faqTitle")}</h2>
+            <p className="text-brand-muted mt-2">{t("faqSubtitle")}</p>
+          </Reveal>
+          <div className="mt-8 space-y-3">
+            {faqItems.map((f) => (
+              <details
+                key={f.q}
+                className="group border-brand-border bg-brand-surface open:border-brand-magenta/40 rounded-xl border transition"
+              >
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-medium text-white [&::-webkit-details-marker]:hidden">
+                  {f.q}
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="text-brand-magenta h-4 w-4 shrink-0 transition group-open:rotate-180"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  >
+                    <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </summary>
+                <p className="text-brand-muted px-5 pb-5 text-sm leading-relaxed">{f.a}</p>
+              </details>
+            ))}
+          </div>
+          <p className="mt-6">
+            <Link
+              href={`/${locale}/faq`}
+              className="text-brand-neon text-sm font-medium underline-offset-4 transition hover:underline"
+            >
+              {t("faqAll")} →
+            </Link>
+          </p>
+        </Container>
+      </section>
+
       {/* CTA BAND */}
       <section className="py-16 sm:py-20">
         <Container>
-          <div className="relative overflow-hidden rounded-3xl border border-brand-border bg-gradient-to-br from-brand-surface-2 to-brand-surface p-8 text-center sm:p-14">
+          <div className="border-brand-border from-brand-surface-2 to-brand-surface relative overflow-hidden rounded-3xl border bg-gradient-to-br p-8 text-center sm:p-14">
+            <div
+              aria-hidden
+              className="bg-brand-magenta/10 pointer-events-none absolute -top-20 right-0 h-56 w-56 rounded-full blur-3xl"
+            />
             <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("ctaBandTitle")}</h2>
-            <p className="mx-auto mt-3 max-w-xl text-brand-muted">{t("ctaBandText")}</p>
+            <p className="text-brand-muted mx-auto mt-3 max-w-xl">{t("ctaBandText")}</p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button href={`/${locale}/presupuesto`} size="lg" className="w-full sm:w-auto">
                 {t("ctaQuote")}

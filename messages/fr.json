@@ -16,9 +16,15 @@
     "galleries": "Galeries",
     "events": "Événements"
   },
+  "MobileCta": {
+    "ariaLabel": "Actions rapides",
+    "quote": "Demander un devis",
+    "call": "Appeler",
+    "whatsapp": "WhatsApp"
+  },
   "Home": {
     "heroKicker": "Karaoké et événements premium",
-    "heroTitle": "Location de karaoké et d'événements pour une expérience professionnelle",
+    "heroTitle": "Location de <accent>karaoké et d'événements</accent> pour une expérience professionnelle",
     "heroSubtitle": "Matériel de karaoké avec écrans LED, micros sans fil, son professionnel et éclairage, plus un catalogue de plus de 180 000 chansons. Pour mariages, anniversaires, entreprises et tout type d'événement dans toute l'Espagne.",
     "ctaQuote": "Demander un devis",
     "ctaWhatsapp": "Discuter sur WhatsApp",
@@ -39,7 +45,14 @@
     "linkSongs": "Chansons",
     "linkBlog": "Blog",
     "equipmentTitle": "Matériel de karaoké professionnel, tout compris",
-    "equipmentSubtitle": "Nous apportons tout le nécessaire pour votre événement et nous occupons de l'installation, partout en Espagne."
+    "equipmentSubtitle": "Nous apportons tout le nécessaire pour votre événement et nous occupons de l'installation, partout en Espagne.",
+    "statsSongs": "chansons au catalogue",
+    "statsCities": "villes couvertes",
+    "statsLanguages": "langues : ES · EN · FR",
+    "statsResponse": "réponse à votre demande",
+    "faqTitle": "Questions fréquentes",
+    "faqSubtitle": "L'essentiel avant de réserver votre karaoké.",
+    "faqAll": "Voir toutes les questions"
   },
   "HomeServices": {
     "items": [
@@ -285,7 +298,8 @@
     "introB": "Vous cherchez une location de karaoké à {city} ? Nous installons tout l'équipement —écrans, micros, son et éclairage— à {city} et dans sa province ({region}). Avec ou sans technicien, pour fêtes privées, mariages et événements d'entreprise.",
     "introC": "Karaoké professionnel à domicile ou dans votre salle à {city}. Nous apportons l'installation et des milliers de chansons pour que vos invités chantent sans souci, à {city} et dans les communes voisines ({region}).",
     "otherCitiesRegionTitle": "Autres villes de {region}",
-    "populationNote": "Avec environ {population, number} habitants, {city} est un cadre idéal pour fêtes et événements."
+    "populationNote": "Avec environ {population, number} habitants, {city} est un cadre idéal pour fêtes et événements.",
+    "ctaButton": "Demander un devis à {city}"
   },
   "PacksMeta": {
     "title": "Forfaits karaoké et événements | Alquiler Karaoke",
@@ -313,7 +327,7 @@
   },
   "Quote": {
     "title": "Demandez votre devis",
-    "intro": "Choisissez le forfait et les dÃ©tails de votre Ã©vÃ©nement et nous vous enverrons un devis sur mesure par email, sans engagement.",
+    "intro": "Choisissez le forfait et les détails de votre événement et nous vous enverrons un devis sur mesure par email, sans engagement.",
     "pack": "Forfait",
     "hours": "Heures",
     "province": "Province",
@@ -358,8 +372,12 @@
     "submitBooking": "Demander un devis",
     "sending": "Envoi…",
     "bookedTitle": "Demande envoyée !",
-    "bookedText": "Nous avons reÃ§u votre demande. Nous vous enverrons un devis sur mesure par email dÃ¨s que possible.",
-    "dateUnavailable": "La date sélectionnée n'est pas disponible. Essayez une autre date ou contactez-nous et nous trouverons une alternative."
+    "bookedText": "Nous avons reçu votre demande. Nous vous enverrons un devis sur mesure par email dès que possible.",
+    "dateUnavailable": "La date sélectionnée n'est pas disponible. Essayez une autre date ou contactez-nous et nous trouverons une alternative.",
+    "bookedMeanwhile": "En attendant, vous pouvez :",
+    "bookedWhatsapp": "Discuter sur WhatsApp",
+    "bookedPacks": "Voir nos forfaits",
+    "bookedCall": "Appelez-nous au {phone}"
   },
   "Unsubscribe": {
     "metaTitle": "Désabonnement | Alquiler Karaoke",

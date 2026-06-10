@@ -19,7 +19,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "PresupuestoMeta" });
-  return buildMetadata({ locale, pathname: "/presupuesto", title: t("title"), description: t("description") });
+  return buildMetadata({
+    locale,
+    pathname: "/presupuesto",
+    title: t("title"),
+    description: t("description"),
+  });
 }
 
 export default async function PresupuestoPage({
@@ -42,10 +47,19 @@ export default async function PresupuestoPage({
   ]);
 
   const options: QuoteOptions = {
-    packs: packs.map((p) => ({ id: p.id, name: localizedPack(p, locale).name, category: p.category })),
+    packs: packs.map((p) => ({
+      id: p.id,
+      name: localizedPack(p, locale).name,
+      category: p.category,
+    })),
     extras: extras.map((e) => {
       const tr = (e.translations ?? {}) as Record<string, ExtraTr>;
-      return { id: e.id, name: tr[locale]?.name ?? e.name, category: e.category, appliesTo: e.appliesToCategories };
+      return {
+        id: e.id,
+        name: tr[locale]?.name ?? e.name,
+        category: e.category,
+        appliesTo: e.appliesToCategories,
+      };
     }),
     provinces: provinces.map((p) => p.name),
   };
@@ -57,13 +71,15 @@ export default async function PresupuestoPage({
     <section className="py-16 sm:py-20">
       <Container>
         <h1 className="text-3xl font-bold text-white sm:text-4xl">{t("title")}</h1>
-        <p className="mt-3 max-w-2xl text-brand-muted">{t("intro")}</p>
+        <p className="text-brand-muted mt-3 max-w-2xl">{t("intro")}</p>
         <div className="mt-10">
           <QuoteForm
             options={options}
             defaultPackId={selectedPack?.id ?? null}
             defaultPackName={selectedPack ? localizedPack(selectedPack, locale).name : null}
             whatsappUrl={contact.whatsappUrl}
+            phone={contact.phone}
+            phoneHref={contact.phoneHref}
           />
         </div>
       </Container>

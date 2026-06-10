@@ -8,6 +8,7 @@ import { fontVariables } from "../fonts";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { WhatsappFab } from "@/components/site/whatsapp-fab";
+import { MobileCtaBar } from "@/components/site/mobile-cta-bar";
 import { Analytics } from "@/components/site/analytics";
 import { CookieBanner } from "@/components/site/cookie-banner";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -63,8 +64,14 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   const contact = await getContact();
-  const services = (await getActiveServices()).map((s) => ({ slug: s.slug, name: localizedService(s, locale).name }));
-  const events = (await getActiveEventTypes()).map((e) => ({ slug: e.slug, name: localizedEventType(e, locale).name }));
+  const services = (await getActiveServices()).map((s) => ({
+    slug: s.slug,
+    name: localizedService(s, locale).name,
+  }));
+  const events = (await getActiveEventTypes()).map((e) => ({
+    slug: e.slug,
+    name: localizedEventType(e, locale).name,
+  }));
 
   const nav = await getTranslations({ locale, namespace: "Nav" });
   const footer = await getTranslations({ locale, namespace: "Footer" });
@@ -78,19 +85,42 @@ export default async function LocaleLayout({
     { href: `/${locale}/karaoke`, label: nav("cities") },
     { href: `/${locale}/galerias`, label: nav("galleries") },
     { href: `/${locale}/blog`, label: nav("blog") },
-    { href: `/${locale}/faq`, label: (await getTranslations({ locale, namespace: "Faq" }))("title") },
+    {
+      href: `/${locale}/faq`,
+      label: (await getTranslations({ locale, namespace: "Faq" }))("title"),
+    },
     { href: `/${locale}/contacto`, label: nav("contact") },
-    { href: `/${locale}/privacidad`, label: (await getTranslations({ locale, namespace: "Privacy" }))("title") },
-    { href: `/${locale}/aviso-legal`, label: (await getTranslations({ locale, namespace: "LegalNotice" }))("title") },
-    { href: `/${locale}/terminos`, label: (await getTranslations({ locale, namespace: "Terms" }))("title") },
-    { href: `/${locale}/cookies`, label: (await getTranslations({ locale, namespace: "Cookies" }))("title") },
-    { href: `/${locale}/baja-marketing`, label: (await getTranslations({ locale, namespace: "Unsubscribe" }))("title") },
+    {
+      href: `/${locale}/privacidad`,
+      label: (await getTranslations({ locale, namespace: "Privacy" }))("title"),
+    },
+    {
+      href: `/${locale}/aviso-legal`,
+      label: (await getTranslations({ locale, namespace: "LegalNotice" }))("title"),
+    },
+    {
+      href: `/${locale}/terminos`,
+      label: (await getTranslations({ locale, namespace: "Terms" }))("title"),
+    },
+    {
+      href: `/${locale}/cookies`,
+      label: (await getTranslations({ locale, namespace: "Cookies" }))("title"),
+    },
+    {
+      href: `/${locale}/baja-marketing`,
+      label: (await getTranslations({ locale, namespace: "Unsubscribe" }))("title"),
+    },
   ];
-  const cookieSettingsLabel = (await getTranslations({ locale, namespace: "CookieBanner" }))("settings");
+  const cookieSettingsLabel = (await getTranslations({ locale, namespace: "CookieBanner" }))(
+    "settings",
+  );
 
   // Color de marca configurable desde el admin (sobrescribe el token de tema).
   const themeStyle = contact.primaryColor
-    ? ({ "--color-brand-neon": contact.primaryColor, "--color-brand-neon-strong": contact.primaryColor } as React.CSSProperties)
+    ? ({
+        "--color-brand-neon": contact.primaryColor,
+        "--color-brand-neon-strong": contact.primaryColor,
+      } as React.CSSProperties)
     : undefined;
 
   const sameAs = Object.values(contact.socials).filter((u): u is string => Boolean(u));
@@ -131,10 +161,17 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={`${fontVariables} h-full antialiased`}>
-      <body className="flex min-h-full flex-col" style={themeStyle}>
+      {/* public-headings: tipografía display (Space Grotesk) en H1/H2 públicos */}
+      <body className="public-headings flex min-h-full flex-col" style={themeStyle}>
         <JsonLd data={businessSchema} />
         <NextIntlClientProvider>
-          <SiteHeader services={services} events={events} logoUrl={contact.logoUrl} />
+          <SiteHeader
+            services={services}
+            events={events}
+            logoUrl={contact.logoUrl}
+            phone={contact.phone}
+            phoneHref={contact.phoneHref}
+          />
           <main className="flex flex-1 flex-col pt-16">{children}</main>
           <SiteFooter
             companyName={contact.companyName}
@@ -151,6 +188,12 @@ export default async function LocaleLayout({
             contactTitle={footer("contactTitle")}
             socials={contact.socials}
             cookieSettingsLabel={cookieSettingsLabel}
+            accessLabel={nav("access")}
+          />
+          <MobileCtaBar
+            phone={contact.phone}
+            phoneHref={contact.phoneHref}
+            whatsappUrl={contact.whatsappUrl}
           />
           <WhatsappFab url={contact.whatsappUrl} />
           <CookieBanner />
