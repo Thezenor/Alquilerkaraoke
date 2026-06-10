@@ -29,6 +29,9 @@
     "ctaBandTitle": "¿Listo para tu próximo evento?",
     "ctaBandText": "Cuéntanos qué necesitas y te preparamos un presupuesto a medida sin compromiso.",
     "collaboratorsTitle": "Colaboradores",
+    "testimonialsTitle": "Lo que dicen nuestros clientes",
+    "testimonialsSubtitle": "Opiniones reales de quienes ya han vivido la experiencia en su evento.",
+    "ratingLabel": "{rating} de 5",
     "exploreTitle": "Explora",
     "linkServices": "Servicios",
     "linkPacks": "Packs",
@@ -290,6 +293,7 @@
   },
   "PacksPage": {
     "title": "Packs",
+    "mostPopular": "Más popular",
     "intro": "Elige el pack que mejor encaje con tu evento. Todos incluyen montaje profesional. ¿Dudas? Te hacemos un presupuesto a medida.",
     "from": "Desde",
     "vat": "+ IVA",

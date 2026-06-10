@@ -271,10 +271,11 @@ model Pack {
   // Traducciones por locale: { "en": { name, shortDescription, description }, "fr": {...} }
   translations Json?
 
-  isActive  Boolean  @default(true)
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive   Boolean  @default(true)
+  isFeatured Boolean  @default(false) // pack destacado: badge "Más popular" en la web
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   bookings Booking[]
 
@@ -486,6 +487,23 @@ model Collaborator {
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+}
+
+// ── Testimonios de clientes (prueba social en la web pública) ────
+model Testimonial {
+  id         String   @id @default(cuid())
+  authorName String
+  eventType  String? // texto libre, p. ej. "Boda en Sevilla"
+  quote      String
+  rating     Int      @default(5) // 1–5
+  locale     String   @default("es") // idioma del testimonio (es/en/fr)
+  sourceUrl  String? // enlace a la reseña original (p. ej. Google)
+  isActive   Boolean  @default(true)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([isActive, sortOrder])
 }

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getContact } from "@/server/site-config";
 import { getActiveCollaborators } from "@/server/collaborators";
+import { getActiveTestimonials, testimonialsForLocale } from "@/server/testimonials";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
 
 // ISR: la home se regenera periódicamente para reflejar datos de BD (servicios
@@ -42,6 +43,25 @@ const EQUIPMENT_ICONS = [
   </g>,
 ];
 
+/** Estrellas de valoración (SVG accesible, 1–5). */
+function RatingStars({ rating, label }: { rating: number; label: string }) {
+  return (
+    <span role="img" aria-label={label} className="flex gap-0.5 text-brand-neon">
+      {Array.from({ length: 5 }, (_, i) => (
+        <svg
+          key={i}
+          viewBox="0 0 24 24"
+          className={i < rating ? "h-4 w-4" : "h-4 w-4 opacity-25"}
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2Z" />
+        </svg>
+      ))}
+    </span>
+  );
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -68,6 +88,30 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const steps = (await getTranslations("HomeProcess")).raw("steps") as Item[];
   const contact = await getContact();
   const collaborators = await getActiveCollaborators();
+  const allTestimonials = await getActiveTestimonials();
+  const testimonials = testimonialsForLocale(allTestimonials, locale);
+
+  // AggregateRating + Review: solo si hay testimonios reales en BD.
+  const rated = allTestimonials.filter((t) => t.rating >= 1 && t.rating <= 5);
+  const ratingSchema =
+    rated.length > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: (rated.reduce((sum, t) => sum + t.rating, 0) / rated.length).toFixed(1),
+            reviewCount: rated.length,
+            bestRating: 5,
+            worstRating: 1,
+          },
+          review: testimonials.slice(0, 3).map((t) => ({
+            "@type": "Review",
+            author: { "@type": "Person", name: t.authorName },
+            reviewRating: { "@type": "Rating", ratingValue: t.rating, bestRating: 5, worstRating: 1 },
+            reviewBody: t.quote,
+            ...(t.eventType ? { name: t.eventType } : {}),
+          })),
+        }
+      : {};
 
   // Service / OfferCatalog: ayuda a Google a entender la oferta de la home.
   const serviceSchema = {
@@ -84,6 +128,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         itemOffered: { "@type": "Service", name: s.title, description: s.text },
       })),
     },
+    ...ratingSchema,
   };
 
   return (
@@ -213,6 +258,32 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </ol>
         </Container>
       </section>
+
+      {/* TESTIMONIOS (prueba social) */}
+      {testimonials.length > 0 && (
+        <section className="py-16 sm:py-20">
+          <Container>
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">{t("testimonialsTitle")}</h2>
+            <p className="mt-2 max-w-2xl text-brand-muted">{t("testimonialsSubtitle")}</p>
+            <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {testimonials.map((item) => (
+                <li key={item.id}>
+                  <figure className="flex h-full flex-col rounded-2xl border border-brand-border bg-brand-surface p-6 transition hover:border-brand-neon/50">
+                    <RatingStars rating={item.rating} label={t("ratingLabel", { rating: item.rating })} />
+                    <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-brand-text">
+                      “{item.quote}”
+                    </blockquote>
+                    <figcaption className="mt-5">
+                      <p className="font-semibold text-white">{item.authorName}</p>
+                      {item.eventType && <p className="mt-0.5 text-sm text-brand-muted">{item.eventType}</p>}
+                    </figcaption>
+                  </figure>
+                </li>
+              ))}
+            </ul>
+          </Container>
+        </section>
+      )}
 
       {/* COLABORADORES */}
       {collaborators.length > 0 && (

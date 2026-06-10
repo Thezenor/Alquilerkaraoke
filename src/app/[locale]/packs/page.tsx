@@ -41,8 +41,17 @@ export default async function PacksPage({ params }: { params: Promise<{ locale: 
             return (
               <article
                 key={pack.id}
-                className="flex flex-col overflow-hidden rounded-2xl border border-brand-border bg-brand-surface transition hover:border-brand-neon/50"
+                className={
+                  pack.isFeatured
+                    ? "relative flex flex-col overflow-hidden rounded-2xl border border-brand-neon/60 bg-brand-surface shadow-[0_0_24px_rgba(34,211,238,0.25)] transition hover:border-brand-neon"
+                    : "flex flex-col overflow-hidden rounded-2xl border border-brand-border bg-brand-surface transition hover:border-brand-neon/50"
+                }
               >
+                {pack.isFeatured && (
+                  <span className="absolute top-3 left-3 z-10 rounded-full bg-brand-neon px-3 py-1 text-xs font-semibold text-brand-bg">
+                    {t("mostPopular")}
+                  </span>
+                )}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={packImage(pack)}

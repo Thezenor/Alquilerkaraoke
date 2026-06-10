@@ -52,6 +52,11 @@ export default async function PacksPage() {
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <span className="font-semibold text-white">{formatCents(p.basePrice)}</span>
+                  {p.isFeatured && (
+                    <span className="rounded-full bg-brand-neon/15 px-2.5 py-0.5 text-xs font-medium text-brand-neon">
+                      Destacado
+                    </span>
+                  )}
                   <span
                     className={cn(
                       "rounded-full px-2.5 py-0.5 text-xs font-medium",

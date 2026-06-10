@@ -29,6 +29,9 @@
     "ctaBandTitle": "Prêt pour votre prochain événement ?",
     "ctaBandText": "Dites-nous ce dont vous avez besoin et nous préparons un devis sur mesure, sans engagement.",
     "collaboratorsTitle": "Partenaires",
+    "testimonialsTitle": "Ce que disent nos clients",
+    "testimonialsSubtitle": "Des avis réels de ceux qui ont déjà vécu l'expérience lors de leur événement.",
+    "ratingLabel": "{rating} sur 5",
     "exploreTitle": "Explorer",
     "linkServices": "Services",
     "linkPacks": "Packs",
@@ -290,6 +293,7 @@
   },
   "PacksPage": {
     "title": "Forfaits",
+    "mostPopular": "Le plus populaire",
     "intro": "Choisissez le forfait qui correspond le mieux à votre événement. Tous incluent l'installation professionnelle. Des questions ? Nous préparons un devis sur mesure.",
     "from": "À partir de",
     "vat": "+ TVA",

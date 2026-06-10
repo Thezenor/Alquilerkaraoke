@@ -23,6 +23,7 @@ const empty: PackFormValues = {
   depositValue: "30",
   securityDeposit: "",
   isActive: true,
+  isFeatured: false,
   sortOrder: "0",
   name_en: "",
   short_en: "",

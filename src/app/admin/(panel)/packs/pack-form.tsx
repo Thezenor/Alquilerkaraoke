@@ -25,6 +25,7 @@ export type PackFormValues = {
   depositValue: string;
   securityDeposit: string;
   isActive: boolean;
+  isFeatured: boolean;
   sortOrder: string;
   name_en: string;
   short_en: string;
@@ -145,6 +146,10 @@ export function PackForm({ values }: { values: PackFormValues }) {
         <label className="flex items-center gap-2 text-sm text-brand-text">
           <input type="checkbox" name="isActive" defaultChecked={values.isActive} className="h-4 w-4 accent-brand-neon" />
           Activo (visible en la web)
+        </label>
+        <label className="flex items-center gap-2 text-sm text-brand-text">
+          <input type="checkbox" name="isFeatured" defaultChecked={values.isFeatured} className="h-4 w-4 accent-brand-neon" />
+          Destacado (más popular)
         </label>
       </div>
 

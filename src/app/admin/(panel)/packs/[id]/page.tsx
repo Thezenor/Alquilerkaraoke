@@ -38,6 +38,7 @@ export default async function EditPackPage({ params }: { params: Promise<{ id: s
     depositValue: pack.depositType === "PERCENT" ? String(pack.depositValue) : centsToInput(pack.depositValue),
     securityDeposit: centsToInput(pack.securityDeposit),
     isActive: pack.isActive,
+    isFeatured: pack.isFeatured,
     sortOrder: String(pack.sortOrder),
     name_en: en.name ?? "",
     short_en: en.shortDescription ?? "",

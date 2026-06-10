@@ -29,6 +29,9 @@
     "ctaBandTitle": "Ready for your next event?",
     "ctaBandText": "Tell us what you need and we'll prepare a tailored quote, no strings attached.",
     "collaboratorsTitle": "Partners",
+    "testimonialsTitle": "What our clients say",
+    "testimonialsSubtitle": "Real reviews from people who have already enjoyed the experience at their event.",
+    "ratingLabel": "{rating} out of 5",
     "exploreTitle": "Explore",
     "linkServices": "Services",
     "linkPacks": "Packs",
@@ -290,6 +293,7 @@
   },
   "PacksPage": {
     "title": "Packages",
+    "mostPopular": "Most popular",
     "intro": "Choose the package that best fits your event. All include professional setup. Questions? We'll prepare a tailored quote.",
     "from": "From",
     "vat": "+ VAT",

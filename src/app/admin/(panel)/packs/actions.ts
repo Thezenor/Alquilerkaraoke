@@ -33,6 +33,7 @@ const schema = z.object({
   depositValue: z.string().optional(),
   securityDeposit: z.string().optional(),
   isActive: z.string().optional(),
+  isFeatured: z.string().optional(),
   sortOrder: z.string().optional(),
   name_en: z.string().trim().max(120).optional(),
   short_en: z.string().trim().max(300).optional(),
@@ -95,6 +96,7 @@ export async function savePack(_prev: PackFormState, formData: FormData): Promis
     depositValue: d.depositType === "PERCENT" ? int(d.depositValue) : eurosToCents(d.depositValue),
     securityDeposit: eurosToCents(d.securityDeposit),
     isActive: d.isActive === "on",
+    isFeatured: d.isFeatured === "on",
     sortOrder: int(d.sortOrder),
     translations: buildTranslations(d),
   };
