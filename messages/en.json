@@ -354,7 +354,8 @@
     "submitBooking": "Request quote",
     "sending": "Sending…",
     "bookedTitle": "Request sent!",
-    "bookedText": "We have received your request. We will email you a tailored quote as soon as possible."
+    "bookedText": "We have received your request. We will email you a tailored quote as soon as possible.",
+    "dateUnavailable": "The selected date is not available. Try another date or contact us and we will find an alternative."
   },
   "Unsubscribe": {
     "metaTitle": "Unsubscribe | Alquiler Karaoke",
@@ -452,5 +453,104 @@
         "text": "We handle transport, installation and pickup. You just sing."
       }
     ]
+  },
+  "CookieBanner": {
+    "title": "Cookie use",
+    "text": "We use necessary first-party cookies and, only if you accept them, analytics cookies (Google Analytics and Meta Pixel) to understand how the site is used and improve our services. You can change your choice at any time.",
+    "more": "More information",
+    "accept": "Accept",
+    "reject": "Reject",
+    "ariaLabel": "Cookie consent",
+    "settings": "Cookie settings"
+  },
+  "LegalNoticeMeta": {
+    "title": "Legal notice | Alquiler Karaoke",
+    "description": "Service provider identification, website terms of use, intellectual property and applicable law (Spanish LSSI-CE)."
+  },
+  "LegalNotice": {
+    "title": "Legal notice",
+    "intro": "In compliance with Spanish Law 34/2002, of 11 July, on Information Society Services and Electronic Commerce (LSSI-CE), the following details of the owner of this website are provided.",
+    "ownerTitle": "Website owner",
+    "taxIdPending": "(pending update)",
+    "phoneLabel": "Phone",
+    "purposeTitle": "Purpose of the website",
+    "purposeText": "The purpose of this website is to provide information about karaoke, sound and lighting equipment rental services and event experiences, and to allow users to request quotes and book those services.",
+    "useTitle": "Terms of use",
+    "useText": "Accessing and browsing this website grants the status of user and implies acceptance of this legal notice. The user agrees to make appropriate use of the content and services and not to use them for unlawful activities or activities contrary to good faith and public order.",
+    "ipTitle": "Intellectual and industrial property",
+    "ipText": "All content on this site (texts, images, logos, design and source code) is owned by the provider or by third parties who have authorised its use, and is protected by intellectual and industrial property law. Its reproduction, distribution or transformation without express authorisation is prohibited, except for personal and private use.",
+    "liabilityTitle": "Liability",
+    "liabilityText": "The owner is not responsible for misuse of the website content or for damage arising from causes beyond its control, such as service interruptions, viruses or technical failures. The information published is indicative and may be updated or modified without prior notice.",
+    "linksTitle": "Third-party links",
+    "linksText": "This site may include links to third-party pages (for example, partner brands or social networks). The owner accepts no responsibility for their content or their privacy policies.",
+    "hostingTitle": "Hosting",
+    "hostingText": "This website is hosted on the infrastructure of Railway (Railway Corp.), a cloud hosting provider. Data is processed as described in our privacy policy.",
+    "dataTitle": "Data protection",
+    "dataText": "The processing of personal data collected through this site is governed by our privacy policy and our cookie policy, available in the footer.",
+    "lawTitle": "Applicable law",
+    "lawText": "This legal notice is governed by Spanish law. Any dispute shall be submitted to the competent courts under the applicable regulations, without prejudice to the rights of consumers and users."
+  },
+  "TermsMeta": {
+    "title": "Terms and conditions | Alquiler Karaoke",
+    "description": "Booking conditions for the karaoke rental service: quote, booking, payments, security deposit, cancellations and liability."
+  },
+  "Terms": {
+    "title": "Terms and conditions",
+    "intro": "These conditions govern the booking of karaoke, sound and lighting equipment rental services and event experiences offered by {company} (hereinafter, the provider) through www.alquilerkaraoke.com.",
+    "scopeTitle": "1. Subject and scope",
+    "scopeText": "The provider offers the rental of professional karaoke equipment and associated services (transport, setup, hosting and extras) for private and corporate events in Spain. The specific features of each service are those set out in the quote accepted by the customer.",
+    "quoteTitle": "2. Request and quote",
+    "quoteText": "Requesting a quote through the website is free of charge and does not imply any commitment. Quotes are indicative until confirmed and are valid for the period stated in the document itself. Prices include VAT unless expressly stated otherwise.",
+    "bookingTitle": "3. Booking confirmation",
+    "bookingText": "Every booking is subject to validation by the provider depending on date and equipment availability. The booking is considered confirmed when the provider communicates it and, where applicable, once the deposit indicated in the quote has been received.",
+    "paymentTitle": "4. Payments",
+    "paymentText": "A deposit (amount or percentage indicated in the quote) may be required to confirm the booking. The remaining amount shall be paid in the agreed manner and term, as a general rule before the start of the event or on the same day. The accepted payment methods (bank transfer, Bizum or others) will be indicated in the quote or proforma invoice.",
+    "securityDepositTitle": "5. Security deposit",
+    "securityDepositText": "When the service includes a security deposit, it shall be paid before the equipment is delivered and will be refunded in full after verifying that the equipment is returned in good condition. In the event of damage, loss or misuse, the repair or replacement cost may be deducted from the security deposit, without prejudice to claiming any excess.",
+    "cancellationTitle": "6. Cancellations and date changes",
+    "cancellationText": "The customer may cancel or request a date change by notifying the provider as far in advance as possible. If the cancellation occurs sufficiently in advance, the deposit will be refunded or an alternative date proposed subject to availability; the specific conditions (terms and percentages) are set out in the quote or contract. If the provider cancels for reasons attributable to it, all amounts paid will be refunded. In cases of force majeure, both parties shall seek in good faith an alternative date or the refund of the amounts paid.",
+    "clientTitle": "7. Customer obligations",
+    "clientText": "The customer shall provide a suitable and safe space for setup, access to the event venue and a power outlet in proper condition. The customer agrees to make reasonable use of the equipment following the provider's instructions and to look after it during the rental period when no technician is present.",
+    "providerTitle": "8. Provider obligations",
+    "providerText": "The provider shall deliver the equipment in good working order and carry out the necessary setup and testing. In the event of a fault not attributable to the customer, the provider shall fix it or replace the equipment as soon as possible and, if that is not possible, adjust the price proportionally.",
+    "liabilityTitle": "9. Liability",
+    "liabilityText": "The customer is liable for damage caused to the equipment by misuse during the rental. The provider is liable for damage directly arising from defective performance of the service under the terms provided by law. Neither party shall be liable for breaches arising from force majeure.",
+    "lawTitle": "10. Applicable law and jurisdiction",
+    "lawText": "These conditions are governed by Spanish law. Any dispute shall be submitted to the competent courts under the applicable regulations; if the customer acts as a consumer, the courts of their place of residence shall have jurisdiction."
+  },
+  "CookiesMeta": {
+    "title": "Cookie policy | Alquiler Karaoke",
+    "description": "Which cookies this site uses (necessary plus Google Analytics and Meta Pixel analytics), how long they last and how to accept, reject or change your choice."
+  },
+  "Cookies": {
+    "title": "Cookie policy",
+    "whatTitle": "What are cookies?",
+    "whatText": "Cookies are small files stored on your device when you visit a website. They are used, for example, to remember your preferences or to obtain usage statistics. Some are necessary for the site to work; others (such as analytics cookies) are only set if you accept them.",
+    "tableTitle": "Cookies we use",
+    "tableIntro": "This site uses the following cookies:",
+    "colName": "Cookie",
+    "colProvider": "Provider",
+    "colPurpose": "Purpose",
+    "colDuration": "Duration",
+    "colType": "Type",
+    "providerOwn": "First-party",
+    "rowConsentPurpose": "Stores your choice about the use of cookies (accepting or rejecting analytics).",
+    "rowSessionPurpose": "Keeps you signed in to the private or admin area.",
+    "rowGaPurpose": "Anonymous statistics about website usage (page views, traffic source).",
+    "rowFbPurpose": "Campaign and conversion measurement for Meta (Facebook/Instagram).",
+    "duration12m": "12 months",
+    "durationSession": "Session",
+    "duration2y": "Up to 2 years",
+    "duration3m": "3 months",
+    "typeNecessary": "Necessary",
+    "typeAnalytics": "Analytics/measurement",
+    "consentNote": "Google Analytics and Meta Pixel cookies are only set if you accept them from the cookie banner. If you reject them, no script from these providers is loaded.",
+    "manageTitle": "How to change your choice",
+    "manageText": "You can change or withdraw your consent at any time using the button below or the \"Cookie settings\" link in the footer.",
+    "settingsButton": "Cookie settings",
+    "browserText": "You can also delete or block cookies from your browser settings (Chrome, Safari, Firefox or Edge). Note that blocking necessary cookies may affect how the site works.",
+    "moreTitle": "More information",
+    "moreText": "To learn how we process your personal data, see our",
+    "privacyLink": "privacy policy"
   }
 }

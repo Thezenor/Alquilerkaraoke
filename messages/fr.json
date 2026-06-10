@@ -354,7 +354,8 @@
     "submitBooking": "Demander un devis",
     "sending": "Envoi…",
     "bookedTitle": "Demande envoyée !",
-    "bookedText": "Nous avons reÃ§u votre demande. Nous vous enverrons un devis sur mesure par email dÃ¨s que possible."
+    "bookedText": "Nous avons reÃ§u votre demande. Nous vous enverrons un devis sur mesure par email dÃ¨s que possible.",
+    "dateUnavailable": "La date sélectionnée n'est pas disponible. Essayez une autre date ou contactez-nous et nous trouverons une alternative."
   },
   "Unsubscribe": {
     "metaTitle": "Désabonnement | Alquiler Karaoke",
@@ -452,5 +453,104 @@
         "text": "Nous gérons le transport, l'installation et la récupération. Vous n'avez qu'à chanter."
       }
     ]
+  },
+  "CookieBanner": {
+    "title": "Utilisation des cookies",
+    "text": "Nous utilisons des cookies propres nécessaires et, uniquement si vous les acceptez, des cookies d'analyse (Google Analytics et Meta Pixel) pour comprendre l'utilisation du site et améliorer nos services. Vous pouvez modifier votre choix à tout moment.",
+    "more": "Plus d'informations",
+    "accept": "Accepter",
+    "reject": "Refuser",
+    "ariaLabel": "Consentement aux cookies",
+    "settings": "Configurer les cookies"
+  },
+  "LegalNoticeMeta": {
+    "title": "Mentions légales | Alquiler Karaoke",
+    "description": "Identification du prestataire, conditions d'utilisation du site, propriété intellectuelle et législation applicable (LSSI-CE espagnole)."
+  },
+  "LegalNotice": {
+    "title": "Mentions légales",
+    "intro": "Conformément à la loi espagnole 34/2002, du 11 juillet, relative aux services de la société de l'information et au commerce électronique (LSSI-CE), les informations suivantes concernant le titulaire de ce site web sont communiquées.",
+    "ownerTitle": "Titulaire du site web",
+    "taxIdPending": "(mise à jour en attente)",
+    "phoneLabel": "Téléphone",
+    "purposeTitle": "Objet du site web",
+    "purposeText": "Ce site web a pour objet d'informer sur les services de location d'équipements de karaoké, de sonorisation et d'éclairage et d'organisation d'expériences événementielles, ainsi que de faciliter la demande de devis et la réservation de ces services.",
+    "useTitle": "Conditions d'utilisation",
+    "useText": "L'accès et la navigation sur ce site web confèrent la qualité d'utilisateur et impliquent l'acceptation des présentes mentions légales. L'utilisateur s'engage à faire un usage approprié des contenus et services et à ne pas les utiliser à des fins illicites ou contraires à la bonne foi et à l'ordre public.",
+    "ipTitle": "Propriété intellectuelle et industrielle",
+    "ipText": "Tous les contenus de ce site (textes, images, logos, design et code source) appartiennent au prestataire ou à des tiers ayant autorisé leur utilisation, et sont protégés par la législation sur la propriété intellectuelle et industrielle. Leur reproduction, distribution ou transformation sans autorisation expresse est interdite, sauf pour un usage personnel et privé.",
+    "liabilityTitle": "Responsabilité",
+    "liabilityText": "Le titulaire n'est pas responsable de la mauvaise utilisation des contenus du site ni des dommages résultant de causes indépendantes de sa volonté, telles que des interruptions de service, des virus ou des défaillances techniques. Les informations publiées sont indicatives et peuvent être mises à jour ou modifiées sans préavis.",
+    "linksTitle": "Liens vers des tiers",
+    "linksText": "Ce site peut contenir des liens vers des pages de tiers (par exemple, des marques partenaires ou des réseaux sociaux). Le titulaire n'assume aucune responsabilité quant à leur contenu ou à leurs politiques de confidentialité.",
+    "hostingTitle": "Hébergement",
+    "hostingText": "Ce site web est hébergé sur l'infrastructure de Railway (Railway Corp.), fournisseur de services d'hébergement cloud. Les données sont traitées conformément à notre politique de confidentialité.",
+    "dataTitle": "Protection des données",
+    "dataText": "Le traitement des données personnelles collectées via ce site est régi par notre politique de confidentialité et notre politique de cookies, disponibles en pied de page.",
+    "lawTitle": "Législation applicable",
+    "lawText": "Les présentes mentions légales sont régies par la législation espagnole. Tout litige sera soumis aux tribunaux compétents conformément à la réglementation applicable, sans préjudice des droits des consommateurs et utilisateurs."
+  },
+  "TermsMeta": {
+    "title": "Conditions générales | Alquiler Karaoke",
+    "description": "Conditions de réservation du service de location de karaoké : devis, réservation, paiements, caution, annulations et responsabilités."
+  },
+  "Terms": {
+    "title": "Conditions générales",
+    "intro": "Les présentes conditions régissent la réservation des services de location d'équipements de karaoké, de sonorisation et d'éclairage et d'expériences événementielles proposés par {company} (ci-après, le prestataire) via www.alquilerkaraoke.com.",
+    "scopeTitle": "1. Objet et champ d'application",
+    "scopeText": "Le prestataire propose la location d'équipements professionnels de karaoké et des services associés (transport, installation, animation et extras) pour des événements de particuliers et d'entreprises en Espagne. Les caractéristiques concrètes de chaque service sont celles indiquées dans le devis accepté par le client.",
+    "quoteTitle": "2. Demande et devis",
+    "quoteText": "La demande de devis via le site est gratuite et n'implique aucun engagement. Les devis sont indicatifs jusqu'à leur confirmation et sont valables pour la durée indiquée dans le document. Les prix incluent la TVA sauf indication expresse.",
+    "bookingTitle": "3. Confirmation de la réservation",
+    "bookingText": "Toute réservation est soumise à validation par le prestataire en fonction de la disponibilité de la date et du matériel. La réservation est considérée comme confirmée lorsque le prestataire le communique et, le cas échéant, après réception de l'acompte indiqué dans le devis.",
+    "paymentTitle": "4. Paiements",
+    "paymentText": "Un acompte (montant ou pourcentage indiqué dans le devis) peut être demandé pour confirmer la réservation. Le solde sera réglé selon les modalités et délais convenus, en règle générale avant le début de l'événement ou le jour même. Les moyens de paiement acceptés (virement, Bizum ou autres) seront indiqués dans le devis ou la facture proforma.",
+    "securityDepositTitle": "5. Caution",
+    "securityDepositText": "Lorsque le service inclut une caution, celle-ci est versée avant la remise du matériel et est intégralement restituée après vérification que le matériel est rendu en bon état. En cas de dommage, de perte ou d'usage abusif, le coût de réparation ou de remplacement pourra être déduit de la caution, sans préjudice de réclamer l'excédent.",
+    "cancellationTitle": "6. Annulations et changements de date",
+    "cancellationText": "Le client peut annuler ou demander un changement de date en le communiquant le plus tôt possible. Si l'annulation intervient suffisamment à l'avance, l'acompte sera remboursé ou une date alternative proposée selon les disponibilités ; les conditions concrètes (délais et pourcentages) figurent dans le devis ou le contrat. Si le prestataire annule pour une cause qui lui est imputable, il remboursera toutes les sommes versées. En cas de force majeure, les deux parties rechercheront de bonne foi une date alternative ou le remboursement des sommes versées.",
+    "clientTitle": "7. Obligations du client",
+    "clientText": "Le client mettra à disposition un espace adapté et sûr pour l'installation, l'accès au lieu de l'événement et une prise électrique en bon état. Il s'engage à faire un usage raisonnable du matériel conformément aux indications du prestataire et à en assurer la garde pendant la période de location en l'absence de technicien.",
+    "providerTitle": "8. Obligations du prestataire",
+    "providerText": "Le prestataire livrera le matériel en bon état de fonctionnement et effectuera l'installation et les tests nécessaires. En cas de panne non imputable au client, le prestataire la résoudra ou remplacera le matériel dans les meilleurs délais et, si cela n'est pas possible, ajustera le prix proportionnellement.",
+    "liabilityTitle": "9. Responsabilité",
+    "liabilityText": "Le client est responsable des dommages causés au matériel par un usage abusif pendant la location. Le prestataire est responsable des dommages directement liés à un fonctionnement défectueux du service dans les conditions prévues par la loi. Aucune des parties ne sera responsable des manquements résultant d'un cas de force majeure.",
+    "lawTitle": "10. Loi applicable et juridiction",
+    "lawText": "Les présentes conditions sont régies par la législation espagnole. Tout litige sera soumis aux tribunaux compétents conformément à la réglementation applicable ; si le client agit en tant que consommateur, les tribunaux de son domicile seront compétents."
+  },
+  "CookiesMeta": {
+    "title": "Politique de cookies | Alquiler Karaoke",
+    "description": "Quels cookies ce site utilise (nécessaires et d'analyse Google Analytics et Meta Pixel), leur durée et comment accepter, refuser ou modifier votre choix."
+  },
+  "Cookies": {
+    "title": "Politique de cookies",
+    "whatTitle": "Que sont les cookies ?",
+    "whatText": "Les cookies sont de petits fichiers enregistrés sur votre appareil lorsque vous visitez un site web. Ils servent, par exemple, à mémoriser vos préférences ou à obtenir des statistiques d'utilisation. Certains sont nécessaires au fonctionnement du site ; d'autres (comme les cookies d'analyse) ne sont installés que si vous les acceptez.",
+    "tableTitle": "Cookies que nous utilisons",
+    "tableIntro": "Ce site utilise les cookies suivants :",
+    "colName": "Cookie",
+    "colProvider": "Fournisseur",
+    "colPurpose": "Finalité",
+    "colDuration": "Durée",
+    "colType": "Type",
+    "providerOwn": "Propre",
+    "rowConsentPurpose": "Enregistre votre choix concernant l'utilisation des cookies (accepter ou refuser l'analyse).",
+    "rowSessionPurpose": "Maintient la session ouverte dans l'espace privé ou d'administration.",
+    "rowGaPurpose": "Statistiques anonymes d'utilisation du site (pages vues, origine de la visite).",
+    "rowFbPurpose": "Mesure des campagnes et conversions de Meta (Facebook/Instagram).",
+    "duration12m": "12 mois",
+    "durationSession": "Session",
+    "duration2y": "Jusqu'à 2 ans",
+    "duration3m": "3 mois",
+    "typeNecessary": "Nécessaire",
+    "typeAnalytics": "Analyse/mesure",
+    "consentNote": "Les cookies de Google Analytics et Meta Pixel ne sont installés que si vous les acceptez depuis le bandeau de cookies. Si vous les refusez, aucun script de ces fournisseurs n'est chargé.",
+    "manageTitle": "Comment modifier votre choix",
+    "manageText": "Vous pouvez modifier ou retirer votre consentement à tout moment via le bouton ci-dessous ou le lien « Configurer les cookies » en pied de page.",
+    "settingsButton": "Configurer les cookies",
+    "browserText": "Vous pouvez également supprimer ou bloquer les cookies depuis les paramètres de votre navigateur (Chrome, Safari, Firefox ou Edge). Notez que bloquer les cookies nécessaires peut affecter le fonctionnement du site.",
+    "moreTitle": "Plus d'informations",
+    "moreText": "Pour savoir comment nous traitons vos données personnelles, consultez notre",
+    "privacyLink": "politique de confidentialité"
   }
 }

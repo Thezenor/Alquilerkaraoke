@@ -9,6 +9,7 @@ import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { WhatsappFab } from "@/components/site/whatsapp-fab";
 import { Analytics } from "@/components/site/analytics";
+import { CookieBanner } from "@/components/site/cookie-banner";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getContact } from "@/server/site-config";
 import { getActiveServices, localizedService } from "@/server/services";
@@ -80,8 +81,12 @@ export default async function LocaleLayout({
     { href: `/${locale}/faq`, label: (await getTranslations({ locale, namespace: "Faq" }))("title") },
     { href: `/${locale}/contacto`, label: nav("contact") },
     { href: `/${locale}/privacidad`, label: (await getTranslations({ locale, namespace: "Privacy" }))("title") },
+    { href: `/${locale}/aviso-legal`, label: (await getTranslations({ locale, namespace: "LegalNotice" }))("title") },
+    { href: `/${locale}/terminos`, label: (await getTranslations({ locale, namespace: "Terms" }))("title") },
+    { href: `/${locale}/cookies`, label: (await getTranslations({ locale, namespace: "Cookies" }))("title") },
     { href: `/${locale}/baja-marketing`, label: (await getTranslations({ locale, namespace: "Unsubscribe" }))("title") },
   ];
+  const cookieSettingsLabel = (await getTranslations({ locale, namespace: "CookieBanner" }))("settings");
 
   // Color de marca configurable desde el admin (sobrescribe el token de tema).
   const themeStyle = contact.primaryColor
@@ -145,8 +150,10 @@ export default async function LocaleLayout({
             infoLinks={infoLinks}
             contactTitle={footer("contactTitle")}
             socials={contact.socials}
+            cookieSettingsLabel={cookieSettingsLabel}
           />
           <WhatsappFab url={contact.whatsappUrl} />
+          <CookieBanner />
         </NextIntlClientProvider>
         <Analytics gaMeasurementId={contact.gaMeasurementId} metaPixelId={contact.metaPixelId} />
       </body>

@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { z } from "zod";
 import { signContractByToken } from "@/server/contracts";
+import { notifyContractSigned } from "@/server/email";
 import { logAudit } from "@/server/audit";
 import { rateLimit, isHoneypotFilled } from "@/server/rate-limit";
 
@@ -38,6 +39,14 @@ export async function signContractAction(_prev: SignState, formData: FormData): 
     const res = await signContractByToken(d.token, { name: d.name, signatureImage: signature, ip, userAgent });
     if (!res.ok) return { status: "error", message: "El contrato no está disponible para firma." };
     await logAudit({ action: "contract.sign", entity: "Contract", metadata: { token: d.token.slice(0, 6) } });
+    // Copia firmada para el cliente + aviso al admin. Un fallo de email no bloquea la firma.
+    if (!res.alreadySigned) {
+      try {
+        await notifyContractSigned(d.token);
+      } catch (err) {
+        console.error("[email] aviso de contrato firmado falló:", err);
+      }
+    }
     return { status: "signed" };
   } catch {
     return { status: "error", message: "No se pudo registrar la firma. Inténtalo de nuevo." };

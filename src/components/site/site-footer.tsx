@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
+import { CookieSettingsLink } from "@/components/site/cookie-settings-link";
 
 export type FooterSocials = {
   instagram?: string | null;
@@ -64,6 +65,7 @@ export function SiteFooter({
   infoLinks,
   contactTitle,
   socials,
+  cookieSettingsLabel,
 }: {
   companyName: string;
   logoUrl?: string | null;
@@ -78,6 +80,7 @@ export function SiteFooter({
   infoLinks: FooterLink[];
   contactTitle: string;
   socials: FooterSocials;
+  cookieSettingsLabel?: string;
 }) {
   const year = new Date().getFullYear();
   const socialEntries = (Object.keys(ICONS) as (keyof FooterSocials)[])
@@ -141,6 +144,12 @@ export function SiteFooter({
 
         <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-brand-border/60 pt-6 text-xs text-brand-muted sm:flex-row">
           <span>© {year} {companyName}</span>
+          {cookieSettingsLabel && (
+            <CookieSettingsLink
+              label={cookieSettingsLabel}
+              className="min-h-11 text-xs text-brand-muted underline underline-offset-2 transition hover:text-brand-neon"
+            />
+          )}
           <span>{phone} · www.alquilerkaraoke.com</span>
         </div>
       </Container>

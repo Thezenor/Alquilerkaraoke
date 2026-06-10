@@ -36,6 +36,40 @@ export function toDateKey(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
+/**
+ * Comprueba si una fecha (YYYY-MM-DD) está disponible para nuevas solicitudes:
+ * sin bloqueo de agenda (DateBlock, suelto o en rango) y sin reserva CONFIRMED
+ * ese mismo día. Usado por el flujo público (defensa en servidor).
+ */
+export async function isDateAvailable(dateKey: string): Promise<boolean> {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateKey);
+  if (!m) return false;
+  const dayStart = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 0, 0, 0);
+  if (Number.isNaN(dayStart.getTime())) return false;
+  const nextDay = new Date(dayStart);
+  nextDay.setDate(nextDay.getDate() + 1);
+
+  const [block, confirmed] = await Promise.all([
+    prisma.dateBlock.findFirst({
+      where: {
+        OR: [
+          // Bloqueo de un solo día.
+          { endDate: null, date: { gte: dayStart, lt: nextDay } },
+          // Bloqueo en rango que cubre el día.
+          { date: { lt: nextDay }, endDate: { gte: dayStart } },
+        ],
+      },
+      select: { id: true },
+    }),
+    prisma.booking.findFirst({
+      where: { status: "CONFIRMED", eventDate: { gte: dayStart, lt: nextDay } },
+      select: { id: true },
+    }),
+  ]);
+
+  return !block && !confirmed;
+}
+
 /** Carga reservas, bloqueos y suplementos relevantes para un mes (year, month 1–12). */
 export async function getMonthData(year: number, month: number): Promise<MonthData> {
   const from = new Date(year, month - 1, 1, 0, 0, 0);

@@ -8,7 +8,7 @@ import { logAudit } from "@/server/audit";
 import { recomputeBookingPayment } from "@/server/payments";
 import { createContractForBooking } from "@/server/contracts";
 import { redirect } from "next/navigation";
-import { sendEmail, sendQuoteEmail } from "@/server/email";
+import { sendEmail, sendQuoteEmail, notifyBookingStatusChange } from "@/server/email";
 import { eurosToCents } from "@/lib/money";
 import { Role, type PaymentMethod } from "@/generated/prisma/enums";
 
@@ -40,6 +40,9 @@ export async function updateBooking(
   if (!parsed.success) return { status: "error", message: "Datos no válidos." };
   const { id, status, adminNote } = parsed.data;
 
+  const existing = await prisma.booking.findUnique({ where: { id }, select: { status: true } });
+  if (!existing) return { status: "error", message: "Reserva no encontrada." };
+
   await prisma.booking.update({
     where: { id },
     data: {
@@ -57,6 +60,16 @@ export async function updateBooking(
     entityId: id,
     metadata: { status },
   });
+
+  // Email al cliente al cambiar de estado (confirmada / rechazada / cancelada).
+  // Best-effort: un fallo de email nunca bloquea la action.
+  if (existing.status !== status && status !== "PENDING") {
+    try {
+      await notifyBookingStatusChange(id, status);
+    } catch (err) {
+      console.error(`[email] aviso de estado de reserva ${id} falló:`, err);
+    }
+  }
 
   revalidatePath("/admin/reservas");
   revalidatePath(`/admin/reservas/${id}`);

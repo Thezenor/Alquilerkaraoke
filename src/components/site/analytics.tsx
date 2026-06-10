@@ -1,7 +1,14 @@
+"use client";
+
 import Script from "next/script";
+import { parseConsent } from "@/lib/cookie-consent";
+import { useCookieConsentValue } from "@/lib/use-cookie-consent";
 
 /**
- * Inyecta scripts de analítica solo si están configurados desde el admin.
+ * Inyecta scripts de analítica solo si están configurados desde el admin Y el
+ * visitante ha aceptado las cookies de analítica (RGPD: sin consentimiento no
+ * se carga ningún script de terceros). Al aceptar desde el banner se activa
+ * sin recargar (el valor de consentimiento es reactivo).
  * Carga diferida (afterInteractive) para no penalizar los Core Web Vitals.
  */
 export function Analytics({
@@ -11,6 +18,11 @@ export function Analytics({
   gaMeasurementId?: string | null;
   metaPixelId?: string | null;
 }) {
+  const consent = useCookieConsentValue();
+  const allowed = parseConsent(consent)?.analytics === true;
+
+  if (!allowed) return null;
+
   return (
     <>
       {gaMeasurementId && (

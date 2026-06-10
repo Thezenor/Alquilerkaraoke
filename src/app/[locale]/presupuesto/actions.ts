@@ -1,8 +1,12 @@
 "use server";
 
 import { headers } from "next/headers";
+import { hasLocale } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { routing } from "@/i18n/routing";
+import { isDateAvailable } from "@/server/calendar";
 import { calculateBudget, matchSurcharge } from "@/lib/budget";
 import { normalizeCode } from "@/lib/discount";
 import { logAudit } from "@/server/audit";
@@ -60,7 +64,17 @@ export async function quoteAction(_prev: QuoteState, formData: FormData): Promis
     const hoursRaw = parseInt(String(formData.get("hours") ?? ""), 10);
     const hours = Number.isFinite(hoursRaw) && hoursRaw > 0 ? Math.min(hoursRaw, 48) : pack.includedHours || 4;
     const province = String(formData.get("province") ?? "").trim();
-    const date = String(formData.get("date") ?? "").trim();
+    const dateRaw = String(formData.get("date") ?? "").trim();
+    // Solo se acepta una fecha con formato válido; el resto se ignora (campo opcional).
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(dateRaw) ? dateRaw : "";
+
+    // Defensa en servidor: fecha bloqueada en agenda o ya ocupada por una
+    // reserva confirmada → error claro sin revelar detalles internos.
+    if (date && !(await isDateAvailable(date))) {
+      const locale = hasLocale(routing.locales, c.locale) ? c.locale : routing.defaultLocale;
+      const t = await getTranslations({ locale, namespace: "Quote" });
+      return { status: "error", message: t("dateUnavailable") };
+    }
     const eventTime = String(formData.get("eventTime") ?? "").trim().slice(0, 20);
     const attendeesRaw = parseInt(String(formData.get("attendees") ?? ""), 10);
     const attendees = Number.isFinite(attendeesRaw) && attendeesRaw > 0 ? Math.min(attendeesRaw, 100000) : null;

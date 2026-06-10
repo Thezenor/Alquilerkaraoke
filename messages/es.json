@@ -354,7 +354,8 @@
     "submitBooking": "Solicitar presupuesto",
     "sending": "Enviando…",
     "bookedTitle": "¡Solicitud enviada!",
-    "bookedText": "Hemos recibido tu solicitud. Te enviaremos el presupuesto a medida por email lo antes posible."
+    "bookedText": "Hemos recibido tu solicitud. Te enviaremos el presupuesto a medida por email lo antes posible.",
+    "dateUnavailable": "La fecha seleccionada no está disponible. Prueba con otra fecha o contáctanos y buscaremos una alternativa."
   },
   "Unsubscribe": {
     "metaTitle": "Baja de comunicaciones | Alquiler Karaoke",
@@ -452,5 +453,104 @@
         "text": "Nos ocupamos del transporte, la instalación y la recogida. Tú solo cantas."
       }
     ]
+  },
+  "CookieBanner": {
+    "title": "Uso de cookies",
+    "text": "Usamos cookies propias necesarias y, solo si las aceptas, cookies de analítica (Google Analytics y Meta Pixel) para entender cómo se usa la web y mejorar nuestros servicios. Puedes cambiar tu elección cuando quieras.",
+    "more": "Más información",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "ariaLabel": "Consentimiento de cookies",
+    "settings": "Configurar cookies"
+  },
+  "LegalNoticeMeta": {
+    "title": "Aviso legal | Alquiler Karaoke",
+    "description": "Identificación del prestador del servicio, condiciones de uso del sitio web, propiedad intelectual y legislación aplicable (LSSI-CE)."
+  },
+  "LegalNotice": {
+    "title": "Aviso legal",
+    "intro": "En cumplimiento de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa de los siguientes datos del titular de este sitio web.",
+    "ownerTitle": "Titular del sitio web",
+    "taxIdPending": "(pendiente de actualización)",
+    "phoneLabel": "Teléfono",
+    "purposeTitle": "Objeto del sitio web",
+    "purposeText": "Este sitio web tiene por objeto informar sobre los servicios de alquiler de equipos de karaoke, sonido e iluminación y la organización de experiencias para eventos, así como facilitar la solicitud de presupuestos y la contratación de dichos servicios.",
+    "useTitle": "Condiciones de uso",
+    "useText": "El acceso y la navegación por este sitio web atribuyen la condición de usuario e implican la aceptación de este aviso legal. El usuario se compromete a hacer un uso adecuado de los contenidos y servicios, y a no emplearlos para actividades ilícitas o contrarias a la buena fe y al orden público.",
+    "ipTitle": "Propiedad intelectual e industrial",
+    "ipText": "Todos los contenidos de este sitio (textos, imágenes, logotipos, diseño y código fuente) son titularidad del prestador o de terceros que han autorizado su uso, y están protegidos por la normativa de propiedad intelectual e industrial. Queda prohibida su reproducción, distribución o transformación sin autorización expresa, salvo para uso personal y privado.",
+    "liabilityTitle": "Responsabilidad",
+    "liabilityText": "El titular no se hace responsable del mal uso de los contenidos del sitio web ni de los daños derivados de causas ajenas a su control, como interrupciones del servicio, virus o fallos técnicos. La información publicada tiene carácter orientativo y puede actualizarse o modificarse sin previo aviso.",
+    "linksTitle": "Enlaces a terceros",
+    "linksText": "Este sitio puede incluir enlaces a páginas de terceros (por ejemplo, marcas colaboradoras o redes sociales). El titular no asume responsabilidad alguna sobre sus contenidos ni sobre sus políticas de privacidad.",
+    "hostingTitle": "Alojamiento",
+    "hostingText": "Este sitio web está alojado en la infraestructura de Railway (Railway Corp.), proveedor de servicios de hosting en la nube. Los datos se tratan conforme a lo descrito en nuestra política de privacidad.",
+    "dataTitle": "Protección de datos",
+    "dataText": "El tratamiento de los datos personales recogidos a través de este sitio se rige por nuestra política de privacidad y por nuestra política de cookies, disponibles en el pie de página.",
+    "lawTitle": "Legislación aplicable",
+    "lawText": "Este aviso legal se rige por la legislación española. Para cualquier controversia, las partes se someterán a los juzgados y tribunales que correspondan conforme a la normativa aplicable, sin perjuicio de los derechos que asisten a los consumidores y usuarios."
+  },
+  "TermsMeta": {
+    "title": "Términos y condiciones | Alquiler Karaoke",
+    "description": "Condiciones de contratación del servicio de alquiler de karaoke: presupuesto, reserva, pagos, fianza, cancelaciones y responsabilidades."
+  },
+  "Terms": {
+    "title": "Términos y condiciones",
+    "intro": "Estas condiciones regulan la contratación de los servicios de alquiler de equipos de karaoke, sonido e iluminación y la organización de experiencias para eventos ofrecidos por {company} (en adelante, el prestador) a través de www.alquilerkaraoke.com.",
+    "scopeTitle": "1. Objeto y ámbito",
+    "scopeText": "El prestador ofrece el alquiler de equipos profesionales de karaoke y servicios asociados (transporte, montaje, dinamización y extras) para eventos de particulares y empresas en España. Las características concretas de cada servicio son las recogidas en el presupuesto aceptado por el cliente.",
+    "quoteTitle": "2. Solicitud y presupuesto",
+    "quoteText": "La solicitud de presupuesto a través de la web es gratuita y no supone compromiso de contratación. Los presupuestos son orientativos hasta su confirmación y tienen la validez indicada en el propio documento. Los precios incluyen IVA salvo indicación expresa.",
+    "bookingTitle": "3. Confirmación de la reserva",
+    "bookingText": "Toda reserva queda sujeta a validación por parte del prestador en función de la disponibilidad de fecha y equipo. La reserva se considera confirmada cuando el prestador así lo comunique y, en su caso, una vez recibido el pago de la señal indicada en el presupuesto.",
+    "paymentTitle": "4. Pagos",
+    "paymentText": "Para confirmar la reserva podrá requerirse el pago de una señal (importe o porcentaje indicado en el presupuesto). El importe restante se abonará en la forma y plazo acordados, como norma general antes del inicio del evento o el mismo día. Los medios de pago aceptados (transferencia, Bizum u otros) se indicarán en el presupuesto o en la proforma.",
+    "securityDepositTitle": "5. Fianza",
+    "securityDepositText": "Cuando el servicio incluya fianza, esta se abonará antes de la entrega del equipo y se devolverá íntegramente tras comprobar que el material se devuelve en correcto estado. En caso de daños, pérdida o uso indebido, el coste de reparación o reposición podrá descontarse de la fianza, sin perjuicio de reclamar el exceso si fuera superior.",
+    "cancellationTitle": "6. Cancelaciones y cambios de fecha",
+    "cancellationText": "El cliente puede cancelar o solicitar el cambio de fecha comunicándolo con la mayor antelación posible. Si la cancelación se produce con antelación suficiente, se devolverá la señal o se propondrá una fecha alternativa según disponibilidad; las condiciones concretas (plazos y porcentajes) se recogen en el presupuesto o contrato. Si el prestador cancelara por causa imputable a él, devolverá todas las cantidades abonadas. En supuestos de fuerza mayor, ambas partes buscarán de buena fe una fecha alternativa o la devolución de las cantidades entregadas.",
+    "clientTitle": "7. Obligaciones del cliente",
+    "clientText": "El cliente facilitará un espacio adecuado y seguro para el montaje, acceso al lugar del evento y toma de corriente eléctrica en condiciones. Se compromete a hacer un uso razonable del equipo conforme a las indicaciones del prestador y a custodiarlo durante el periodo de alquiler cuando no haya técnico presente.",
+    "providerTitle": "8. Obligaciones del prestador",
+    "providerText": "El prestador entregará el equipo en correcto estado de funcionamiento y realizará el montaje y las pruebas necesarias. Si se produjera una avería no imputable al cliente, el prestador la resolverá o sustituirá el equipo a la mayor brevedad y, si no fuera posible, ajustará el precio de forma proporcional.",
+    "liabilityTitle": "9. Responsabilidad",
+    "liabilityText": "El cliente responde de los daños causados al equipo por uso indebido durante el alquiler. El prestador responde de los daños directamente derivados de un funcionamiento defectuoso del servicio en los términos previstos por la ley. Ninguna de las partes responderá por incumplimientos derivados de fuerza mayor.",
+    "lawTitle": "10. Ley aplicable y jurisdicción",
+    "lawText": "Estas condiciones se rigen por la legislación española. Cualquier controversia se someterá a los juzgados y tribunales competentes conforme a la normativa aplicable; si el cliente actúa como consumidor, serán competentes los juzgados de su domicilio."
+  },
+  "CookiesMeta": {
+    "title": "Política de cookies | Alquiler Karaoke",
+    "description": "Qué cookies usa este sitio (necesarias y de analítica de Google Analytics y Meta Pixel), cuánto duran y cómo aceptar, rechazar o cambiar tu elección."
+  },
+  "Cookies": {
+    "title": "Política de cookies",
+    "whatTitle": "¿Qué son las cookies?",
+    "whatText": "Las cookies son pequeños archivos que se guardan en tu dispositivo cuando visitas un sitio web. Sirven, por ejemplo, para recordar tus preferencias o para obtener estadísticas de uso. Algunas son necesarias para que la web funcione; otras (como las de analítica) solo se instalan si las aceptas.",
+    "tableTitle": "Cookies que usamos",
+    "tableIntro": "Este sitio utiliza las siguientes cookies:",
+    "colName": "Cookie",
+    "colProvider": "Proveedor",
+    "colPurpose": "Finalidad",
+    "colDuration": "Duración",
+    "colType": "Tipo",
+    "providerOwn": "Propia",
+    "rowConsentPurpose": "Guarda tu elección sobre el uso de cookies (aceptar o rechazar la analítica).",
+    "rowSessionPurpose": "Mantiene la sesión iniciada en el área privada o de administración.",
+    "rowGaPurpose": "Estadísticas anónimas de uso de la web (páginas vistas, origen de la visita).",
+    "rowFbPurpose": "Medición de campañas y conversiones de Meta (Facebook/Instagram).",
+    "duration12m": "12 meses",
+    "durationSession": "Sesión",
+    "duration2y": "Hasta 2 años",
+    "duration3m": "3 meses",
+    "typeNecessary": "Necesaria",
+    "typeAnalytics": "Analítica/medición",
+    "consentNote": "Las cookies de Google Analytics y Meta Pixel solo se instalan si las aceptas desde el banner de cookies. Si las rechazas, no se carga ningún script de estos proveedores.",
+    "manageTitle": "Cómo cambiar tu elección",
+    "manageText": "Puedes cambiar o retirar tu consentimiento en cualquier momento desde el botón siguiente o desde el enlace «Configurar cookies» del pie de página.",
+    "settingsButton": "Configurar cookies",
+    "browserText": "También puedes eliminar o bloquear las cookies desde la configuración de tu navegador (Chrome, Safari, Firefox o Edge). Ten en cuenta que bloquear las cookies necesarias puede afectar al funcionamiento del sitio.",
+    "moreTitle": "Más información",
+    "moreText": "Para saber cómo tratamos tus datos personales, consulta nuestra",
+    "privacyLink": "política de privacidad"
   }
 }
