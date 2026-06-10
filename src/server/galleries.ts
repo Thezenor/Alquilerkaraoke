@@ -45,19 +45,36 @@ export const getListedGalleries = unstable_cache(
   { tags: [GALLERIES_TAG], revalidate: 3600 },
 );
 
-/** Galería activa por slug, con sus elementos ordenados. */
+/**
+ * Galería activa por slug, SIN elementos: la página decide primero si está
+ * caducada o bloqueada por clave y solo entonces pide los items con
+ * getGalleryItems (evita cargar todos los medios para acabar mostrando el candado).
+ */
 export const getGalleryBySlug = unstable_cache(
   async (slug: string) => {
     try {
-      return await prisma.gallery.findFirst({
-        where: { slug, isActive: true },
-        include: { items: { orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] } },
-      });
+      return await prisma.gallery.findFirst({ where: { slug, isActive: true } });
     } catch {
       return null;
     }
   },
   [`${GALLERIES_TAG}-by-slug`],
+  { tags: [GALLERIES_TAG], revalidate: 3600 },
+);
+
+/** Elementos de una galería, ordenados (cacheado por tag). */
+export const getGalleryItems = unstable_cache(
+  async (galleryId: string) => {
+    try {
+      return await prisma.galleryItem.findMany({
+        where: { galleryId },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      });
+    } catch {
+      return [];
+    }
+  },
+  [`${GALLERIES_TAG}-items`],
   { tags: [GALLERIES_TAG], revalidate: 3600 },
 );
 

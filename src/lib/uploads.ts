@@ -1,4 +1,4 @@
-import { mkdir, writeFile, readFile } from "node:fs/promises";
+import { mkdir, writeFile, readFile, stat } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
@@ -25,6 +25,17 @@ export async function saveImage(input: ArrayBuffer, mime: string): Promise<{ url
   const filename = `${randomUUID()}.webp`;
   await writeFile(path.join(UPLOAD_DIR, filename), webp);
   return { url: `/media/${filename}`, filename };
+}
+
+/** Fecha de modificación de un archivo subido (null si no existe). */
+export async function uploadMtime(name: string): Promise<Date | null> {
+  const safe = path.basename(name);
+  if (safe !== name) return null;
+  try {
+    return (await stat(path.join(UPLOAD_DIR, safe))).mtime;
+  } catch {
+    return null;
+  }
 }
 
 /** Lee un archivo subido de forma segura (sin path traversal). */

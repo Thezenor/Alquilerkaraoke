@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
@@ -384,14 +385,29 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </h2>
             <ul className="mt-10 flex flex-wrap items-center justify-center gap-4">
               {collaborators.map((c) => {
+                // Dimensiones explícitas (h-12 = 48px) → el navegador reserva el
+                // espacio y no hay CLS. Los logos locales pasan por next/image.
                 const inner = c.logoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={c.logoUrl}
-                    alt={c.name}
-                    loading="lazy"
-                    className="max-h-12 w-auto object-contain"
-                  />
+                  /^https?:\/\//i.test(c.logoUrl) ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- logo externo
+                    <img
+                      src={c.logoUrl}
+                      alt={c.name}
+                      width={144}
+                      height={48}
+                      loading="lazy"
+                      className="h-12 w-auto object-contain"
+                    />
+                  ) : (
+                    <Image
+                      src={c.logoUrl}
+                      alt={c.name}
+                      width={144}
+                      height={48}
+                      unoptimized={c.logoUrl.endsWith(".svg")}
+                      className="h-12 w-auto object-contain"
+                    />
+                  )
                 ) : (
                   <span className="font-semibold text-white">{c.name}</span>
                 );

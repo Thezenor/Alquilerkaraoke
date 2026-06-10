@@ -3,19 +3,10 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { buildMetadata } from "@/lib/seo";
-import { prisma } from "@/lib/prisma";
-import { searchSongs, getLanguageCounts } from "@/server/songs";
+import { searchSongs, getLanguageCounts, getCatalogStats } from "@/server/songs";
 import { languageName } from "@/lib/song-languages";
 import { LanguageFlag } from "@/components/language-flag";
 import { cn } from "@/lib/cn";
-
-async function uniqueCount(): Promise<number> {
-  try {
-    return await prisma.song.count({ where: { isPrimary: true } });
-  } catch {
-    return 0;
-  }
-}
 
 export const dynamic = "force-dynamic";
 
@@ -51,7 +42,8 @@ export default async function SongsPage({
   // Parámetros a conservar al cambiar de filtro/orden/página.
   const keep: Record<string, string> = { ...(q ? { q } : {}), ...(sort !== "title" ? { sort } : {}) };
 
-  const [unique, langCounts] = await Promise.all([uniqueCount(), getLanguageCounts()]);
+  // Estadísticas cacheadas por tag SONGS_TAG (la importación del admin las invalida).
+  const [{ unique }, langCounts] = await Promise.all([getCatalogStats(), getLanguageCounts()]);
   // Idiomas con ≥10 canciones (ya ordenados de más a menos); el resto + "Ninguno"
   // se agrupan en "Sin clasificar", que va siempre al final.
   const major = langCounts.filter((c) => c.code !== "NI" && c.count >= THRESHOLD);

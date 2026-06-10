@@ -5,7 +5,14 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { buildMetadata } from "@/lib/seo";
-import { getGalleryBySlug, isExpired, galleryCookieName, verifyGalleryToken } from "@/server/galleries";
+import {
+  getGalleryBySlug,
+  getGalleryItems,
+  isExpired,
+  galleryCookieName,
+  verifyGalleryToken,
+} from "@/server/galleries";
+import { SmartImage } from "@/components/site/smart-image";
 import { UnlockForm } from "../unlock-form";
 
 export const dynamic = "force-dynamic";
@@ -48,6 +55,8 @@ export default async function GalleryPage({
     const jar = await cookies();
     unlocked = verifyGalleryToken(gallery.id, jar.get(galleryCookieName(gallery.id))?.value);
   }
+  // Los elementos solo se cargan si de verdad se van a mostrar.
+  const items = !expired && unlocked ? await getGalleryItems(gallery.id) : [];
 
   return (
     <section className="py-16 sm:py-20">
@@ -76,29 +85,31 @@ export default async function GalleryPage({
               labels={{ prompt: t("unlockPrompt"), placeholder: t("unlockPlaceholder"), button: t("unlockButton") }}
             />
           </div>
-        ) : gallery.items.length === 0 ? (
+        ) : items.length === 0 ? (
           <p className="mt-10 rounded-xl border border-dashed border-brand-border p-10 text-center text-brand-muted">
             {t("empty")}
           </p>
         ) : (
           <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {gallery.items.map((it) => (
+            {items.map((it) => (
               <li key={it.id} className="group relative overflow-hidden rounded-xl border border-brand-border bg-brand-surface-2">
                 {it.type === "VIDEO" ? (
                   <video
                     src={it.url}
                     controls
+                    preload="none"
                     poster={it.thumbnailUrl ?? undefined}
                     className="aspect-square w-full object-cover"
                   />
                 ) : (
-                  // eslint-disable-next-line @next/next/no-img-element -- imagen remota de la galería
-                  <img
-                    src={it.thumbnailUrl ?? it.url}
-                    alt={it.caption ?? gallery.title}
-                    loading="lazy"
-                    className="aspect-square w-full object-cover transition group-hover:scale-105"
-                  />
+                  <div className="relative aspect-square w-full">
+                    <SmartImage
+                      src={it.thumbnailUrl ?? it.url}
+                      alt={it.caption ?? gallery.title}
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                      className="object-cover transition group-hover:scale-105"
+                    />
+                  </div>
                 )}
                 {gallery.allowDownload && it.type === "IMAGE" && (
                   <a

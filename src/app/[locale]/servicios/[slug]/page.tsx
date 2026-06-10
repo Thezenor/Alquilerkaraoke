@@ -9,8 +9,15 @@ import { formatCents } from "@/lib/money";
 import { Markdown, markdownToPlain } from "@/lib/markdown";
 import { getServiceBySlug, localizedService } from "@/server/services";
 import { getActivePacks, localizedPack } from "@/server/packs";
+import { SmartImage } from "@/components/site/smart-image";
 
-export const dynamic = "force-dynamic";
+// ISR (patrón karaoke/[ciudad]): generación bajo demanda + caché de HTML estático.
+// Datos cacheados por tags SERVICES_TAG/PACKS_TAG, invalidados desde el admin con updateTag.
+export const revalidate = 3600;
+export const dynamicParams = true;
+export function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({
   params,
@@ -63,12 +70,15 @@ export default async function ServiceDetailPage({
       <section className="py-16 sm:py-20">
         <Container className="max-w-4xl">
           {service.heroImageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={service.heroImageUrl}
-              alt={l.name}
-              className="mb-8 aspect-[16/9] w-full rounded-2xl border border-brand-border object-cover"
-            />
+            <div className="relative mb-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-brand-border">
+              <SmartImage
+                src={service.heroImageUrl}
+                alt={l.name}
+                priority
+                sizes="(min-width: 896px) 832px, 100vw"
+                className="object-cover"
+              />
+            </div>
           )}
 
           <h1 className="text-3xl font-bold text-white sm:text-4xl">{l.name}</h1>

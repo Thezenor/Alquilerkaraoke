@@ -8,9 +8,16 @@ import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { formatCents, centsToEuros } from "@/lib/money";
 import { getPackBySlug, localizedPack } from "@/server/packs";
 import { packImage, descriptionToFeatures } from "@/lib/pack-image";
+import { SmartImage } from "@/components/site/smart-image";
 
-// Datos desde BD: render en runtime (el build de Railway no accede a la BD).
-export const dynamic = "force-dynamic";
+// ISR (patrón karaoke/[ciudad]): no se prerenderiza en build (el build de Railway
+// no accede a la BD), pero cada ficha se genera bajo demanda y se cachea como HTML
+// estático. getPackBySlug va cacheado por tag PACKS_TAG (updateTag desde el admin).
+export const revalidate = 3600;
+export const dynamicParams = true;
+export function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({
   params,
@@ -69,12 +76,15 @@ export default async function PackDetailPage({
       <JsonLd data={schema} />
       <section className="py-16 sm:py-20">
         <Container className="max-w-3xl">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={imageSrc}
-            alt={pack.imageAlt || l.name}
-            className="mb-8 aspect-[16/9] w-full rounded-2xl border border-brand-border object-cover"
-          />
+          <div className="relative mb-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-brand-border">
+            <SmartImage
+              src={imageSrc}
+              alt={pack.imageAlt || l.name}
+              priority
+              sizes="(min-width: 768px) 720px, 100vw"
+              className="object-cover"
+            />
+          </div>
 
           <h1 className="text-3xl font-bold text-white sm:text-4xl">{l.name}</h1>
 

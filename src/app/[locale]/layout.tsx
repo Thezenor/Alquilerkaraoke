@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { hasLocale, NextIntlClientProvider, type Messages } from "next-intl";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { routing } from "@/i18n/routing";
 import { fontVariables } from "../fonts";
@@ -63,12 +63,17 @@ export default async function LocaleLayout({
   // Habilita el renderizado estático con next-intl.
   setRequestLocale(locale);
 
-  const contact = await getContact();
-  const services = (await getActiveServices()).map((s) => ({
+  // Consultas independientes en paralelo (antes eran 3 awaits secuenciales).
+  const [contact, rawServices, rawEvents] = await Promise.all([
+    getContact(),
+    getActiveServices(),
+    getActiveEventTypes(),
+  ]);
+  const services = rawServices.map((s) => ({
     slug: s.slug,
     name: localizedService(s, locale).name,
   }));
-  const events = (await getActiveEventTypes()).map((e) => ({
+  const events = rawEvents.map((e) => ({
     slug: e.slug,
     name: localizedEventType(e, locale).name,
   }));
@@ -114,6 +119,23 @@ export default async function LocaleLayout({
   const cookieSettingsLabel = (await getTranslations({ locale, namespace: "CookieBanner" }))(
     "settings",
   );
+
+  // Solo se serializan al cliente los namespaces que usan componentes "use client"
+  // (useTranslations). Si añades useTranslations en un componente cliente nuevo,
+  // añade aquí su namespace o no encontrará los mensajes.
+  const CLIENT_NAMESPACES = [
+    "Nav", // site-header
+    "MobileCta", // mobile-cta-bar
+    "CookieBanner", // cookie-banner
+    "LocaleSwitcher", // locale-switcher
+    "Quote", // presupuesto/quote-form
+    "Contact", // contacto/contact-form
+    "Unsubscribe", // baja-marketing/unsubscribe-form
+  ] as const;
+  const allMessages = await getMessages({ locale });
+  const clientMessages = Object.fromEntries(
+    CLIENT_NAMESPACES.filter((ns) => ns in allMessages).map((ns) => [ns, allMessages[ns]]),
+  ) as Messages;
 
   // Color de marca configurable desde el admin (sobrescribe el token de tema).
   const themeStyle = contact.primaryColor
@@ -164,7 +186,7 @@ export default async function LocaleLayout({
       {/* public-headings: tipografía display (Space Grotesk) en H1/H2 públicos */}
       <body className="public-headings flex min-h-full flex-col" style={themeStyle}>
         <JsonLd data={businessSchema} />
-        <NextIntlClientProvider>
+        <NextIntlClientProvider messages={clientMessages}>
           <SiteHeader
             services={services}
             events={events}

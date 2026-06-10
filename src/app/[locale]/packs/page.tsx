@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/site/reveal";
+import { SmartImage } from "@/components/site/smart-image";
 import { buildMetadata } from "@/lib/seo";
 import { formatCents } from "@/lib/money";
 import { getActivePacks, localizedPack } from "@/server/packs";
@@ -61,13 +62,14 @@ export default async function PacksPage({ params }: { params: Promise<{ locale: 
                     {t("mostPopular")}
                   </span>
                 )}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={packImage(pack)}
-                  alt={pack.imageAlt || l.name}
-                  loading="lazy"
-                  className="aspect-[16/10] w-full object-cover"
-                />
+                <div className="relative aspect-[16/10] w-full">
+                  <SmartImage
+                    src={packImage(pack)}
+                    alt={pack.imageAlt || l.name}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
                 <div className="flex flex-1 flex-col p-6">
                   <h2 className="text-lg font-semibold text-white">{l.name}</h2>
                   {subtitle && (

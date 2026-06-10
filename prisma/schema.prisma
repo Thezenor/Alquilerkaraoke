@@ -562,6 +562,13 @@ model Song {
   @@index([languageCode, isPrimary])
   @@index([dedupKey])
   @@index([isPrimary])
+  // Listado público: filtra por isPrimary y ordena por title/performer.
+  @@index([isPrimary, title])
+  @@index([isPrimary, performer])
+  // Búsqueda "contains insensitive" (ILIKE %q%): índices trigram (pg_trgm).
+  // La extensión se crea en la migración song_search_indexes (CREATE EXTENSION IF NOT EXISTS pg_trgm).
+  @@index([title(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([performer(ops: raw("gin_trgm_ops"))], type: Gin)
 }
 
 // ── Ciudades (landings SEO locales, gestionables desde el admin) ──

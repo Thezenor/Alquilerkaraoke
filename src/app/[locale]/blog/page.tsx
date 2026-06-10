@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { buildMetadata } from "@/lib/seo";
 import { getPublishedPosts } from "@/server/blog";
-import { markdownToPlain } from "@/lib/markdown";
+import { SmartImage } from "@/components/site/smart-image";
 
 export const dynamic = "force-dynamic";
 
@@ -48,13 +48,14 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
               >
                 <Link href={`/${locale}/blog/${p.slug}`} className="flex flex-1 flex-col">
                   {p.coverImageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={p.coverImageUrl}
-                      alt={p.title}
-                      loading="lazy"
-                      className="aspect-[16/9] w-full object-cover"
-                    />
+                    <div className="relative aspect-[16/9] w-full">
+                      <SmartImage
+                        src={p.coverImageUrl}
+                        alt={p.title}
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        className="object-cover"
+                      />
+                    </div>
                   ) : (
                     <div className="from-brand-surface-2 to-brand-bg aspect-[16/9] w-full bg-gradient-to-br" />
                   )}
@@ -68,9 +69,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
                       </time>
                     )}
                     <h2 className="mt-1 text-lg font-semibold text-white">{p.title}</h2>
-                    <p className="text-brand-muted mt-2 line-clamp-3 flex-1 text-sm">
-                      {p.excerpt || markdownToPlain(p.content, 140)}
-                    </p>
+                    <p className="text-brand-muted mt-2 line-clamp-3 flex-1 text-sm">{p.excerpt}</p>
                     <span className="text-brand-neon mt-3 text-sm font-medium">
                       {t("readMore")} →
                     </span>

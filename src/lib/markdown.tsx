@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SmartImage } from "@/components/site/smart-image";
 
 // Renderizador de un subconjunto SEGURO de Markdown a elementos React.
 // No usa dangerouslySetInnerHTML ni admite HTML embebido → sin riesgo de XSS.
@@ -126,10 +127,18 @@ export function Markdown({ source }: { source: string }) {
           );
         }
         if (b.type === "img") {
+          // Sin dimensiones conocidas: contenedor 16/9 fijo (reserva el alto → sin CLS)
+          // con object-contain para no deformar ni recortar la imagen original.
           return (
             <figure key={i} className="my-2 overflow-hidden rounded-xl border border-brand-border">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={b.src} alt={b.alt} loading="lazy" className="w-full" />
+              <div className="relative aspect-[16/9] w-full">
+                <SmartImage
+                  src={b.src}
+                  alt={b.alt}
+                  sizes="(min-width: 768px) 720px, 100vw"
+                  className="object-contain"
+                />
+              </div>
               {b.alt && <figcaption className="px-3 py-2 text-center text-xs text-brand-muted">{b.alt}</figcaption>}
             </figure>
           );

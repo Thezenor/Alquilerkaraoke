@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { JsonLd } from "@/components/seo/json-ld";
+import { SmartImage } from "@/components/site/smart-image";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { getActiveEventTypes, localizedEventType } from "@/server/event-types";
 
@@ -66,13 +67,12 @@ export default async function EventsHubPage({ params }: { params: Promise<{ loca
                     className="card-lift group border-brand-border bg-brand-surface hover:border-brand-neon/60 flex h-full flex-col overflow-hidden rounded-2xl border"
                   >
                     {e.heroImageUrl && (
-                      <div className="bg-brand-surface-2 aspect-[16/9] w-full overflow-hidden">
-                        {/* eslint-disable-next-line @next/next/no-img-element -- imagen remota */}
-                        <img
+                      <div className="bg-brand-surface-2 relative aspect-[16/9] w-full overflow-hidden">
+                        <SmartImage
                           src={e.heroImageUrl}
                           alt={l.name}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition group-hover:scale-105"
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                          className="object-cover transition group-hover:scale-105"
                         />
                       </div>
                     )}

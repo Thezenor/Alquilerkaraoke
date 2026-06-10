@@ -8,8 +8,16 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { Markdown, markdownToPlain } from "@/lib/markdown";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { getActiveEventTypes, getEventTypeBySlug, localizedEventType, type EventFaq } from "@/server/event-types";
+import { SmartImage } from "@/components/site/smart-image";
 
-export const dynamic = "force-dynamic";
+// ISR (patrón karaoke/[ciudad]): no se prerenderiza en build (sin BD en Railway),
+// pero cada ficha se genera bajo demanda y se cachea como HTML estático.
+// Los datos van cacheados por tag EVENT_TYPES_TAG y el admin los invalida con updateTag.
+export const revalidate = 3600;
+export const dynamicParams = true;
+export function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({
   params,
@@ -102,12 +110,15 @@ export default async function EventTypePage({
           </div>
 
           {e.heroImageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element -- imagen remota
-            <img
-              src={e.heroImageUrl}
-              alt={l.name}
-              className="mt-10 aspect-[16/9] w-full rounded-2xl border border-brand-border object-cover"
-            />
+            <div className="relative mt-10 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-brand-border">
+              <SmartImage
+                src={e.heroImageUrl}
+                alt={l.name}
+                priority
+                sizes="(min-width: 1152px) 1088px, 100vw"
+                className="object-cover"
+              />
+            </div>
           )}
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[1.6fr_1fr]">

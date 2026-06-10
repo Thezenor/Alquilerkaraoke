@@ -49,23 +49,28 @@ export const getCatalogStats = unstable_cache(
 
 /**
  * Nº de canciones (no repetidas) por idioma, de mayor a menor.
- * Sin caché: la página de canciones es dinámica y debe reflejar el catálogo
- * recién importado de inmediato (el groupBy va sobre el índice y es rápido).
+ * Cacheado por tag SONGS_TAG: el groupBy recorre toda la tabla y no debe ejecutarse
+ * en cada visita. Las acciones de importar/optimizar del admin invalidan el tag,
+ * así que el catálogo recién importado se refleja de inmediato.
  */
-export async function getLanguageCounts() {
-  try {
-    const rows = await prisma.song.groupBy({
-      by: ["languageCode"],
-      where: { isPrimary: true },
-      _count: { _all: true },
-    });
-    return rows
-      .map((r) => ({ code: r.languageCode, count: r._count._all }))
-      .sort((a, b) => b.count - a.count);
-  } catch {
-    return [];
-  }
-}
+export const getLanguageCounts = unstable_cache(
+  async () => {
+    try {
+      const rows = await prisma.song.groupBy({
+        by: ["languageCode"],
+        where: { isPrimary: true },
+        _count: { _all: true },
+      });
+      return rows
+        .map((r) => ({ code: r.languageCode, count: r._count._all }))
+        .sort((a, b) => b.count - a.count);
+    } catch {
+      return [];
+    }
+  },
+  ["songs-language-counts"],
+  { tags: [SONGS_TAG], revalidate: 3600 },
+);
 
 /**
  * Nº de canciones por marca: total y visibles (isPrimary) tras la última optimización.

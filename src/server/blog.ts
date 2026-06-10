@@ -1,16 +1,34 @@
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { markdownToPlain } from "@/lib/markdown";
 
 export const BLOG_TAG = "blog";
 
-/** Entradas publicadas de un idioma (cacheado por tag). */
+/**
+ * Entradas publicadas de un idioma para el listado (cacheado por tag).
+ * Select acotado: el `content` completo no viaja a la página; si no hay
+ * excerpt se deriva aquí un resumen en texto plano y se cachea ya recortado.
+ */
 export const getPublishedPosts = unstable_cache(
   async (locale: string) => {
     try {
-      return await prisma.post.findMany({
+      const posts = await prisma.post.findMany({
         where: { status: "PUBLISHED", locale, publishedAt: { not: null } },
         orderBy: { publishedAt: "desc" },
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          excerpt: true,
+          content: true,
+          coverImageUrl: true,
+          publishedAt: true,
+        },
       });
+      return posts.map(({ content, excerpt, ...p }) => ({
+        ...p,
+        excerpt: excerpt || markdownToPlain(content, 140),
+      }));
     } catch {
       return [];
     }

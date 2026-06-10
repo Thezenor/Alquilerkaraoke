@@ -7,8 +7,15 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { buildMetadata, absoluteUrl } from "@/lib/seo";
 import { getPublishedPostBySlug } from "@/server/blog";
 import { Markdown, markdownToPlain } from "@/lib/markdown";
+import { SmartImage } from "@/components/site/smart-image";
 
-export const dynamic = "force-dynamic";
+// ISR (patrón karaoke/[ciudad]): generación bajo demanda + caché de HTML estático.
+// Los datos van cacheados por tag BLOG_TAG y el admin los invalida con updateTag.
+export const revalidate = 3600;
+export const dynamicParams = true;
+export function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({
   params,
@@ -83,12 +90,15 @@ export default async function PostPage({
           <h1 className="mt-1 text-3xl font-bold text-white sm:text-4xl">{post.title}</h1>
 
           {post.coverImageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={post.coverImageUrl}
-              alt={post.title}
-              className="mt-8 aspect-[16/9] w-full rounded-2xl border border-brand-border object-cover"
-            />
+            <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-brand-border">
+              <SmartImage
+                src={post.coverImageUrl}
+                alt={post.title}
+                priority
+                sizes="(min-width: 768px) 720px, 100vw"
+                className="object-cover"
+              />
+            </div>
           )}
 
           <div className="mt-8">
