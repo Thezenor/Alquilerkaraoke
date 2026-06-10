@@ -15,7 +15,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { getContact } from "@/server/site-config";
 import { getActiveServices, localizedService } from "@/server/services";
 import { getActiveEventTypes, localizedEventType } from "@/server/event-types";
-import { SITE_URL, SITE_NAME, absoluteUrl } from "@/lib/seo";
+import { SITE_URL, SITE_NAME, ORGANIZATION_ID, absoluteUrl, openingHoursToSpec } from "@/lib/seo";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -146,7 +146,38 @@ export default async function LocaleLayout({
     : undefined;
 
   const sameAs = Object.values(contact.socials).filter((u): u is string => Boolean(u));
-  const orgId = `${SITE_URL}/#organization`;
+  const orgId = ORGANIZATION_ID;
+
+  // SEO local: dirección, horario y coordenadas (configurables en admin).
+  // Solo se emiten las propiedades con datos reales.
+  const biz = contact.business;
+  const hasAddress = Boolean(
+    biz.addressStreet || biz.addressCity || biz.addressRegion || biz.addressPostalCode,
+  );
+  const openingSpec = biz.openingHours ? openingHoursToSpec(biz.openingHours) : null;
+  const localBusinessExtras = {
+    ...(hasAddress
+      ? {
+          address: {
+            "@type": "PostalAddress",
+            ...(biz.addressStreet ? { streetAddress: biz.addressStreet } : {}),
+            ...(biz.addressCity ? { addressLocality: biz.addressCity } : {}),
+            ...(biz.addressRegion ? { addressRegion: biz.addressRegion } : {}),
+            ...(biz.addressPostalCode ? { postalCode: biz.addressPostalCode } : {}),
+            addressCountry: "ES",
+          },
+        }
+      : {}),
+    ...(biz.openingHours
+      ? openingSpec
+        ? { openingHoursSpecification: openingSpec }
+        : { openingHours: biz.openingHours }
+      : {}),
+    ...(biz.latitude != null && biz.longitude != null
+      ? { geo: { "@type": "GeoCoordinates", latitude: biz.latitude, longitude: biz.longitude } }
+      : {}),
+  };
+
   const businessSchema = [
     {
       "@context": "https://schema.org",
@@ -161,6 +192,7 @@ export default async function LocaleLayout({
       areaServed: { "@type": "Country", name: "España" },
       priceRange: "€€",
       ...(sameAs.length ? { sameAs } : {}),
+      ...localBusinessExtras,
     },
     {
       "@context": "https://schema.org",

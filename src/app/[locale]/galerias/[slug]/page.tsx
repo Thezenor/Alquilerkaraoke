@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, pageTitle } from "@/lib/seo";
 import {
   getGalleryBySlug,
   getGalleryItems,
@@ -30,7 +30,7 @@ export async function generateMetadata({
   return buildMetadata({
     locale,
     pathname: `/galerias/${slug}`,
-    title: `${gallery.title} | Alquiler Karaoke`,
+    title: pageTitle(gallery.title),
     description: gallery.description ?? gallery.title,
     noindex,
   });

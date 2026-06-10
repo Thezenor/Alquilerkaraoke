@@ -41,6 +41,13 @@ export default async function ConfigPage() {
     gscVerification: c?.gscVerification ?? "",
     metaPixelId: c?.metaPixelId ?? "",
     quoteTerms: c?.quoteTerms ?? DEFAULT_QUOTE_TERMS,
+    addressStreet: c?.addressStreet ?? "",
+    addressCity: c?.addressCity ?? "",
+    addressRegion: c?.addressRegion ?? "",
+    addressPostalCode: c?.addressPostalCode ?? "",
+    openingHours: c?.openingHours ?? "",
+    latitude: c?.latitude != null ? String(c.latitude) : "",
+    longitude: c?.longitude != null ? String(c.longitude) : "",
   };
 
   return (

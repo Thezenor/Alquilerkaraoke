@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { JsonLd } from "@/components/seo/json-ld";
-import { buildMetadata, absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, pageTitle, SITE_NAME } from "@/lib/seo";
 import { getPublishedPostBySlug } from "@/server/blog";
 import { Markdown, markdownToPlain } from "@/lib/markdown";
 import { SmartImage } from "@/components/site/smart-image";
@@ -25,13 +25,29 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const post = await getPublishedPostBySlug(slug);
   if (!post) return {};
-  return buildMetadata({
-    locale,
-    pathname: `/blog/${slug}`,
-    title: post.metaTitle || `${post.title} | Alquiler Karaoke`,
-    description: post.metaDescription || post.excerpt || markdownToPlain(post.content),
-    // La imagen OG la genera /blog/[slug]/opengraph-image (tarjeta de marca con el título).
-  });
+  // El post existe en UN solo idioma: si la URL pide otro locale, la página
+  // redirige (301/308) y aquí no emitimos hreflang a variantes inexistentes.
+  if (post.locale !== locale) return {};
+
+  const canonical = `/${post.locale}/blog/${slug}`;
+  const title = post.metaTitle || pageTitle(post.title);
+  const description = post.metaDescription || post.excerpt || markdownToPlain(post.content);
+  return {
+    title: { absolute: title },
+    description,
+    // Canonical self + hreflang SOLO del idioma real del post (alineado con el sitemap).
+    alternates: { canonical, languages: { [post.locale]: canonical } },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: SITE_NAME,
+      locale: post.locale,
+      type: "article",
+      // La imagen OG la genera /blog/[slug]/opengraph-image (tarjeta de marca con el título).
+    },
+    twitter: { card: "summary_large_image", title, description },
+  };
 }
 
 export default async function PostPage({
@@ -42,6 +58,9 @@ export default async function PostPage({
   const { locale, slug } = await params;
   const post = await getPublishedPostBySlug(slug);
   if (!post) notFound();
+  // Cada post vive solo en su idioma: si la URL usa otro prefijo de locale,
+  // redirección permanente a la URL canónica (evita contenido duplicado entre locales).
+  if (post.locale !== locale) permanentRedirect(`/${post.locale}/blog/${slug}`);
   setRequestLocale(locale);
 
   const schema = [

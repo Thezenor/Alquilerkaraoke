@@ -5,7 +5,8 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Alquiler Karaoke",
     short_name: "Alquiler Karaoke",
     description: "Alquiler de karaoke y eventos profesionales en toda España.",
-    start_url: "/",
+    // El idioma por defecto: "/" solo redirige (next-intl, localePrefix always).
+    start_url: "/es",
     display: "standalone",
     background_color: "#0B0E14",
     theme_color: "#0B0E14",

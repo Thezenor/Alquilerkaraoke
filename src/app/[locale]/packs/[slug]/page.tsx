@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
-import { buildMetadata, absoluteUrl } from "@/lib/seo";
+import { buildMetadata, absoluteUrl, pageTitle } from "@/lib/seo";
 import { formatCents, centsToEuros } from "@/lib/money";
 import { getPackBySlug, localizedPack } from "@/server/packs";
 import { packImage, descriptionToFeatures } from "@/lib/pack-image";
@@ -29,11 +29,14 @@ export async function generateMetadata({
   if (!pack) return {};
   const l = localizedPack(pack, locale);
   const t = await getTranslations({ locale, namespace: "PacksPage" });
+  // Imagen real del pack en OG/Twitter (mejor CTR al compartir que la tarjeta genérica).
+  const image = packImage(pack);
   return buildMetadata({
     locale,
     pathname: `/packs/${slug}`,
-    title: `${l.name} | Alquiler Karaoke`,
+    title: pageTitle(l.name),
     description: l.shortDescription || `${l.name} — ${t("from")} ${formatCents(pack.basePrice, locale)} ${t("vat")}.`,
+    images: [image.startsWith("/") ? absoluteUrl(image) : image],
   });
 }
 

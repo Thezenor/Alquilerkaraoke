@@ -3,6 +3,15 @@
     "homeTitle": "Alquiler Karaoke | Experiencias profesionales de karaoke y eventos",
     "homeDescription": "Montamos experiencias profesionales de karaoke y eventos para particulares, empresas, bodas y fiestas en toda España. Solicita tu presupuesto."
   },
+  "NotFound": {
+    "kicker": "Error 404",
+    "title": "Esta página se ha quedado sin micro",
+    "description": "La dirección que buscas no existe o ha cambiado. Pero la fiesta sigue: aquí tienes los mejores caminos de vuelta.",
+    "ctaHome": "Ir a la portada",
+    "ctaPacks": "Ver packs y precios",
+    "ctaQuote": "Pedir presupuesto",
+    "ctaCall": "Llamar al {phone}"
+  },
   "Nav": {
     "services": "Servicios",
     "packs": "Packs",

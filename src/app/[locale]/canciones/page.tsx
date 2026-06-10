@@ -12,12 +12,20 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ q?: string; lang?: string; page?: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const sp = await searchParams;
   const t = await getTranslations({ locale, namespace: "SongsMeta" });
-  return buildMetadata({ locale, pathname: "/canciones", title: t("title"), description: t("description") });
+  const base = buildMetadata({ locale, pathname: "/canciones", title: t("title"), description: t("description") });
+  // Variantes filtradas/paginadas: noindex,follow para no indexar miles de
+  // combinaciones de búsqueda. El canonical sigue apuntando a /canciones.
+  const page = parseInt(sp.page ?? "1", 10) || 1;
+  const filtered = Boolean(sp.q?.trim() || sp.lang?.trim()) || page > 1;
+  return filtered ? { ...base, robots: { index: false, follow: true } } : base;
 }
 
 export default async function SongsPage({

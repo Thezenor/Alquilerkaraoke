@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, pageTitle } from "@/lib/seo";
 
 type Faq = { q: string; a: string };
 
@@ -14,7 +14,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Faq" });
-  return buildMetadata({ locale, pathname: "/faq", title: `${t("title")} | Alquiler Karaoke`, description: t("intro") });
+  return buildMetadata({ locale, pathname: "/faq", title: pageTitle(t("title")), description: t("intro") });
 }
 
 export default async function FaqPage({ params }: { params: Promise<{ locale: string }> }) {

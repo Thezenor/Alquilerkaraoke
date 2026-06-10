@@ -38,6 +38,32 @@ const schema = z.object({
   gscVerification: z.string().trim().max(200).optional(),
   metaPixelId: z.union([z.literal(""), z.string().regex(/^\d{6,20}$/, "El Pixel ID son solo dígitos.")]).optional(),
   quoteTerms: z.string().trim().max(8000).optional(),
+  // SEO local (LocalBusiness): todos opcionales; solo se publican si se rellenan.
+  addressStreet: z.string().trim().max(200).optional(),
+  addressCity: z.string().trim().max(100).optional(),
+  addressRegion: z.string().trim().max(100).optional(),
+  addressPostalCode: z
+    .union([z.literal(""), z.string().regex(/^\d{5}$/, "Código postal no válido (5 dígitos).")])
+    .optional(),
+  openingHours: z
+    .union([
+      z.literal(""),
+      z
+        .string()
+        .trim()
+        .max(200)
+        .regex(
+          /^[A-Z][a-z](-[A-Z][a-z])?\s+\d{1,2}:\d{2}-\d{1,2}:\d{2}(\s*,\s*[A-Z][a-z](-[A-Z][a-z])?\s+\d{1,2}:\d{2}-\d{1,2}:\d{2})*$/,
+          'Horario no válido. Formato schema.org, ej. "Mo-Su 09:00-21:00".',
+        ),
+    ])
+    .optional(),
+  latitude: z
+    .union([z.literal(""), z.coerce.number().min(-90, "Latitud fuera de rango.").max(90, "Latitud fuera de rango.")])
+    .optional(),
+  longitude: z
+    .union([z.literal(""), z.coerce.number().min(-180, "Longitud fuera de rango.").max(180, "Longitud fuera de rango.")])
+    .optional(),
 });
 
 export type ConfigFormState = {
@@ -92,6 +118,13 @@ export async function updateSiteConfig(
     gscVerification: orNull(d.gscVerification),
     metaPixelId: orNull(d.metaPixelId),
     quoteTerms: orNull(d.quoteTerms),
+    addressStreet: orNull(d.addressStreet),
+    addressCity: orNull(d.addressCity),
+    addressRegion: orNull(d.addressRegion),
+    addressPostalCode: orNull(d.addressPostalCode),
+    openingHours: orNull(d.openingHours),
+    latitude: typeof d.latitude === "number" ? d.latitude : null,
+    longitude: typeof d.longitude === "number" ? d.longitude : null,
   };
   await prisma.siteConfig.upsert({
     where: { id: "default" },

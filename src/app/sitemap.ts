@@ -22,8 +22,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getActiveEventTypes(),
   ]);
 
-  // Rutas públicas comunes a todos los idiomas (sin prefijo).
-  const publicPaths = [
+  // Rutas públicas comunes a todos los idiomas (sin prefijo). Las fichas de BD
+  // llevan lastModified real (updatedAt); las estáticas no lo declaran (mejor
+  // omitirlo que mentir con new Date() en cada request).
+  const publicPaths: { path: string; lastModified?: Date }[] = [
     "",
     "/servicios",
     "/packs",
@@ -39,20 +41,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/karaoke",
     "/galerias",
     "/eventos",
-    ...eventTypes.map((e) => `/eventos/${e.slug}`),
-    ...services.map((s) => `/servicios/${s.slug}`),
-    ...packs.map((p) => `/packs/${p.slug}`),
-    ...cities.map((c) => `/karaoke/${c.slug}`),
-    // Solo galerías listadas (las protegidas/no listadas van noindex y fuera del sitemap).
-    ...galleries.filter((g) => !g.locked).map((g) => `/galerias/${g.slug}`),
-  ];
+  ]
+    .map((path) => ({ path }))
+    .concat(
+      eventTypes.map((e) => ({ path: `/eventos/${e.slug}`, lastModified: e.updatedAt })),
+      services.map((s) => ({ path: `/servicios/${s.slug}`, lastModified: s.updatedAt })),
+      packs.map((p) => ({ path: `/packs/${p.slug}`, lastModified: p.updatedAt })),
+      cities.map((c) => ({ path: `/karaoke/${c.slug}`, lastModified: c.updatedAt })),
+      // Solo galerías listadas (las protegidas/no listadas van noindex y fuera del sitemap).
+      galleries
+        .filter((g) => !g.locked)
+        .map((g) => ({ path: `/galerias/${g.slug}`, lastModified: g.updatedAt })),
+    );
 
-  const common = publicPaths.flatMap((path) =>
+  const common = publicPaths.flatMap(({ path, lastModified }) =>
     routing.locales.map((locale) => ({
       url: `${siteUrl}/${locale}${path}`,
-      lastModified: new Date(),
+      ...(lastModified ? { lastModified } : {}),
       alternates: {
-        languages: Object.fromEntries(routing.locales.map((l) => [l, `${siteUrl}/${l}${path}`])),
+        languages: {
+          ...Object.fromEntries(routing.locales.map((l) => [l, `${siteUrl}/${l}${path}`])),
+          // x-default: la versión en el idioma por defecto (ES).
+          "x-default": `${siteUrl}/${routing.defaultLocale}${path}`,
+        },
       },
     })),
   );

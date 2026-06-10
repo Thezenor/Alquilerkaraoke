@@ -59,5 +59,15 @@ export async function getContact() {
       youtube: config?.youtube || null,
       twitter: config?.twitter || null,
     },
+    // SEO local (LocalBusiness JSON-LD): solo se emiten si están rellenos.
+    business: {
+      addressStreet: config?.addressStreet || null,
+      addressCity: config?.addressCity || null,
+      addressRegion: config?.addressRegion || null,
+      addressPostalCode: config?.addressPostalCode || null,
+      openingHours: config?.openingHours || null,
+      latitude: config?.latitude ?? null,
+      longitude: config?.longitude ?? null,
+    },
   };
 }

@@ -3,6 +3,15 @@
     "homeTitle": "Alquiler Karaoke | Professional karaoke & event experiences",
     "homeDescription": "We create professional karaoke and event experiences for individuals, companies, weddings and parties across Spain. Request your quote."
   },
+  "NotFound": {
+    "kicker": "Error 404",
+    "title": "This page lost its microphone",
+    "description": "The address you are looking for does not exist or has moved. The party goes on — here are the best ways back.",
+    "ctaHome": "Go to the homepage",
+    "ctaPacks": "See packages & prices",
+    "ctaQuote": "Request a quote",
+    "ctaCall": "Call {phone}"
+  },
   "Nav": {
     "services": "Services",
     "packs": "Packages",

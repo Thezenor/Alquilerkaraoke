@@ -30,6 +30,13 @@ export type ConfigValues = {
   gscVerification: string;
   metaPixelId: string;
   quoteTerms: string;
+  addressStreet: string;
+  addressCity: string;
+  addressRegion: string;
+  addressPostalCode: string;
+  openingHours: string;
+  latitude: string;
+  longitude: string;
 };
 
 function Field({
@@ -108,6 +115,23 @@ export function ConfigForm({ values }: { values: ConfigValues }) {
               className="w-full rounded-lg border border-brand-border bg-brand-bg px-3 py-2.5 text-brand-text outline-none transition focus:border-brand-neon focus:ring-2 focus:ring-brand-neon/30"
             />
           </div>
+        </div>
+      </div>
+
+      <h2 className="mt-8 mb-1 text-sm font-semibold tracking-wide text-brand-muted uppercase">SEO local (LocalBusiness)</h2>
+      <p className="mb-4 text-sm text-brand-muted">
+        Dirección, horario y coordenadas para los datos estructurados (Google Business / resultados locales).
+        Solo se publican los campos que rellenes; el país es siempre España.
+      </p>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field name="addressStreet" label="Calle y número" defaultValue={values.addressStreet} placeholder="C/ Ejemplo, 12" />
+        <Field name="addressCity" label="Localidad" defaultValue={values.addressCity} placeholder="Madrid" />
+        <Field name="addressRegion" label="Provincia / región" defaultValue={values.addressRegion} placeholder="Comunidad de Madrid" />
+        <Field name="addressPostalCode" label="Código postal" defaultValue={values.addressPostalCode} placeholder="28001" />
+        <Field name="openingHours" label="Horario (formato schema.org)" defaultValue={values.openingHours} placeholder="Mo-Su 09:00-21:00" />
+        <div className="grid grid-cols-2 gap-3">
+          <Field name="latitude" label="Latitud" defaultValue={values.latitude} placeholder="40.4168" />
+          <Field name="longitude" label="Longitud" defaultValue={values.longitude} placeholder="-3.7038" />
         </div>
       </div>
 

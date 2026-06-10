@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
-import { buildMetadata, absoluteUrl } from "@/lib/seo";
+import { buildMetadata, absoluteUrl, pageTitle, ORGANIZATION_ID } from "@/lib/seo";
 import { formatCents } from "@/lib/money";
 import { Markdown, markdownToPlain } from "@/lib/markdown";
 import { getServiceBySlug, localizedService } from "@/server/services";
@@ -31,7 +31,7 @@ export async function generateMetadata({
   return buildMetadata({
     locale,
     pathname: `/servicios/${slug}`,
-    title: service.metaTitle || `${l.name} | Alquiler Karaoke`,
+    title: service.metaTitle || pageTitle(l.name),
     description: service.metaDescription || l.shortDescription || markdownToPlain(l.description),
   });
 }
@@ -60,7 +60,8 @@ export default async function ServiceDetailPage({
     name: l.name,
     description: l.shortDescription || markdownToPlain(l.description),
     areaServed: "ES",
-    provider: { "@type": "Organization", name: "Alquiler Karaoke" },
+    // Referencia al nodo Organization/LocalBusiness global del layout (grafo conectado).
+    provider: { "@id": ORGANIZATION_ID },
     url: absoluteUrl(`/${locale}/servicios/${slug}`),
   };
 

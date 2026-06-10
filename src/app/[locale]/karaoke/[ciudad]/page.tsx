@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Reveal } from "@/components/site/reveal";
 import { Markdown } from "@/lib/markdown";
-import { buildMetadata, absoluteUrl } from "@/lib/seo";
+import { buildMetadata, absoluteUrl, ORGANIZATION_ID } from "@/lib/seo";
 import { getActiveCities, getCityBySlug } from "@/server/cities";
 import { regionLabel, variantIndex } from "@/lib/cities";
 
@@ -83,12 +83,9 @@ export default async function CityLandingPage({
         name: city.name,
         containedInPlace: { "@type": "AdministrativeArea", name: city.region },
       },
-      provider: {
-        "@type": "LocalBusiness",
-        name: "Alquiler Karaoke",
-        url: absoluteUrl(`/${locale}`),
-        telephone: "+34607724965",
-      },
+      // Referencia al nodo LocalBusiness global del layout: grafo conectado,
+      // sin datos de contacto duplicados/hardcodeados.
+      provider: { "@id": ORGANIZATION_ID },
       url: absoluteUrl(`/${locale}/karaoke/${ciudad}`),
     },
     {

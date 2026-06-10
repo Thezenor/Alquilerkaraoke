@@ -3,6 +3,15 @@
     "homeTitle": "Alquiler Karaoke | Expériences professionnelles de karaoké et d'événements",
     "homeDescription": "Nous créons des expériences professionnelles de karaoké et d'événements pour particuliers, entreprises, mariages et fêtes dans toute l'Espagne. Demandez votre devis."
   },
+  "NotFound": {
+    "kicker": "Erreur 404",
+    "title": "Cette page a perdu son micro",
+    "description": "L'adresse que vous cherchez n'existe pas ou a changé. Mais la fête continue : voici les meilleurs chemins de retour.",
+    "ctaHome": "Aller à l'accueil",
+    "ctaPacks": "Voir les forfaits et tarifs",
+    "ctaQuote": "Demander un devis",
+    "ctaCall": "Appeler le {phone}"
+  },
   "Nav": {
     "services": "Services",
     "packs": "Forfaits",

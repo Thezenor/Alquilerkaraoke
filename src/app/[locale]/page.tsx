@@ -13,7 +13,7 @@ import { getActiveTestimonials, testimonialsForLocale } from "@/server/testimoni
 import { getCatalogStats } from "@/server/songs";
 import { getActiveCities } from "@/server/cities";
 import { routing } from "@/i18n/routing";
-import { buildMetadata, absoluteUrl } from "@/lib/seo";
+import { buildMetadata, ORGANIZATION_ID } from "@/lib/seo";
 
 // ISR: la home se regenera periódicamente para reflejar datos de BD (servicios
 // del menú, colaboradores) sin sacrificar el rendimiento de página estática.
@@ -146,11 +146,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     "@context": "https://schema.org",
     "@type": "Service",
     serviceType: "Alquiler de karaoke y eventos",
-    provider: {
-      "@type": "Organization",
-      name: contact.companyName,
-      url: absoluteUrl(`/${locale}`),
-    },
+    // Referencia al nodo Organization/LocalBusiness global ([locale]/layout.tsx):
+    // grafo conectado en vez de entidades anónimas duplicadas.
+    provider: { "@id": ORGANIZATION_ID },
     areaServed: { "@type": "Country", name: "España" },
     hasOfferCatalog: {
       "@type": "OfferCatalog",

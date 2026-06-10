@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Markdown, markdownToPlain } from "@/lib/markdown";
-import { buildMetadata, absoluteUrl } from "@/lib/seo";
+import { buildMetadata, absoluteUrl, pageTitle, ORGANIZATION_ID } from "@/lib/seo";
 import { getActiveEventTypes, getEventTypeBySlug, localizedEventType, type EventFaq } from "@/server/event-types";
 import { SmartImage } from "@/components/site/smart-image";
 
@@ -31,7 +31,7 @@ export async function generateMetadata({
   return buildMetadata({
     locale,
     pathname: `/eventos/${slug}`,
-    title: l.metaTitle || `${l.name} | Alquiler Karaoke`,
+    title: l.metaTitle || pageTitle(l.name),
     description: l.metaDescription || l.shortDescription || markdownToPlain(l.description),
     ...(e.heroImageUrl ? { images: [e.heroImageUrl] } : {}),
   });
@@ -60,7 +60,8 @@ export default async function EventTypePage({
       serviceType: l.name,
       description: l.shortDescription || markdownToPlain(l.description),
       areaServed: { "@type": "Country", name: "España" },
-      provider: { "@type": "LocalBusiness", name: "Alquiler Karaoke", url: absoluteUrl(`/${locale}`), telephone: "+34607724965" },
+      // Referencia al nodo LocalBusiness global del layout (grafo conectado).
+      provider: { "@id": ORGANIZATION_ID },
       url: absoluteUrl(`/${locale}/eventos/${slug}`),
     },
     ...(faq.length

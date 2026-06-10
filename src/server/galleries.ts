@@ -24,6 +24,7 @@ export const getListedGalleries = unstable_cache(
           coverImageUrl: true,
           expiresAt: true,
           passwordHash: true,
+          updatedAt: true,
           _count: { select: { items: true } },
         },
       });
@@ -36,6 +37,7 @@ export const getListedGalleries = unstable_cache(
           coverImageUrl: g.coverImageUrl,
           itemCount: g._count.items,
           locked: g.passwordHash != null,
+          updatedAt: g.updatedAt,
         }));
     } catch {
       return [];

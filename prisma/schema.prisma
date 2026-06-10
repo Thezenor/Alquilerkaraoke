@@ -207,6 +207,15 @@ model SiteConfig {
   gaMeasurementId  String? // Google Analytics 4: "G-XXXXXXXXXX"
   gscVerification  String? // Google Search Console: token de etiqueta meta
   metaPixelId      String? // Meta (Facebook) Pixel ID
+  // SEO local: dirección/horario/coordenadas para el LocalBusiness JSON-LD.
+  // Solo se emiten en el schema si están rellenos (addressCountry fijo "ES").
+  addressStreet     String?
+  addressCity       String?
+  addressRegion     String?
+  addressPostalCode String?
+  openingHours      String? // formato schema.org, ej. "Mo-Su 09:00-21:00"
+  latitude          Float?
+  longitude         Float?
   // Campos extra flexibles (redes, horarios, etc.) sin tocar el esquema.
   extra        Json?
 
