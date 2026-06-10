@@ -34,17 +34,22 @@ test("media: subir imagen desde el admin la optimiza y la sirve por /media", asy
 
   // Subir el archivo: el componente lo envía a /admin/media/upload y rellena el campo.
   await page.setInputFiles('input[type="file"]', { name: "foto.png", mimeType: "image/png", buffer: PNG_1x1 });
-  await expect(page.locator('input[name="heroImageUrl"]')).toHaveValue(/\/media\/.+\.webp$/, { timeout: 15000 });
+  const heroInput = page.locator('input[name="heroImageUrl"]');
+  await expect(heroInput).toHaveValue(/\/media\/.+\.webp$/, { timeout: 15000 });
+  const mediaUrl = await heroInput.inputValue();
 
   await page.getByRole("button", { name: "Guardar", exact: true }).click();
   await page.waitForURL("**/admin/eventos");
 
-  // La imagen se sirve por /media y la página pública la muestra.
+  // La página pública muestra la imagen (next/image la sirve vía /_next/image?url=/media/…).
   await page.goto("/es/eventos/media-test-e2e");
-  const img = page.locator('img[src^="/media/"]').first();
+  const img = page.locator(`img[src*="${encodeURIComponent(mediaUrl)}"]`).first();
   await expect(img).toBeVisible();
-  const src = await img.getAttribute("src");
-  const res = await page.request.get(src!);
+  const optimized = await page.request.get((await img.getAttribute("src"))!);
+  expect(optimized.status()).toBe(200);
+
+  // El original optimizado a WebP se sigue sirviendo por /media.
+  const res = await page.request.get(mediaUrl);
   expect(res.status()).toBe(200);
   expect(res.headers()["content-type"]).toContain("image/webp");
 

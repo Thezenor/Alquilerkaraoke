@@ -3,11 +3,13 @@ import { Readable } from "stream";
 import { pipeline } from "stream/promises";
 import { tmpdir } from "os";
 import { join } from "path";
+import { revalidateTag } from "next/cache";
 import { auth } from "@/server/auth";
 import { hasRole } from "@/lib/auth-roles";
 import { prisma } from "@/lib/prisma";
 import { logAudit } from "@/server/audit";
 import { runImport } from "@/server/song-import";
+import { SONGS_TAG } from "@/server/songs";
 import { Role } from "@/generated/prisma/enums";
 
 export const runtime = "nodejs";
@@ -19,10 +21,23 @@ async function guard() {
   return session;
 }
 
+// El job de importación corre en segundo plano (fuera del scope de request),
+// donde `updateTag` no surte efecto (el catch de runImport lo traga). Cuando el
+// polling del admin observa que el último trabajo ha terminado, invalidamos la
+// caché del catálogo público desde aquí (scope de request). Guardamos el último
+// job ya invalidado en memoria para no purgar la caché en cada sondeo.
+let lastInvalidatedJobId: string | null = null;
+
 // Estado del último trabajo de importación (para que el admin muestre progreso).
 export async function GET() {
   if (!(await guard())) return new Response("No autorizado", { status: 403 });
   const job = await prisma.songImportJob.findFirst({ orderBy: { createdAt: "desc" } });
+  if (job && (job.status === "DONE" || job.status === "ERROR") && job.id !== lastInvalidatedJobId) {
+    lastInvalidatedJobId = job.id;
+    // { expire: 0 } = expiración inmediata (como updateTag, que aquí no está
+    // permitido por ser un route handler); "max" serviría datos stale (SWR).
+    revalidateTag(SONGS_TAG, { expire: 0 });
+  }
   return Response.json({ job });
 }
 

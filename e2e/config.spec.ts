@@ -65,8 +65,13 @@ test("Google Analytics configurado se inyecta en la web pública", async ({ page
   await page.getByRole("button", { name: "Guardar cambios" }).click();
   await expect(page.getByText("Configuración guardada correctamente.")).toBeVisible();
 
-  // El script de GA aparece en la home (revalidación por tag).
+  // RGPD: sin consentimiento no se carga ningún script de terceros.
   await page.goto("/es");
+  await expect(page.getByRole("button", { name: "Aceptar", exact: true })).toBeVisible();
+  await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(0);
+
+  // Al aceptar las cookies de analítica desde el banner, GA se activa sin recargar.
+  await page.getByRole("button", { name: "Aceptar", exact: true }).click();
   await expect(page.locator('script[src*="googletagmanager.com/gtag/js?id=G-E2ETEST123"]')).toHaveCount(1);
 
   // Limpieza: quitar el ID.
