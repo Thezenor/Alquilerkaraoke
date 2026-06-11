@@ -56,6 +56,8 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: "/admin/ia", label: "IA", icon: "cpu", roles: [Role.SUPERADMIN, Role.ADMIN] },
       { href: "/admin/configuracion", label: "Configuración", icon: "settings" },
       { href: "/admin/usuarios", label: "Usuarios", icon: "shield", roles: [Role.SUPERADMIN] },
+      // Sin `roles`: visible para todos los roles con acceso al panel.
+      { href: "/admin/perfil", label: "Mi cuenta", icon: "user" },
     ],
   },
 ];

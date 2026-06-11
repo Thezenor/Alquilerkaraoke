@@ -19,7 +19,7 @@ export default async function NewUserPage() {
 
   return (
     <div>
-      <Link href="/admin/usuarios" className="text-sm text-brand-muted transition hover:text-white">
+      <Link href="/admin/usuarios" className="text-brand-muted text-sm transition hover:text-white">
         ← Volver a usuarios
       </Link>
       <h1 className="mt-4 text-2xl font-semibold text-white">Nuevo usuario</h1>

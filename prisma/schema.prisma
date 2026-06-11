@@ -99,6 +99,8 @@ model User {
   // Un usuario puede tener varios roles.
   roles         Role[]    @default([])
   isActive      Boolean   @default(true)
+  // Último inicio de sesión correcto (se actualiza en el evento signIn).
+  lastLoginAt   DateTime?
 
   accounts         Account[]
   sessions         Session[]

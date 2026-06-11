@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import NextLink from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/locale-switcher";
@@ -137,6 +138,13 @@ export function SiteHeader({
               {phone}
             </a>
           )}
+          {/* Acceso al panel (login admin): fuera del Link i18n porque /admin no lleva prefijo de idioma */}
+          <NextLink
+            href="/admin/login"
+            className="text-brand-muted hidden text-sm transition hover:text-white md:inline"
+          >
+            {t("access")}
+          </NextLink>
           <div className="hidden md:block">
             <LocaleSwitcher />
           </div>
@@ -218,6 +226,14 @@ export function SiteHeader({
                 {phone}
               </a>
             )}
+            {/* Acceso al panel (login admin): Link normal porque /admin va sin prefijo de idioma */}
+            <NextLink
+              href="/admin/login"
+              onClick={() => setOpen(false)}
+              className="text-brand-muted hover:bg-brand-surface-2 block rounded-lg px-3 py-2.5 text-sm transition hover:text-white"
+            >
+              {t("access")}
+            </NextLink>
             <div className="mt-3 flex items-center justify-between gap-3">
               <LocaleSwitcher />
               <Button href={quoteHref} size="md" className="flex-1">

@@ -45,8 +45,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   events: {
     async signIn({ user }) {
-      // Auditoría best-effort: no debe bloquear el login si falla.
+      // Auditoría y último acceso best-effort: no deben bloquear el login si fallan.
       if (!user.id) return;
+      try {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { lastLoginAt: new Date() },
+        });
+      } catch {
+        // ignorar errores al registrar el último acceso
+      }
       try {
         await prisma.auditLog.create({
           data: { userId: user.id, action: "user.login" },

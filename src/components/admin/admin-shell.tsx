@@ -54,9 +54,12 @@ function NavGroups({
                       )}
                     >
                       {active && (
-                        <span className="absolute top-1/2 left-0 h-5 w-0.5 -translate-y-1/2 rounded-r bg-brand-neon shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                        <span className="bg-brand-neon absolute top-1/2 left-0 h-5 w-0.5 -translate-y-1/2 rounded-r shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
                       )}
-                      <Icon name={item.icon} className={cn("h-5 w-5 shrink-0", active && "text-brand-neon")} />
+                      <Icon
+                        name={item.icon}
+                        className={cn("h-5 w-5 shrink-0", active && "text-brand-neon")}
+                      />
                       {!collapsed && <span className="truncate">{item.label}</span>}
                     </Link>
                   </li>
@@ -100,12 +103,12 @@ export function AdminShell({
       {/* Sidebar escritorio */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-30 hidden flex-col border-r border-brand-border bg-brand-surface transition-[width] duration-200 lg:flex",
+          "border-brand-border bg-brand-surface fixed inset-y-0 left-0 z-30 hidden flex-col border-r transition-[width] duration-200 lg:flex",
           collapsed ? "w-16" : "w-60",
         )}
       >
-        <div className="flex h-16 items-center gap-2 border-b border-brand-border px-4">
-          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-brand-neon shadow-[0_0_12px_rgba(34,211,238,0.9)]" />
+        <div className="border-brand-border flex h-16 items-center gap-2 border-b px-4">
+          <span className="bg-brand-neon h-2.5 w-2.5 shrink-0 rounded-full shadow-[0_0_12px_rgba(34,211,238,0.9)]" />
           {!collapsed && <span className="truncate font-bold text-white">Alquiler Karaoke</span>}
         </div>
         <NavGroups groups={groups} collapsed={collapsed} />
@@ -113,14 +116,17 @@ export function AdminShell({
           type="button"
           onClick={() => setCollapsed((c) => !c)}
           aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
-          className="flex h-12 items-center justify-center border-t border-brand-border text-brand-muted transition hover:text-brand-neon"
+          className="border-brand-border text-brand-muted hover:text-brand-neon flex h-12 items-center justify-center border-t transition"
         >
           <Icon name={collapsed ? "chevron-right" : "chevron-left"} className="h-5 w-5" />
         </button>
       </aside>
 
       {/* Drawer móvil */}
-      <div className={cn("lg:hidden", !drawerOpen && "pointer-events-none")} aria-hidden={!drawerOpen}>
+      <div
+        className={cn("lg:hidden", !drawerOpen && "pointer-events-none")}
+        aria-hidden={!drawerOpen}
+      >
         <div
           onClick={() => setDrawerOpen(false)}
           className={cn(
@@ -135,16 +141,16 @@ export function AdminShell({
           aria-label="Menú de navegación"
           tabIndex={-1}
           className={cn(
-            "fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col border-r border-brand-border bg-brand-surface shadow-2xl outline-none transition-transform duration-200 ease-out",
+            "border-brand-border bg-brand-surface fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col border-r shadow-2xl transition-transform duration-200 ease-out outline-none",
             drawerOpen ? "translate-x-0" : "-translate-x-full",
           )}
         >
-          <div className="flex h-14 items-center justify-between border-b border-brand-border px-4">
+          <div className="border-brand-border flex h-14 items-center justify-between border-b px-4">
             <span className="font-bold text-white">Alquiler Karaoke</span>
             <button
               onClick={() => setDrawerOpen(false)}
               aria-label="Cerrar menú"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-brand-muted hover:bg-brand-surface-2 hover:text-white"
+              className="text-brand-muted hover:bg-brand-surface-2 inline-flex h-9 w-9 items-center justify-center rounded-lg hover:text-white"
             >
               <Icon name="x" className="h-5 w-5" />
             </button>
@@ -160,28 +166,36 @@ export function AdminShell({
           collapsed ? "lg:pl-16" : "lg:pl-60",
         )}
       >
-        <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-brand-border bg-brand-surface/95 px-4 backdrop-blur lg:h-16 lg:px-8">
+        <header className="border-brand-border bg-brand-surface/95 sticky top-0 z-20 flex h-14 items-center gap-3 border-b px-4 backdrop-blur lg:h-16 lg:px-8">
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
             aria-label="Abrir menú"
             aria-haspopup="dialog"
-            className="-ml-1 inline-flex h-10 w-10 items-center justify-center rounded-lg text-brand-muted transition hover:bg-brand-surface-2 hover:text-white lg:hidden"
+            className="text-brand-muted hover:bg-brand-surface-2 -ml-1 inline-flex h-10 w-10 items-center justify-center rounded-lg transition hover:text-white lg:hidden"
           >
             <Icon name="menu" className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2 lg:hidden">
-            <span className="h-2 w-2 rounded-full bg-brand-neon shadow-[0_0_10px_rgba(34,211,238,0.9)]" />
+            <span className="bg-brand-neon h-2 w-2 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.9)]" />
             <span className="font-semibold text-white">Panel</span>
           </div>
           <div className="ml-auto flex items-center gap-3">
-            <span className="hidden max-w-[200px] truncate text-sm text-brand-muted sm:inline">{userEmail}</span>
+            <Link
+              href="/admin/perfil"
+              title="Mi cuenta"
+              className="text-brand-muted hidden max-w-[200px] truncate text-sm transition hover:text-white sm:inline"
+            >
+              {userEmail}
+            </Link>
             <SignOutButton />
           </div>
         </header>
 
         <main className="flex-1">
-          <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</div>
+          <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+            {children}
+          </div>
         </main>
       </div>
     </div>
