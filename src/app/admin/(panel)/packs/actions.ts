@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { updateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
@@ -118,5 +118,26 @@ export async function savePack(_prev: PackFormState, formData: FormData): Promis
   }
 
   updateTag(PACKS_TAG);
+  redirect("/admin/packs");
+}
+
+/** Elimina un pack. Las reservas conservan su snapshot (Booking.packId es onDelete: SetNull). */
+export async function deletePack(formData: FormData): Promise<void> {
+  let userId: string | undefined;
+  try {
+    userId = (await requireRole(Role.SUPERADMIN, Role.ADMIN)).user.id;
+  } catch {
+    return;
+  }
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  try {
+    await prisma.pack.delete({ where: { id } });
+    await logAudit({ userId, action: "pack.delete", entity: "Pack", entityId: id });
+  } catch {
+    return;
+  }
+  updateTag(PACKS_TAG);
+  revalidatePath("/admin/packs");
   redirect("/admin/packs");
 }

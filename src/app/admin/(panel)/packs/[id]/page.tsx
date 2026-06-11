@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { centsToInput } from "@/lib/money";
 import { PackForm, type PackFormValues } from "../pack-form";
+import { deletePack } from "../actions";
+import { ConfirmButton } from "@/components/admin/confirm-button";
 
 export const metadata: Metadata = {
   title: "Editar pack · Panel Alquiler Karaoke",
@@ -56,6 +58,23 @@ export default async function EditPackPage({ params }: { params: Promise<{ id: s
       <h1 className="mt-4 text-2xl font-semibold text-white">Editar: {pack.name}</h1>
       <div className="mt-8">
         <PackForm values={values} />
+      </div>
+
+      <div className="mt-10 rounded-xl border border-red-500/30 bg-red-500/5 p-5">
+        <h2 className="text-sm font-semibold text-red-300">Eliminar pack</h2>
+        <p className="mt-1 text-sm text-brand-muted">
+          Se borrará este pack del catálogo. Las reservas existentes conservan su copia (nombre e importe).
+          Si solo quieres ocultarlo de la web, desmárcalo como activo. <strong className="text-brand-text">No se puede deshacer.</strong>
+        </p>
+        <form action={deletePack} className="mt-3">
+          <input type="hidden" name="id" value={pack.id} />
+          <ConfirmButton
+            confirmMessage="¿Eliminar este pack? No se puede deshacer."
+            className="rounded-lg border border-red-500/40 px-3 py-2 text-sm font-medium text-red-300 transition hover:bg-red-500/10 disabled:opacity-50"
+          >
+            Eliminar pack
+          </ConfirmButton>
+        </form>
       </div>
     </div>
   );

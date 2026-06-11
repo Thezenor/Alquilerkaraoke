@@ -8,7 +8,8 @@ import { amountDue } from "@/lib/payments";
 import { BOOKING_STATUS_LABELS, BOOKING_STATUS_CLASSES } from "../status";
 import { BookingForm } from "./booking-form";
 import { PaymentForm } from "./payment-form";
-import { deletePayment, generateContract, sendContract, cancelContract, sendQuoteAction } from "../actions";
+import { deletePayment, generateContract, sendContract, cancelContract, sendQuoteAction, deleteBooking } from "../actions";
+import { hasRole } from "@/lib/auth-roles";
 import { CopyLink } from "./copy-link";
 import { StatusBadge, PAYMENT_STATUS, PAYMENT_METHOD_LABELS, CONTRACT_STATUS } from "@/components/admin/status-badge";
 import { ConfirmButton } from "@/components/admin/confirm-button";
@@ -38,7 +39,8 @@ export default async function ReservaDetailPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ sent?: string; created?: string }>;
 }) {
-  await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
+  const session = await pageRequireRole(Role.SUPERADMIN, Role.ADMIN, Role.COMERCIAL);
+  const canDelete = hasRole(session.user.roles, Role.SUPERADMIN, Role.ADMIN);
   const { id } = await params;
   const sp = await searchParams;
   const b = await prisma.booking.findUnique({
@@ -362,6 +364,26 @@ export default async function ReservaDetailPage({
           </div>
         </div>
       </div>
+
+      {canDelete && (
+        <div className="mt-8 rounded-2xl border border-red-500/30 bg-red-500/5 p-6">
+          <h2 className="text-sm font-semibold text-red-300">Eliminar presupuesto / reserva</h2>
+          <p className="mt-1 text-sm text-brand-muted">
+            Borra esta reserva y sus pagos y contrato asociados. Para conservar los importes por obligación
+            contable, considera <strong className="text-brand-text">rechazarla</strong> en vez de eliminarla.
+            <strong className="text-brand-text"> Esta acción no se puede deshacer.</strong>
+          </p>
+          <form action={deleteBooking} className="mt-3">
+            <input type="hidden" name="id" value={b.id} />
+            <ConfirmButton
+              confirmMessage="¿Eliminar esta reserva/presupuesto y sus pagos y contrato? Esta acción no se puede deshacer."
+              className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-sm font-medium text-red-300 transition hover:bg-red-500/10 disabled:opacity-50"
+            >
+              Eliminar definitivamente
+            </ConfirmButton>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

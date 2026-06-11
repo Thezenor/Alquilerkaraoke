@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/cn";
 import { STATUS_LABELS, STATUS_CLASSES } from "../status";
 import { RespondForm } from "./respond-form";
-import { anonymizeContactAction } from "../actions";
+import { anonymizeContactAction, deleteContactRequest } from "../actions";
 import { ConfirmButton } from "@/components/admin/confirm-button";
 import { pageRequireRole } from "@/server/auth/guards";
 import { Role } from "@/generated/prisma/enums";
@@ -140,15 +140,26 @@ export default async function SolicitudDetailPage({
                 Anonimiza los datos personales de esta solicitud y la archiva.
                 <strong className="text-brand-text"> No se puede deshacer.</strong>
               </p>
-              <form action={anonymizeContactAction} className="mt-3">
-                <input type="hidden" name="id" value={item.id} />
-                <ConfirmButton
-                  confirmMessage="¿Anonimizar los datos personales de esta solicitud? Esta acción no se puede deshacer."
-                  className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-sm font-medium text-red-300 transition hover:bg-red-500/10 disabled:opacity-50"
-                >
-                  Anonimizar datos personales
-                </ConfirmButton>
-              </form>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <form action={anonymizeContactAction}>
+                  <input type="hidden" name="id" value={item.id} />
+                  <ConfirmButton
+                    confirmMessage="¿Anonimizar los datos personales de esta solicitud? Esta acción no se puede deshacer."
+                    className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-sm font-medium text-red-300 transition hover:bg-red-500/10 disabled:opacity-50"
+                  >
+                    Anonimizar datos personales
+                  </ConfirmButton>
+                </form>
+                <form action={deleteContactRequest}>
+                  <input type="hidden" name="id" value={item.id} />
+                  <ConfirmButton
+                    confirmMessage="¿Eliminar esta solicitud por completo? No se puede deshacer."
+                    className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 px-3 py-2 text-sm font-medium text-red-300 transition hover:bg-red-500/10 disabled:opacity-50"
+                  >
+                    Eliminar solicitud
+                  </ConfirmButton>
+                </form>
+              </div>
             </div>
           )}
         </div>

@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { updateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
@@ -86,5 +86,26 @@ export async function saveExtra(_prev: ExtraFormState, formData: FormData): Prom
   }
 
   updateTag(PRICING_TAG);
+  redirect("/admin/extras");
+}
+
+/** Elimina un extra. Las reservas guardan un snapshot en Booking.extras (sin FK), así que es seguro. */
+export async function deleteExtra(formData: FormData): Promise<void> {
+  let userId: string | undefined;
+  try {
+    userId = (await requireRole(Role.SUPERADMIN, Role.ADMIN)).user.id;
+  } catch {
+    return;
+  }
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  try {
+    await prisma.extra.delete({ where: { id } });
+    await logAudit({ userId, action: "extra.delete", entity: "Extra", entityId: id });
+  } catch {
+    return;
+  }
+  updateTag(PRICING_TAG);
+  revalidatePath("/admin/extras");
   redirect("/admin/extras");
 }

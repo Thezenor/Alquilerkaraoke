@@ -220,6 +220,28 @@ export async function sendQuoteAction(formData: FormData): Promise<void> {
   redirect(`/admin/reservas/${bookingId}?sent=${outcome}`);
 }
 
+/** Elimina una reserva/presupuesto por completo (cascada: pagos y contrato). Solo SUPERADMIN/ADMIN. */
+export async function deleteBooking(formData: FormData): Promise<void> {
+  let userId: string | undefined;
+  try {
+    userId = (await requireRole(Role.SUPERADMIN, Role.ADMIN)).user.id;
+  } catch {
+    return;
+  }
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  try {
+    const b = await prisma.booking.findUnique({ where: { id }, select: { email: true, total: true, packName: true } });
+    // Las FKs Payment.bookingId y Contract.bookingId son onDelete: Cascade.
+    await prisma.booking.delete({ where: { id } });
+    await logAudit({ userId, action: "booking.delete", entity: "Booking", entityId: id, metadata: { email: b?.email, total: b?.total, packName: b?.packName } });
+  } catch {
+    return;
+  }
+  revalidatePath("/admin/reservas");
+  redirect("/admin/reservas");
+}
+
 export async function cancelContract(formData: FormData): Promise<void> {
   let userId: string | undefined;
   try {

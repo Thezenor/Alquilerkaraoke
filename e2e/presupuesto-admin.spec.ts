@@ -55,6 +55,7 @@ test("presupuesto admin: crear desde clientes, alta de usuario y PDF premium", a
 
   // Redirige a la ficha de la reserva creada y se muestra sin error (2 actividades).
   await page.waitForURL(/\/admin\/reservas\/.*created=quote/);
+  const bookingUrl = page.url().split("?")[0];
   await expect(page.getByText("Presupuesto creado.")).toBeVisible();
   await expect(page.getByText("Opción Furor E2E")).toBeVisible();
 
@@ -70,6 +71,14 @@ test("presupuesto admin: crear desde clientes, alta de usuario y PDF premium", a
   // El cliente quedó dado de alta y aparece en clientes.
   await page.goto(`/admin/clientes?q=${encodeURIComponent(email)}`);
   await expect(page.getByText(email)).toBeVisible();
+
+  // Borrar el presupuesto/reserva desde su ficha (zona de peligro, confirm).
+  await page.goto(bookingUrl);
+  page.once("dialog", (d) => d.accept());
+  await page.getByRole("button", { name: "Eliminar definitivamente" }).click();
+  await page.waitForURL(/\/admin\/reservas(\?|$)/);
+  const gone = await page.request.get(`${bookingUrl}/presupuesto`);
+  expect(gone.status()).toBe(404);
 });
 
 test("presupuesto premium: sin sesión no entrega el PDF (redirige al login)", async ({ request }) => {

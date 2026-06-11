@@ -66,6 +66,27 @@ export async function saveCustomer(
   redirect("/admin/clientes");
 }
 
+/** Borra un cliente por completo. Sus reservas se conservan (Booking.customerId es onDelete: SetNull). */
+export async function deleteCustomer(formData: FormData): Promise<void> {
+  let userId: string | undefined;
+  try {
+    userId = (await requireRole(Role.SUPERADMIN, Role.ADMIN)).user.id;
+  } catch {
+    return;
+  }
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  try {
+    const c = await prisma.customer.findUnique({ where: { id }, select: { email: true } });
+    await prisma.customer.delete({ where: { id } });
+    await logAudit({ userId, action: "customer.delete", entity: "Customer", entityId: id, metadata: { email: c?.email } });
+  } catch {
+    return;
+  }
+  revalidatePath("/admin/clientes");
+  redirect("/admin/clientes");
+}
+
 /** RGPD — derecho de supresión: anonimiza el cliente y la PII de sus reservas. */
 export async function anonymizeCustomerAction(formData: FormData): Promise<void> {
   let userId: string | undefined;

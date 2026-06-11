@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { centsToInput } from "@/lib/money";
 import { ExtraForm, type ExtraFormValues } from "../extra-form";
+import { deleteExtra } from "../actions";
+import { ConfirmButton } from "@/components/admin/confirm-button";
 
 export const metadata: Metadata = {
   title: "Editar extra · Panel Alquiler Karaoke",
@@ -51,6 +53,23 @@ export default async function EditExtraPage({ params }: { params: Promise<{ id: 
       <h1 className="mt-4 text-2xl font-semibold text-white">Editar: {extra.name}</h1>
       <div className="mt-8">
         <ExtraForm values={values} categories={categories} />
+      </div>
+
+      <div className="mt-10 rounded-xl border border-red-500/30 bg-red-500/5 p-5">
+        <h2 className="text-sm font-semibold text-red-300">Eliminar extra</h2>
+        <p className="mt-1 text-sm text-brand-muted">
+          Se borrará este extra. Las reservas existentes conservan su copia. Si solo quieres retirarlo,
+          desmárcalo como activo. <strong className="text-brand-text">No se puede deshacer.</strong>
+        </p>
+        <form action={deleteExtra} className="mt-3">
+          <input type="hidden" name="id" value={extra.id} />
+          <ConfirmButton
+            confirmMessage="¿Eliminar este extra? No se puede deshacer."
+            className="rounded-lg border border-red-500/40 px-3 py-2 text-sm font-medium text-red-300 transition hover:bg-red-500/10 disabled:opacity-50"
+          >
+            Eliminar extra
+          </ConfirmButton>
+        </form>
       </div>
     </div>
   );

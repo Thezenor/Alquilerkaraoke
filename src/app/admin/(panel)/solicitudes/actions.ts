@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -75,4 +76,24 @@ export async function anonymizeContactAction(formData: FormData): Promise<void> 
   await logAudit({ userId, action: "contact.anonymize", entity: "ContactRequest", entityId: id });
   revalidatePath("/admin/solicitudes");
   revalidatePath(`/admin/solicitudes/${id}`);
+}
+
+/** Borra una solicitud de contacto (lead) por completo. Solo SUPERADMIN/ADMIN. */
+export async function deleteContactRequest(formData: FormData): Promise<void> {
+  let userId: string | undefined;
+  try {
+    userId = (await requireRole(Role.SUPERADMIN, Role.ADMIN)).user.id;
+  } catch {
+    return;
+  }
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  try {
+    await prisma.contactRequest.delete({ where: { id } });
+    await logAudit({ userId, action: "contact.delete", entity: "ContactRequest", entityId: id });
+  } catch {
+    return;
+  }
+  revalidatePath("/admin/solicitudes");
+  redirect("/admin/solicitudes");
 }
